@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load compress i18n staticfiles %}
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="ROBOTS" content="ALL" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="photography, vancouver, canada, art, fine art, photos, images, artwork, artist, creative, industrial, landscape, industry, graphic, encroachment, industrial landscapes, discontinuous spectrums, industrial monochromes," />
+    <meta name="description" content="Stuart McCall, photographer /  artist based in Vancouver, BC, Canada." />
+    <meta name="robots" content="all" />
+
+    <!-- Web design and development by (C) Dylan McCall <http://www.dylanmccall.com> -->
+
+    <title>Stuart McCall</title>
+
+    <!-- <link rel="shortcut icon" href="" type="image/x-icon" /> -->
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic%7CPT+Sans+Narrow:400,700%7CPT+Serif:400,400italic" type="text/css" />
+
+    {% compress css %}
+        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/reset.less' %}" />
+        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/base.less' %}" />
+        <link rel="stylesheet" type="text/less" media="print" href="{% static 'css/print.less' %}" />
+    {% endcompress %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.history.js' %}"></script>
+
+    <script type="text/javascript" src="{% url 'gallery_data_json' %}"></script>
+
+    <script type="text/javascript">
+        var _YOUTUBE_IS_READY = false;
+        var _YOUTUBE_READY_CALLBACKS = [];
+
+        function onYouTubePlayerAPIReady() {
+            _YOUTUBE_IS_READY = true;
+            $.each(_YOUTUBE_READY_CALLBACKS, function(index, callback) {
+                callback();
+            });
+        }
+
+        function doWhenYouTubeIsReady(callback) {
+            if (_YOUTUBE_IS_READY) {
+                callback();
+            } else {
+                _YOUTUBE_READY_CALLBACKS.push(callback);
+            }
+        }
+    </script>
+
+    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
+
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-2068654-5']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
+</head>
+
+<body id="page-home">
+<div id="wrapper">
+    <header role="banner" class="header">
+        {% block header %}
+            <h1 class="sitetitle"><a href="/" class="action-return">
+                <span class="main">Stuart McCall</span>
+                <span class="subtitle">Fine Art</span>
+            </a></h1>
+
+            <!--<div class="header-contact">Vancouver, BC, Canada / <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></div>-->
+        {% endblock %}
+    </header>
+
+    <main role="main" id="main">
+        {% block main %}
+        {% endblock %}
+    </main>
+
+    <footer id="footer">
+        {% block footer %}
+            <span class="copyright">&#169; <a href="mailto:stuart@northlightimages.com">Stuart McCall</a>. All Rights Reserved</span>
+
+            <span class="contact mini-contact"><a href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></span>
+
+            <div class="contact expanded-contact">
+                <div class="vcard">
+                    <div>
+                        <span class="fn">Stuart McCall</span> <span class="note">fine art photography</span>
+                    </div>
+                    <div class="adr">
+                        <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
+                    </div>
+                    <div>
+                        <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
+                    </div>
+                    <div>
+                        <span class="tel">(1) 604-684-6760</span>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </footer>
+
+    <div class="js-resource" style="display:none;">
+        {% block js-resource %}
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

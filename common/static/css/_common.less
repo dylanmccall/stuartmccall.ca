@@ -1,0 +1,161 @@
+@big_screen: 1000px;
+@medium_screen: 850px;
+@small_screen: 600px;
+@tiny_screen: 450px;
+
+@max_image_size: 540px;
+
+/* Note: weird flicker on page load, because PT Sans Narrow and built in sans
+ * serif are very different. This font stack may help:
+ * font-family: 'PT Sans Narrow', Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+ */
+
+@base_font: 'PT Sans', sans-serif;
+@header_font: 'PT Sans Narrow', sans-serif;
+@label_font: 'PT Sans', sans-serif;
+@filter_font: 'PT Sans Narrow', sans-serif;
+@fancy_header_font: 'PT Serif', serif;
+@body_font: 'PT Serif', serif;
+
+/*
+@base_font: 'Myriad Pro', 'Myriad', 'Vegur', 'Helvetica', 'Arial', sans-serif;
+@header_font: 'Myriad Pro', 'Myriad', 'Vegur', 'Helvetica', 'Arial', sans-serif;
+*/
+/*@header_font: 'Myriad Pro Condensed', 'Myriad Condensed', 'Myriad', 'Vegur', 'Helvetica', 'Arial', sans-serif;*/
+
+/*****
+ * Mixins
+ */
+
+.two_columns (@left, @right, @spacing, @outer:0) {
+	display: block;
+	position: relative;
+	
+	.column {
+		display: block;
+		
+		&.left {
+			float:left;
+			width: @left;
+			min-width: @left;
+		
+			.column-inner {
+				padding-left: @outer;
+				padding-right: @spacing;
+			}
+		}
+	
+		&.right {
+			width: auto;
+			margin-left: @left;
+		
+			.column-inner {
+				/* Nearby floated ancestor, so clear inside .left-inner doesn't clear the sidebar */
+				float: left;
+				padding-left: 0;
+				padding-right: @outer;
+			}
+		}
+	}
+}
+
+.revert_two_columns (@spacing, @outer:0) {
+	.column {
+		.column-inner {
+			margin: @spacing 0;
+		}
+		
+		&.left {
+			width: auto;
+			min-width: 0;
+			float: none;
+			
+			.column-inner {
+				margin-top: 0;
+				padding: 0 @outer;
+			}
+		}
+		
+		&.right {
+			width: auto;
+			margin-left: 0;
+			
+			.column-inner {
+				float: none;
+				margin-bottom: 0;
+				padding: 0 @outer;
+			}
+		}
+	}
+}
+
+.three_columns (@spacing, @outer:0) {
+	display: block;
+	position: relative;
+	
+	.column {
+		display: block;
+		width: 33%;
+		float: left;
+		
+		.column-inner {
+			padding-left: @spacing;
+			padding-right: @spacing;
+		}
+		
+		&.column1 {
+			.column-inner {
+				padding-left: @outer;
+			}
+		}
+		
+		&.column3 {
+			.column-inner {
+				padding-right: @outer;
+			}
+		}
+	}
+}
+
+.revert_three_columns (@spacing, @outer:0) {
+	.column {
+		width: auto;
+		float: none;
+		
+		.column-inner {
+			padding: 0 @outer;
+			margin: @spacing 0;
+		}
+		
+		&.column1 {
+			.column-inner {
+				margin-top: 0;
+			}
+		}
+		
+		&.column3 {
+			.column-inner {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+
+.user_select_none () {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.justify_on_mobile () {
+	@media screen and (max-width: @medium_screen) {
+		text-align: justify;
+		-webkit-hyphens: auto;
+		-moz-hyphens: auto;
+		-ms-hyphens: auto;
+		-o-hyphens: auto;
+		hyphens: auto;
+	}
+}

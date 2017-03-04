@@ -1,0 +1,293 @@
+{% extends "artsite/base.html" %}
+{% load i18n %}
+
+{% block main %}
+    <div class="portfolio">
+        <nav role="navigation" aria-controls="filmstrip gallery-content" class="filters gallery-filters">
+            <div class="filters-inner">
+                <select class="nav-menu nav-min">
+                    <option value="" selected="selected">Select</option>
+                    {% for gallery in galleries %}
+                        <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
+                    {% endfor %}
+                </select>
+
+                {% for gallery in galleries %}
+                    <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
+                        {# TODO: Gallery image, 80px #}
+                        <div aria-hidden="true" class="filter-pic"><img src="" alt="" /></div>
+                        <span class="filter-label">{{ gallery.name }}</span>
+                    </a>
+                {% endfor %}
+
+                <div class="bottom"></div>
+            </div>
+        </nav>
+
+        <aside role="complementary" class="synopsis" style="display:none;"></aside>
+
+        <nav role="navigation" aria-controls="viewer" id="filmstrip" class="filmstrip empty">
+            <div aria-label="Images" class="thumbnails"></div>
+
+            <div role="button" aria-hidden="true" aria-label="Next page" class="overflow right">
+                <a class="pager" href="#" title="Next page"><span class="pager-inner">
+                    <span class="current"></span><span class="total"></span>
+                    <span class="arrow">&gt;</span>
+                </span></a>
+            </div>
+
+            <div role="button" aria-hidden="true" aria-label="Previous page" title="Previous page" class="overflow left">
+            </div>
+        </nav>
+
+        <article role="article" aria-owns="gallery-content" id="viewer" class="viewer" style="display: none;">
+            <section role="main" class="viewer-content-wrapper"></section>
+            <aside role="complementary" class="caption"><div class="caption-text"></div></aside>
+        </article>
+
+        <article role="document" id="gallery-content" class="gallery-content" style="display:none">
+            <section role="main" class="content-inner"></section>
+            <div aria-hidden="true" class="back-to-top"><a href="#" class="back-to-top-link">Back to top</a></div>
+        </article>
+    </div>
+
+    <article role="document" aria-owns="site-extra" id="site-main" class="site-main" data-blur-from="0.5"><div class="content-inner">
+        <section role="main" class="intro">
+            <h2>About Stuart McCall</h2>
+            <p>Stuart McCall is an artist creating primarily photo-based works. Living in Vancouver, BC since 1968, he has been making images for several decades.</p>
+            <p>Frequently examining our relationship with the natural environment, McCall’s work explores the unexpected arrangement of elements that occur from chance effect. Using a visual aesthetic reminiscent of contemporary commercial imagery, he challenges us to consider the significance of visual coincidence. He frequently makes use of unconventional perspective and scale offering the viewer a fresh look at the familiar in order to challenge preconceived notions about our surroundings.</p>
+            <p>He began his career as a commercial photographer in 1982. His images have been published widely, featured in such titles as Time Magazine, Fortune Magazine, Saturday Night, Photography Monthly, Boston Globe, Times of London, as well as in books by National Geographic and Douglas &amp; McIntyre. His work has been recognized by Communication arts, the Lotus Awards, and International Photography awards. Since the 1990s he has worked with Vancouver artist Neil Wedman on various photo based projects which have been exhibited widely. These include "Every Bus Stop from My Place to the Racetrack" 1997, and "Movies ‘til Dawn" 2009.</p>
+            <p>Stuart’s work is represented in Vancouver by the Vancouver Art Gallery’s Art Rentals and Sales, in Calgary by Newzones Contemporary Art, and in Toronto by Marcia Rafelman Fine Arts. His work has been exhibited at the Surrey Art Gallery, Richmond Art Gallery, Vancouver Art Gallery, Port Moody Arts Centre, Blue Sky Gallery in Portland, the City of Seattle’s Office of Arts and Cultural Affairs - Portable Collection, and the Orange County Center for Contemporary Art in California.</p>
+            <p>Stuart McCall is married, has two children, and lives south of Vancouver, where he finds considerable visual inspiration for his work. His interests outside of making images include keeping fit, and building things.</p>
+        </section>
+
+        <aside role="complementary" aria-hidden="true" class="projects">
+            <div class="galleries-list">
+                {% for gallery in galleries %}
+                    <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
+                        {# TODO: Gallery image, 80px #}
+                        <div class="gallery-pic"><img src="" alt="" /></div>
+                        <div class="gallery-label">{{ gallery.name }}</div>
+                    </a>
+                {% endfor %}
+
+                <div class="bottom"></div>
+            </div>
+        </aside>
+
+        <aside role="complementary" class="contact">
+            <h2>Contact</h2>
+            <div id="hcard-Stuart-McCall" class="vcard">
+                <div>
+                    <span class="fn">Stuart McCall</span> <span class="note">fine art photography</span>
+                </div>
+                <div class="adr">
+                    <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
+                </div>
+                <div>
+                    <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
+                </div>
+                <div>
+                    <span class="tel">(1) 604-684-6760</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="bottom"></div>
+    </div></article>
+
+    <article role="document" id="site-extra" class="site-extra" data-blur-from="0.7"><div class="content-inner">
+        <div class="info">
+            <section role="main" class="list-block galleries">
+                <h2>Gallery representation</h2>
+                <div class="gallery-info">
+                    <h3>Vancouver Art Gallery Sales and Rentals</h3>
+                    <ul>
+                        <li>Since 2005</li>
+                        <li>Manager: Donna Partridge</li>
+                        <li><a href="http://www.artrentalandsales.com/catalogue.php?artistID=307">Art Rental &amp; Sales</a></li>
+                    </ul>
+                </div>
+                <div class="gallery-info">
+                    <h3>Marcia Rafelman Fine Art, Toronto, Ontario</h3>
+                    <ul>
+                        <li>Since 2013</li>
+                        <li>Director: Marcia Rafelman</li>
+                        <li><a href="http://www.mrfinearts.com/artists/represented/McCall-Stuart/">Marcia Rafelman Fine Arts</a></li>
+                    </ul>
+                </div>
+                <div class="gallery-info">
+                    <h3>Newzones, Calgary, Alberta</h3>
+                    <ul>
+                        <li>Since 2014</li>
+                        <li>Directors: Tamar Zenith, Helen Zenith</li>
+                        <li><a href="http://www.newzones.com/dynamic/artist.asp?ArtistID=177">Newzones</a></li>
+                    </ul>
+                </div>
+                <div class="bottom"></div>
+            </section>
+
+            <section class="list-block presentations">
+                <h2>Artist Talks &amp; Presentations</h2>
+                <ul class="years-list">
+                    <li>
+                        <div class="year">2016</div>
+                        <div class="desc">Vancouver Art Gallery Art Rentals and Sales.  Artist Talk, “Indistrioglyphs.”</div>
+                    </li>
+                    <li>
+                        <div class="year">2015</div>
+                        <div class="desc">Visual Space Gallery, Vancouver, BC.  Artist Talk, “Edges of Light.”</div>
+                    </li>
+                    <li>
+                        <div class="year">2012</div>
+                        <div class="desc">Richmond Art Gallery, Richmond, BC.  Artist Talk, “Fantasy Gardens.”</div>
+                    </li>
+                    <li>
+                        <div class="year">2012</div>
+                        <div class="desc">Visual Space Gallery, Vancouver, BC.  Presentation on Fine Art relationship with Commercial Photography.</div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="list-block exhibitions">
+                <h2>Exhibitions</h2>
+                <ul class="years-list">
+                    <li>
+                        <div class="year">2016</div>
+                        <div class="desc"><strong>Industrioglyphs</strong>. Vancouver Art Gallery Art Rentals and Sales, Vancouver, BC. Solo show.</div>
+                    </li>
+                    <li>
+                        <div class="year">2016</div>
+                        <div class="desc"><strong>tXtMe</strong>. Orange County Centre for Contemporary Art, California. Group show.</div>
+                    </li>
+                    <li>
+                        <div class="year">2016</div>
+                        <div class="desc">Marcia Rafelman Fine Arts, Annual Group Exhibit. Toronto, Ontario. Group show.</div>
+                    </li>
+                    <li>
+                        <div class="year">2015</div>
+                        <div class="desc">“Views From the Southbank III, Information, Objects, Mapping.” Surrey Art Gallery. Group show.</div>
+                    </li>
+                    <li>
+                        <div class="year">2015</div>
+                        <div class="desc">Marcia Rafelman Fine Arts. Toronto, Ontario. Group show.</div>
+                    </li>
+                    <li>
+                        <div class="year">2014</div>
+                        <div class="desc">Rogers Cup 2014. Artwork in executive suites courtesy of AGO Art Rental &amp; Sales. Marcia Rafelman Fine Arts. Toronto, Ontario.</div>
+                    </li>
+                    <li>
+                        <div class="year">2014</div>
+                        <div class="desc"><strong>Home.</strong> Group show. Orange County Centre for Contemporary Art. Santa Anna, CA.</div>
+                    </li>
+                    <li>
+                        <div class="year">2014</div>
+                        <div class="desc"><strong>Refresh.</strong> Group show. Marcia Rafelman Fine Art. Toronto, ON.</div>
+                    </li>
+                    <li>
+                        <div class="year">2014</div>
+                        <div class="desc"><strong>Port Mann Bridge.</strong> Burnaby Art Gallery, Off Site Exhibition Space. Burnaby, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2013</div>
+                        <div class="desc"><strong>Port Mann Bridge.</strong> Coquitlam Art Gallery, Off Site Exhibition Space. Coquitlam, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2013</div>
+                        <div class="desc"><strong>Ruins.</strong> Culture Series Group show, Vancouver Art Gallery, digital image projection. Vancouver, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2013</div>
+                        <div class="desc">City of Seattle, Office of Arts and Cultural Affairs, portable exhibition. Group show. Seattle, WA.</div>
+                    </li>
+                    <li>
+                        <div class="year">2013</div>
+                        <div class="desc">Blue Sky Gallery, Pacific Northwest Photography Viewing Drawers. Portland, OR.</div>
+                    </li>
+                    <li>
+                        <div class="year">2012</div>
+                        <div class="desc">Orange County Centre for Contemporary Art, Subdivision. Group show. Princeton, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2012</div>
+                        <div class="desc">Barrister Lounge, Vancouver Courthouse, selected works. Vancouver, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2012</div>
+                        <div class="desc"><strong>Fantasy Gardens.</strong> Richmond Art Gallery, exhibition with Neil Wedman. Richmond, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2011</div>
+                        <div class="desc"><strong>Rental House.</strong> Vancouver Art Gallery, Culture Series, digital slide show. Vancouver, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2009</div>
+                        <div class="desc"><strong>Industrial Landscapes.</strong> SFU Gallery, slideshow in McLean Park. Vancouver, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2009</div>
+                        <div class="desc"><strong>Works of Man.</strong> Center for Fine Art Photography. Fort Collins, CO.</div>
+                    </li>
+                    <li>
+                        <div class="year">2009</div>
+                        <div class="desc">Inaugural group exhibition. NYAXE Gallery. Paulo Alto, CA.</div>
+                    </li>
+                    <li>
+                        <div class="year">2009</div>
+                        <div class="desc"><strong>Axis Exposed.</strong> Group show. Axis Contemporary Art. Fort Calgary, AB.</div>
+                    </li>
+                    <li>
+                        <div class="year">2008</div>
+                        <div class="desc"><strong>Gasoline Romance.</strong> Group show. Canvas Gallery. Vancouver, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2007</div>
+                        <div class="desc"><strong>Latitude of Colour.</strong> Vancouver Art Gallery Art Rentals and Sales. Vancouver, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2007</div>
+                        <div class="desc"><strong>Discontinuous Spectrums.</strong> Port Moody Art Gallery. Port Moody, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2006</div>
+                        <div class="desc"><strong>Beyond Belief.</strong> Group show. Surrey Art Gallery. Surrey, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2006</div>
+                        <div class="desc">Environmental Photography International. Group show. Art Wolfe Photographic Center. Seattle, WA.</div>
+                    </li>
+                    <li>
+                        <div class="year">2005</div>
+                        <div class="desc"><strong>The Orb.</strong> Group show. White Rock, BC.</div>
+                    </li>
+                    <li>
+                        <div class="year">2003</div>
+                        <div class="desc"><strong>Quirky People.</strong> CBC Radio 3 Web Gallery.</div>
+                    </li>
+                    <li>
+                        <div class="year">1992</div>
+                        <div class="desc">Faces of Canada photographic exhibition</div>
+                    </li>
+                    <li>
+                        <div class="year">1990</div>
+                        <div class="desc">ASMP Seattle Chapter group show</div>
+                    </li>
+                    <li>
+                        <div class="year">1987</div>
+                        <div class="desc">PPABC group traveling exhibit</div>
+                    </li>
+                    <li>
+                        <div class="year">1984</div>
+                        <div class="desc">Gamma PROLAB / client’s exhibit</div>
+                    </li>
+                    <li>
+                        <div class="year">1982</div>
+                        <div class="desc">Student exhibition / PNE photo &amp; travel show</div>
+                    </li>
+                </ul>
+            </section>
+
+            <div class="bottom"></div>
+        </div>
+    </div></article>
+{% endblock %}
