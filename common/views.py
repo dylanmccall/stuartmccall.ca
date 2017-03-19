@@ -65,7 +65,7 @@ class GalleriesDataView(ListView):
                     }
 
                 if media.thumbnail:
-                    thumbnail = get_thumbnail(media.thumbnail, '80x80', quality=95)
+                    thumbnail = get_thumbnail(media.thumbnail, '80x80', crop='center', quality=95)
                     media_obj['thumb'] = {
                         'width': thumbnail.width,
                         'height': thumbnail.height,
