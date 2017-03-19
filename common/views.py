@@ -38,6 +38,7 @@ class GalleriesDataView(ListView):
     model = models.Gallery
 
     template_name = 'artsite/gallery-data.js'
+    content_type = 'application/javascript'
 
     def get_context_data(self, **kwargs):
         context = super(GalleriesDataView, self).get_context_data(**kwargs)
