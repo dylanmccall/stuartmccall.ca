@@ -14,7 +14,7 @@ var assetsByName = {};
 
 var defaultFilter = undefined;
 
-var SITE_TITLE = SMC_TITLE;
+var SITE_TITLE = document.title;
 var SITE_BASE = '/';
 
 var DEFAULT_ASSET_DATA = {
@@ -34,18 +34,13 @@ var trackEvent = function(data) {
 function Asset(name, data, galleryName) {
 	var asset = this;
 
-	if (galleryName) {
-		var defaultCategories = [galleryName]
-		var basePath = SITE_BASE+'images/'+galleryName+'/'
-	} else {
-		var defaultCategories = []
-		var basePath = SITE_BASE+'images/'
-	}
+	var defaultCategories = [];
+
+	if (galleryName) defaultCategories.push(galleryName);
 	
 	this.name = name
 	this.data = $.extend({ 'categories' : defaultCategories}, data);
 	this.galleryName = galleryName;
-	this.fullPath = basePath+'650/'+name;
 
 	var THUMBNAIL_CLASSES = {
 		'picture' : 'picture',
@@ -59,17 +54,20 @@ function Asset(name, data, galleryName) {
 		var thumbnail = $('<a>').attr({
 			'role' : 'img button',
 			'class' : 'asset',
-			'href' : asset.fullPath, //#'+name
-			'title' : asset.data['caption']
+			'href' : asset.data['full'].src,
+			'title' : asset.data['title']
 		}).addClass(thumbnailClass).data('asset', asset);
 		$('<div>').attr({
 			'class' : 'overlay'
 		}).appendTo(thumbnail);
 		$('<img>').attr({
-			'src' : basePath+size+'/'+thumbnailName,
+			'src' : asset.data['thumb'].src,
+			'width' : asset.data['thumb'].width,
+			'height' : asset.data['thumb'].height,
 			'alt' : '',
 			'aria-hidden' : 'true'
 		}).appendTo(thumbnail);
+
 		return thumbnail;
 	}
 	
@@ -83,9 +81,9 @@ function Asset(name, data, galleryName) {
 	}
 
 	this.getHeightForWidth = function(maxWidth) {
-		var ratio = this.data.h / this.data.w;
-		var displayWidth = Math.min(this.data.w, maxWidth);
-		var displayHeight = Math.min(displayWidth * ratio, this.data.h);
+		var ratio = this.data['full'].height / this.data['full'].width;
+		var displayWidth = Math.min(this.data['full'].width, maxWidth);
+		var displayHeight = Math.min(displayWidth * ratio, this.data['full'].height);
 		return displayHeight;
 	}
 
@@ -163,7 +161,7 @@ function PictureAssetView() {
 	}
 
 	this.updateContent = function(asset, content) {
-		if (content.attr('src') === asset.fullPath) {
+		if (content.attr('src') === asset.data['full'].src) {
 			loadedAsset(asset, pictureAssetView);
 		} else {
 			// I wish I could set width and height here, but it causes the existing image to stretch
@@ -176,7 +174,9 @@ function PictureAssetView() {
 
 	var updateImgWithAsset = function(img, asset) {
 		img.attr({
-			'src' : asset.fullPath,
+			'src' : asset.data['full'].src,
+			'width' : asset.data['full'].width,
+			'height' : asset.data['full'].height,
 			'alt' : asset.name
 		});
 		img.data('asset', asset);
@@ -212,8 +212,8 @@ function VideoAssetView() {
 			.css({'visibility' : 'hidden'});
 
 		player = new YT.Player(playerElem[0], {
-			'width': asset.data['w'],
-			'height': asset.data['h'],
+			'width': asset.data['full'].width,
+			'height': asset.data['full'].height,
 			'videoId': asset.data['youtube-video-id'],
 			'playerVars': {
 				'autoplay': 0,
@@ -251,7 +251,7 @@ function VideoAssetView() {
 	}
 
 	this.videoSelected = function(asset) {
-		if (! playerReady) return;
+		if (!playerReady) return;
 		
 		var previousVideo = playerVideo;
 		var previousState = player.getPlayerState();
@@ -265,7 +265,7 @@ function VideoAssetView() {
 			} else  {
 				player.cueVideoById(asset.data['youtube-video-id'], 0, 'large');
 			}
-			player.setSize(asset.data['w'], asset.data['h']);
+			player.setSize(asset.data['full'].width, asset.data['full'].height);
 		}
 		
 		playerVideo = asset;
@@ -347,7 +347,7 @@ function ViewerBox(container) {
 
 		$('<p>')
 			.addClass('caption-main')
-			.text(asset.data['caption'])
+			.html(asset.data['caption_html'])
 			.appendTo(captionBox);
 
 		var printDim = asset.data['print-dimensions'];
@@ -361,7 +361,7 @@ function ViewerBox(container) {
 		captionBox.stop(true, false);
 		captionBox.css({
 			'opacity' : 1,
-			'max-width' : asset.data.w
+			'max-width' : asset.data['full'].width
 		});
 	}
 
@@ -612,7 +612,7 @@ function Filmstrip(container) {
 		showPage(0, animate);
 
 		if (data['showAsset'] == true) {
-			if (! filter.gallery['abstract-elem']) {
+			if (!filter.gallery['abstract-elem']) {
 				selectAsset(visibleAssets[0]);
 			} else {
 				selectAsset(undefined);
@@ -968,7 +968,7 @@ var selectNextAsset = function(direction) {
 
 var assetLoadingCbs = [];
 var loadingAsset = function(asset, isTransitioning, assetView) {
-	if (! asset) return;
+	if (!asset) return;
 	$.each(assetLoadingCbs, function(index, cb) {
 		cb(asset, isTransitioning, assetView);
 	});
@@ -977,7 +977,7 @@ var loadingAsset = function(asset, isTransitioning, assetView) {
 
 var assetLoadedCbs = [];
 var loadedAsset = function(asset, assetView) {
-	if (! asset) return;
+	if (!asset) return;
 	$.each(assetLoadedCbs, function(index, cb) {
 		cb(asset, assetView);
 	});
@@ -994,7 +994,12 @@ var changedLayout = function() {
 
 var filterNameFromUrl = function(url) {
 	if (url) {
-		return url.substr(url.lastIndexOf('/') + 1);
+		var urlParts = url.split('/');
+		var pathName = undefined;
+		while (urlParts.length > 0 && !pathName) {
+			pathName = urlParts.pop();
+		}
+		return pathName;
 	} else {
 		return undefined;
 	}
@@ -1048,6 +1053,7 @@ $(document).ready(function () {
 			selectAsset(undefined);
 		}
 	});
+
 	$('.synopsis').on('click', function(event) {
 			selectAsset(undefined);
 	});
@@ -1078,7 +1084,7 @@ $(document).ready(function () {
 		}, 150);
 
 		// if (visibleAssets && selectedAsset === undefined) {
-		// 	selectAsset(visibleAssets[0]);
+		//  selectAsset(visibleAssets[0]);
 		// }
 	});
 	
@@ -1106,12 +1112,12 @@ $(document).ready(function() {
 		}
 
 		// if (asset === undefined) {
-		// 	var filtersTop = 0;
+		//  var filtersTop = 0;
 		// } else {
-		// 	var filtersTop = filtersBox.offset().top;
+		//  var filtersTop = filtersBox.offset().top;
 		// }
 		// $('html, body').stop(true, false).animate({
-		// 	'scrollTop' : filtersTop
+		//  'scrollTop' : filtersTop
 		// }, 150);
 	});
 
@@ -1139,49 +1145,49 @@ $(document).ready(function() {
 
 
 // $(document).ready(function () {
-// 	var updateBlurElems = function() {
-// 		$('.blur').each(function(id, blur) {
-// 			var topEdge = $(blur).offset().top;
-// 			var bottomEdge = topEdge + $(blur).height();
+//  var updateBlurElems = function() {
+//      $('.blur').each(function(id, blur) {
+//          var topEdge = $(blur).offset().top;
+//          var bottomEdge = topEdge + $(blur).height();
 
-// 			var blurMiddleRatio = Number($(blur).data('blur-from')) || 0.5;
+//          var blurMiddleRatio = Number($(blur).data('blur-from')) || 0.5;
 
-// 			var scrollHeight = $(window).height();
-// 			var scrollTop = $(window).scrollTop();
-// 			var scrollMiddle = scrollTop + (scrollHeight * blurMiddleRatio);
-// 			var scrollBottom = scrollTop + scrollHeight;
+//          var scrollHeight = $(window).height();
+//          var scrollTop = $(window).scrollTop();
+//          var scrollMiddle = scrollTop + (scrollHeight * blurMiddleRatio);
+//          var scrollBottom = scrollTop + scrollHeight;
 
-// 			// element is considered onscreen if it is within the top 40% of
-// 			// the viewport, or its bottom edge is visible.
-// 			var onscreen = false
-// 				|| (scrollTop > topEdge)
-// 				|| (topEdge > scrollTop && topEdge < scrollMiddle)
-// 				|| (bottomEdge < scrollBottom);
+//          // element is considered onscreen if it is within the top 40% of
+//          // the viewport, or its bottom edge is visible.
+//          var onscreen = false
+//              || (scrollTop > topEdge)
+//              || (topEdge > scrollTop && topEdge < scrollMiddle)
+//              || (bottomEdge < scrollBottom);
 
-// 			if (! onscreen) {
-// 				$(blur).addClass('offscreen');
-// 			} else {
-// 				$(blur).removeClass('offscreen');
-// 			}
-// 		});
-// 	}
+//          if (!onscreen) {
+//              $(blur).addClass('offscreen');
+//          } else {
+//              $(blur).removeClass('offscreen');
+//          }
+//      });
+//  }
 
-// 	$(window).on('scroll resize', updateBlurElems);
-// 	filterSelectedCbs.push(updateBlurElems);
-// 	layoutChangedCbs.push(updateBlurElems);
+//  $(window).on('scroll resize', updateBlurElems);
+//  filterSelectedCbs.push(updateBlurElems);
+//  layoutChangedCbs.push(updateBlurElems);
 // });
 
 
 $(document).ready(function () {
 	var History = window.History;
-	if (! History.enabled ) {
+	if (!History.enabled ) {
 		// Fall back to hash change events. Automatic?
 	}
 
 	var getPath = function(href) {
-	    var parser = document.createElement("a");
-	    parser.href = href;
-	    return parser.pathname;
+		var parser = document.createElement("a");
+		parser.href = href;
+		return parser.pathname;
 	};
 
 	History.Adapter.bind(window, 'statechange', function() {

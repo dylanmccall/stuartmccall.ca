@@ -26,5 +26,6 @@ rjsmin==1.0.12
 scandir==1.4
 simplegeneric==0.8.1
 six==1.10.0
+-e git+https://github.com/mariocesar/sorl-thumbnail.git#egg=sorl-thumbnail
 traitlets==4.3.1
 wcwidth==0.1.7

@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
+from sorl.thumbnail import get_thumbnail
+
 from galleries import models
 
 from collections import OrderedDict
@@ -55,17 +57,19 @@ class GalleriesDataView(ListView):
                 }
 
                 if media.image:
+                    thumbnail = get_thumbnail(media.image, '650x650', quality=95)
                     media_obj['full'] = {
-                        'w': media.image.width,
-                        'h': media.image.height,
-                        'src': media.image.url
+                        'src': thumbnail.url,
+                        'width': thumbnail.width,
+                        'height': thumbnail.height
                     }
 
                 if media.thumbnail:
+                    thumbnail = get_thumbnail(media.thumbnail, '80x80', quality=95)
                     media_obj['thumb'] = {
-                        'w': media.image.width,
-                        'h': media.image.height,
-                        'src': media.image.url
+                        'width': thumbnail.width,
+                        'height': thumbnail.height,
+                        'src': thumbnail.url
                     }
 
                 media_list.append(media_obj)

@@ -56,11 +56,13 @@
         _gaq.push(['_setAccount', 'UA-2068654-5']);
         _gaq.push(['_trackPageview']);
 
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
+        {% if not request.user.is_authenticated %}
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        {% endif %}
     </script>
 
     <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
@@ -68,18 +70,18 @@
 
 <body id="page-home">
 <div id="wrapper">
-    <header role="banner" class="header">
-        {% block header %}
-            <h1 class="sitetitle"><a href="/" class="action-return">
-                <span class="main">Stuart McCall</span>
-                <span class="subtitle">Fine Art</span>
-            </a></h1>
-
-            <!--<div class="header-contact">Vancouver, BC, Canada / <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></div>-->
-        {% endblock %}
-    </header>
-
     <main role="main" id="main">
+        <header role="banner" class="header">
+            {% block header %}
+                <h1 class="sitetitle"><a href="/" class="action-return">
+                    <span class="main">Stuart McCall</span>
+                    <span class="subtitle">Fine Art</span>
+                </a></h1>
+
+                <!--<div class="header-contact">Vancouver, BC, Canada / <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></div>-->
+            {% endblock %}
+        </header>
+
         {% block main %}
         {% endblock %}
     </main>

@@ -16,6 +16,7 @@ class Gallery(models.Model):
     name = models.CharField(max_length=100)
     synopsis = models.TextField(blank=True, null=True)
     abstract = models.TextField(blank=True, null=True)
+    thumbnail = models.ImageField(blank=True)
 
     def __str__(self):
         return self.name

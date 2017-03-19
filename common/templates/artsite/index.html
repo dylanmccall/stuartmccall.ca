@@ -1,5 +1,7 @@
 {% extends "artsite/base.html" %}
 {% load i18n %}
+{% load thumbnail %}
+{% load debug_tools %}
 
 {% block main %}
     <div class="portfolio">
@@ -14,8 +16,11 @@
 
                 {% for gallery in galleries %}
                     <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
-                        {# TODO: Gallery image, 80px #}
-                        <div aria-hidden="true" class="filter-pic"><img src="" alt="" /></div>
+                        <div aria-hidden="true" class="filter-pic">
+                            {% thumbnail gallery.thumbnail "80x80" quality=95 crop="center" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                            {% endthumbnail %}
+                        </div>
                         <span class="filter-label">{{ gallery.name }}</span>
                     </a>
                 {% endfor %}
@@ -65,8 +70,11 @@
             <div class="galleries-list">
                 {% for gallery in galleries %}
                     <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
-                        {# TODO: Gallery image, 80px #}
-                        <div class="gallery-pic"><img src="" alt="" /></div>
+                        <div class="gallery-pic">
+                            {% thumbnail gallery.thumbnail "40x40" quality=95 crop="center" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                            {% endthumbnail %}
+                        </div>
                         <div class="gallery-label">{{ gallery.name }}</div>
                     </a>
                 {% endfor %}
