@@ -24,7 +24,7 @@ FROM_EMAIL = "stuartmccall.ca <noreply@example.com>"
 
 LANGUAGE_CODE = 'en-ca'
 
-TIME_ZONE = 'Canada/Pacific'
+TIME_ZONE = 'America/Vancouver'
 
 # ALLOWED_HOSTS = [
 #     'localhost',
@@ -48,7 +48,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #     ('text/less', '/path/to/node /path/to/lessc {infile} {outfile}'),
 # )
 
-# SERVER_EMAIL = "CBM Site Messages <admin@example.com>"
+# SERVER_EMAIL = "stuartmccall.ca <admin@example.com>"
 # ADMINS = [
 #     ("Your Name", 'yourname@example.com'),
 # ]
