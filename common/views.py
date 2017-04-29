@@ -1,6 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
@@ -24,21 +24,26 @@ class JsonResponseMixin(object):
         return context
 
 
-class GalleryView(TemplateView):
+class PortfolioView(TemplateView):
     template_name = 'artsite/index.html'
 
     def get_context_data(self, **kwargs):
-        context = super(GalleryView, self).get_context_data(**kwargs)
+        context = super(PortfolioView, self).get_context_data(**kwargs)
 
         site = get_current_site(self.request)
 
-        portfolio = models.Portfolio.objects.get_for_site(site)
+        try:
+            portfolio = models.Portfolio.objects.get_for_site(site)
+        except models.Portfolio.DoesNotExist:
+            raise Http404(_("There is no portfolio for this site"))
+
+        context['portfolio'] = portfolio
         context['galleries'] = list(portfolio.get_all_galleries())
 
         return context
 
 
-class GalleriesDataView(ListView):
+class PortfolioDataView(ListView):
     model = models.Gallery
 
     template_name = 'artsite/gallery-data.js'
