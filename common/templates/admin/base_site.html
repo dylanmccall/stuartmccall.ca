@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load admin_static %}
+{% load compress %}
+{% load i18n %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% compress css %}
+    <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/admin.less' %}" />
+{% endcompress %}
+{% endblock %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Portfolio admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Portfolio administration') }}</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block userlinks %}
+    {{ block.super }}
+{% endblock %}
