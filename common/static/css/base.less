@@ -14,7 +14,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #EEE;
+    background-color: #eee;
     color: #333;
     font-family: @base_font;
     font-size: 14px;
@@ -131,7 +131,7 @@ a {
 }
 
 #main {
-    background-color: #FFF;
+    background-color: #fff;
     border: 2px solid #E8E8E8;
 
     @media screen and (max-width: @medium_screen) {
@@ -142,14 +142,14 @@ a {
 .header {
     display: block;
     position: relative;
-    padding: 1.5em @inner_margin_h;
-    background-color: #FFF;
-    
+    padding: 1em @inner_margin_h;
+    background-color: #565656;
+
     h1.sitetitle {
         .user_select_none();
-        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-        font-size: 2.8em;
+        font-size: 3.8em;
         line-height: 1em;
         color: #333;
         text-align: center;
@@ -160,7 +160,7 @@ a {
 
         .subtitle {
             font-size: 0.8em;
-            color: #555;
+            color: #e4e4e4;
             margin-left: 0.4em;
             font-style: italic;
             white-space: nowrap;
@@ -169,7 +169,8 @@ a {
         a {
             text-decoration: none;
             outline: none;
-            color: #444;
+            color: #fff;
+            vertical-align: middle;
 
             &:hover, &:focus {
                 .main {
@@ -206,7 +207,7 @@ a {
 
 .portfolio {
     padding: 0;
-    background-color: #F7F7F7;
+    background-color: #f7f7f7;
     
     .filters {
         display: block;
@@ -302,7 +303,7 @@ a {
         }
         
         .filter:hover, .filter:focus {
-            background-color: #E9E9E9;
+            background-color: #e9e9e9;
 
             .filter-pic img {
                 opacity: 1;
@@ -310,7 +311,7 @@ a {
         }
         
         .filter.current {
-            background-color: #D6D6D6;
+            background-color: #d6d6d6;
             box-shadow: inset 0 0 8px #CCC;
 
             .filter-pic img {
@@ -344,7 +345,7 @@ a {
 
         .asset-content.asset-picture {
             .user_select_none();
-            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
             
             img {
                 display: block;
@@ -418,7 +419,7 @@ body.showing-gallery .portfolio {
 body.showing-asset .portfolio {
     .filters {
         .filters .filter.current {
-            background-color: #CCC;
+            background-color: #ccc;
             box-shadow: inset 0 0 8px #BBB;
         }
     }
@@ -439,7 +440,7 @@ body.showing-asset .portfolio {
     }
     
     .user_select_none();
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
     .thumbnails {
         display: block;
@@ -504,7 +505,7 @@ body.showing-asset .portfolio {
                 
                 img {
                     opacity: 1;
-                    border-color: #DDD;
+                    border-color: #ddd;
                 }
 
                 &.video .overlay {
@@ -566,7 +567,7 @@ body.showing-asset .portfolio {
             top: 24px;
             width: 48px;
             height: 48px;
-            background-color: #D9D9D9;
+            background-color: #d9d9d9;
             border-radius: 50%;
             text-decoration: none;
             .transition(background-color 200ms ease-out);
@@ -617,7 +618,7 @@ body.showing-asset .portfolio {
         &:hover, &:focus {
             .pager {
                 outline: none;
-                background-color: #C9C9C9;
+                background-color: #c9c9c9;
             }
         }
     }
@@ -834,7 +835,7 @@ body.showing-gallery .intro {
             }
 
             &:hover img, &:focus img {
-                border-color: #DDD;
+                border-color: #ddd;
             }
         }
 
