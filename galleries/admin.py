@@ -8,53 +8,101 @@ from sorl.thumbnail import get_thumbnail
 from galleries import models
 
 
-class MediaInline(OrderableTabularInline):
-    model = models.Media
-    show_change_link = True
+class PortfolioGalleryInline(OrderableTabularInline):
+    model = models.PortfolioGallery
+    verbose_name = _("gallery")
+    verbose_name_plural = _("contents")
     extra = 0
-    fields = ('sort_order', 'media_preview', 'title',)
-    readonly_fields = ('media_preview', 'title')
+    fields = (
+        'sort_order',
+        'gallery_preview',
+        'portfolio',
+        'gallery',
+    )
+    readonly_fields = (
+        'gallery_preview',
+    )
 
-    def media_preview(self, obj):
-        if obj.thumbnail:
-            return _image_preview(obj.thumbnail, 50)
-        elif obj.image:
-            return _image_preview(obj.image, 50)
+    def gallery_preview(self, obj):
+        if obj.gallery:
+            return _gallery_preview(obj.gallery)
         else:
             return None
+
+
+class GalleryMediaInline(OrderableTabularInline):
+    model = models.GalleryMedia
+    verbose_name = _("media item")
+    verbose_name_plural = _("contents")
+    extra = 0
+    fields = (
+        'sort_order',
+        'media_preview',
+        'gallery',
+        'media',
+    )
+    readonly_fields = (
+        'media_preview',
+    )
+    raw_id_fields = (
+        'gallery',
+        'media',
+    )
+
+    def media_preview(self, obj):
+        if obj.media:
+            return _media_preview(obj.media)
+        else:
+            return None
+
+
+@admin.register(models.Portfolio)
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ('title', 'site')
+    list_filter = (
+        'site',
+    )
+    inlines = [
+        PortfolioGalleryInline,
+    ]
 
 
 @admin.register(models.Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'gallery_preview')
+    list_display = ('gallery_preview', 'name',)
     inlines = [
-        MediaInline,
+        GalleryMediaInline,
     ]
 
     def gallery_preview(self, obj):
-        if obj.thumbnail:
-            return _image_preview(obj.thumbnail)
-        else:
-            return None
+        return _gallery_preview(obj)
 
 
 @admin.register(models.Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('media_preview', '__str__', 'gallery',)
+    list_display = ('media_preview', 'title',)
     list_filter = (
-        'gallery',
-    )
-    readonly_fields = (
-        'sort_order',
+        'media_type',
     )
 
     def media_preview(self, obj):
-        if obj.thumbnail:
-            return _image_preview(obj.thumbnail)
-        elif obj.image:
-            return _image_preview(obj.image)
-        else:
-            return None
+        return _media_preview(obj)
+
+
+def _gallery_preview(gallery):
+    if gallery.thumbnail:
+        return _image_preview(gallery.thumbnail)
+    else:
+        return None
+
+
+def _media_preview(media):
+    if media.thumbnail:
+        return _image_preview(media.thumbnail)
+    elif media.image:
+        return _image_preview(media.image)
+    else:
+        return None
 
 
 def _image_preview(image, size=80):

@@ -19,6 +19,8 @@ SITE_URL = 'http://localhost:8000'
 
 FROM_EMAIL = "stuartmccall.ca <noreply@example.com>"
 
+SITE_ID = 1
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 

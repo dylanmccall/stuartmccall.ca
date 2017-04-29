@@ -1,3 +1,4 @@
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.utils.translation import ugettext_lazy as _
@@ -29,7 +30,10 @@ class GalleryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(GalleryView, self).get_context_data(**kwargs)
 
-        context['galleries'] = models.Gallery.objects.all()
+        site = get_current_site(self.request)
+
+        portfolio = models.Portfolio.objects.get_for_site(site)
+        context['galleries'] = list(portfolio.get_all_galleries())
 
         return context
 
@@ -45,10 +49,10 @@ class GalleriesDataView(ListView):
 
         galleries_dict = OrderedDict()
 
-        for gallery in context['gallery_list'].all():
+        for gallery in context['gallery_list']:
             media_list = []
 
-            for media in gallery.media_set.all():
+            for media in gallery.get_all_media():
                 # TODO: process Markdown
 
                 media_obj = {
