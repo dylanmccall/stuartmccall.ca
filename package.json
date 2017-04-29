@@ -1,0 +1,12 @@
+{
+  "name": "artsite2017",
+  "version": "1.0.0",
+  "author": "Dylan McCall",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "less": "^2.7.2"
+  },
+  "devDependencies": {}
+}
