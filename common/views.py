@@ -49,8 +49,22 @@ class PortfolioDataView(ListView):
     template_name = 'artsite/gallery-data.js'
     content_type = 'application/javascript'
 
+    def get_queryset(self):
+        # Return a list of galleries for the current portfolio.
+        # TODO: this should really be a serializer for Portfolio.
+        site = get_current_site(self.request)
+
+        try:
+            portfolio = models.Portfolio.objects.get_for_site(site)
+        except models.Portfolio.DoesNotExist:
+            raise Http404(_("There is no portfolio for this site"))
+
+        return self.model.objects.filter(
+            portfoliogallery__portfolio=portfolio
+        )
+
     def get_context_data(self, **kwargs):
-        context = super(GalleriesDataView, self).get_context_data(**kwargs)
+        context = super(PortfolioDataView, self).get_context_data(**kwargs)
 
         galleries_dict = OrderedDict()
 

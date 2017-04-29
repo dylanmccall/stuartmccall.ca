@@ -69,7 +69,7 @@ class PortfolioAdmin(admin.ModelAdmin):
 
 @admin.register(models.Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ('gallery_preview', 'name',)
+    list_display = ('name', 'gallery_preview',)
     inlines = [
         GalleryMediaInline,
     ]
