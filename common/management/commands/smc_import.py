@@ -7,6 +7,7 @@ import os
 import sys
 
 from django.core.files import File
+from django.db import transaction
 
 from galleries.models import (
     Gallery,
@@ -26,6 +27,7 @@ class Command(BaseCommand):
         parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
         parser.add_argument('--basepath', required=True)
 
+    @transaction.atomic
     def handle(self, *args, **options):
         infile = options['infile']
         basepath = options['basepath']
@@ -77,7 +79,7 @@ class Command(BaseCommand):
                     if video_id:
                         media.link = 'https://youtu.be/{video_id}'.format(video_id=video_id)
 
-                    with open(thumbnail_path, 'r') as thumbnail_file:
+                    with open(thumbnail_path, 'rb') as thumbnail_file:
                         media.thumbnail.save(
                             thumbnail_id,
                             File(thumbnail_file)
@@ -87,13 +89,13 @@ class Command(BaseCommand):
                     image_path = os.path.join(basepath, gallery_id, FULL_DIR, media_id)
                     thumbnail_path = os.path.join(basepath, gallery_id, THUMB_DIR, media_id)
 
-                    with open(image_path, 'r') as image_file:
+                    with open(image_path, 'rb') as image_file:
                         media.image.save(
                             media_id,
                             File(image_file)
                         )
 
-                    with open(thumbnail_path, 'r') as thumbnail_file:
+                    with open(thumbnail_path, 'rb') as thumbnail_file:
                         media.thumbnail.save(
                             media_id,
                             File(thumbnail_file)
