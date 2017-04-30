@@ -69,7 +69,7 @@ class Command(BaseCommand):
                 media_type = media_data.get('type')
 
                 if media_type == 'video-youtube':
-                    media.type = 'external-video'
+                    media.media_type = 'external-video'
                     video_id = media_data.get('youtube-video-id')
                     thumbnail_id = media_data.get('thumbnail')
                     thumbnail_path = os.path.join(basepath, gallery_id, THUMB_DIR, thumbnail_id)
@@ -83,7 +83,7 @@ class Command(BaseCommand):
                             File(thumbnail_file)
                         )
                 else:
-                    media.type = 'image'
+                    media.media_type = 'image'
                     image_path = os.path.join(basepath, gallery_id, FULL_DIR, media_id)
                     thumbnail_path = os.path.join(basepath, gallery_id, THUMB_DIR, media_id)
 

@@ -386,7 +386,7 @@ a {
         
         /*
         &.loading .caption {
-            background-image: url('spinner.gif');
+            background-image: url('/static/img/spinner.gif');
             background-repeat: no-repeat;
             background-position: (@inner_margin_h - 16px - 8px) 6px;
         }
@@ -456,6 +456,7 @@ body.showing-asset .portfolio {
         a.asset {
             display: block;
             text-decoration: none;
+            cursor: pointer;
             
             img {
                 display: block;
@@ -484,7 +485,7 @@ body.showing-asset .portfolio {
             }
 
             &.picture .overlay {
-                background-image: url('thumbnail-arrow-84.png');
+                background-image: url('/static/img/thumbnail-arrow-84.png');
                 background-position: center bottom;
                 bottom: -22px;
                 opacity: 0;
@@ -492,8 +493,8 @@ body.showing-asset .portfolio {
             }
 
             &.video .overlay {
-                background-image: url('play40.png');
-                background-position: center center;
+                background-image: url('/static/img/play40.png');
+                background-position: center 45%;
                 opacity: 0.6;
                 .transition(opacity 100ms ease-out);
             }
@@ -527,7 +528,7 @@ body.showing-asset .portfolio {
             }
             
             &.picture.loading {
-                background-image: url('spinner.gif');
+                background-image: url('/static/img/spinner.gif');
                 background-repeat: no-repeat;
                 background-position: center;
                 
@@ -549,7 +550,7 @@ body.showing-asset .portfolio {
         &.left {
             width: 24px;
             left: 0px;
-            background-image: url('filmstrip-overflow-left.png');
+            background-image: url('/static/img/filmstrip-overflow-left.png');
             background-position: top left;
             background-repeat: repeat-y;
         }
@@ -557,7 +558,7 @@ body.showing-asset .portfolio {
         &.right {
             width: 80px;
             right: 0px;
-            background-image: url('filmstrip-overflow-right.png');
+            background-image: url('/static/img/filmstrip-overflow-right.png');
             background-position: top right;
             background-repeat: repeat-y;
         }
@@ -649,7 +650,7 @@ body.showing-asset .portfolio {
                 }
 
                 &.picture .overlay {
-                    background-image: url('thumbnail-arrow-67.png');
+                    background-image: url('/static/img/thumbnail-arrow-67.png');
                     bottom: -16px;
                 }
 
@@ -665,7 +666,7 @@ body.showing-asset .portfolio {
             &.right {
                 width: 48px;
                 right: 0px;
-                background-image: url('filmstrip-overflow-right-small.png');
+                background-image: url('/static/img/filmstrip-overflow-right-small.png');
             }
             
             .pager {

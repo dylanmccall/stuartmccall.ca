@@ -10,6 +10,8 @@ from galleries import models
 
 from collections import OrderedDict
 
+import urlparse
+
 
 class JsonResponseMixin(object):
     # From https://docs.djangoproject.com/en/1.10/topics/class-based-views/mixins/#jsonresponsemixin-example
@@ -72,31 +74,15 @@ class PortfolioDataView(ListView):
             media_list = []
 
             for media in gallery.get_all_media():
-                # TODO: process Markdown
+                if media.media_type == 'image':
+                    media_obj = self._media_obj_image(media)
+                elif media.media_type == 'external-video':
+                    media_obj = self._media_obj_external_video(media)
+                else:
+                    media_obj = None
 
-                media_obj = {
-                    'title': media.title,
-                    'captionHtml': media.caption,
-                    'extraHtml': media.extra,
-                }
-
-                if media.image:
-                    image = self._compress_full(media.image)
-                    media_obj['full'] = {
-                        'src': image.url,
-                        'width': image.width,
-                        'height': image.height
-                    }
-
-                if media.thumbnail:
-                    image = self._compress_thumbnail(media.thumbnail)
-                    media_obj['thumb'] = {
-                        'width': image.width,
-                        'height': image.height,
-                        'src': image.url
-                    }
-
-                media_list.append(media_obj)
+                if media_obj:
+                    media_list.append(media_obj)
 
             galleries_dict[gallery.slug] = {
                 'synopsis': gallery.synopsis,
@@ -106,6 +92,64 @@ class PortfolioDataView(ListView):
 
         context['galleries_dict'] = galleries_dict
         return context
+
+    def _media_obj_image(self, media):
+        result = {
+            'title': media.title,
+            'captionHtml': media.caption,
+            'extraHtml': media.extra,
+        }
+
+        if media.image:
+            image = self._compress_full(media.image)
+            result['full'] = {
+                'src': image.url,
+                'width': image.width,
+                'height': image.height
+            }
+
+        if media.thumbnail:
+            image = self._compress_thumbnail(media.thumbnail)
+            result['thumb'] = {
+                'width': image.width,
+                'height': image.height,
+                'src': image.url
+            }
+
+        return result
+
+    def _media_obj_external_video(self, media):
+        result = {
+            'title': media.title,
+            'captionHtml': media.caption,
+            'extraHtml': media.extra,
+        }
+
+        if media.link:
+            url = urlparse.urlparse(media.link)
+
+            if url.hostname == 'youtube.com':
+                params = urlparse.parse_qs(url.query)
+                result['type'] = 'video-youtube'
+                result['youtube-video-id'] = params['v']
+            elif url.hostname == 'youtu.be':
+                result['type'] = 'video-youtube'
+                result['youtube-video-id'] = url.path.lstrip('/')
+
+        result['full'] = {
+            'width': 640,
+            'height': 360
+        }
+
+        if media.thumbnail:
+            image = self._compress_thumbnail(media.thumbnail)
+            result['thumb'] = {
+                'width': image.width,
+                'height': image.height,
+                'src': image.url
+            }
+
+        return result
 
     def _compress_full(self, image):
         ratio = image.width / float(image.height)
