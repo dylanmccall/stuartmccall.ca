@@ -76,8 +76,8 @@ class PortfolioDataView(ListView):
 
                 media_obj = {
                     'title': media.title,
-                    'caption_html': media.caption,
-                    'extra_html': media.extra,
+                    'captionHtml': media.caption,
+                    'extraHtml': media.extra,
                 }
 
                 if media.image:
@@ -100,6 +100,7 @@ class PortfolioDataView(ListView):
 
             galleries_dict[gallery.slug] = {
                 'synopsis': gallery.synopsis,
+                'abstractId': 'abstract-{slug}'.format(slug=gallery.slug),
                 'media': media_list
             }
 

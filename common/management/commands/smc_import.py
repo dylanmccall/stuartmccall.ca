@@ -24,11 +24,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
-        parser.add_argument('--path', required=True)
+        parser.add_argument('--basepath', required=True)
 
     def handle(self, *args, **options):
         infile = options['infile']
-        path = options['path']
+        basepath = options['basepath']
 
         data = json.load(infile, object_pairs_hook=OrderedDict)
 
@@ -64,19 +64,28 @@ class Command(BaseCommand):
                 media = Media()
                 media.sort_order = media_index
                 media.title = media_id
-                media_caption = media_data.get('caption')
+                media.caption = media_data.get('caption')
 
                 media_type = media_data.get('type')
 
                 if media_type == 'video-youtube':
+                    media.type = 'external-video'
                     video_id = media_data.get('youtube-video-id')
-                    media.type = 'video'
+                    thumbnail_id = media_data.get('thumbnail')
+                    thumbnail_path = os.path.join(basepath, gallery_id, THUMB_DIR, thumbnail_id)
+
                     if video_id:
                         media.link = 'https://youtu.be/{video_id}'.format(video_id=video_id)
+
+                    with open(thumbnail_path, 'r') as thumbnail_file:
+                        media.thumbnail.save(
+                            thumbnail_id,
+                            File(thumbnail_file)
+                        )
                 else:
                     media.type = 'image'
-                    image_path = os.path.join(path, gallery_id, FULL_DIR, media_id)
-                    thumbnail_path = os.path.join(path, gallery_id, THUMB_DIR, media_id)
+                    image_path = os.path.join(basepath, gallery_id, FULL_DIR, media_id)
+                    thumbnail_path = os.path.join(basepath, gallery_id, THUMB_DIR, media_id)
 
                     with open(image_path, 'r') as image_file:
                         media.image.save(

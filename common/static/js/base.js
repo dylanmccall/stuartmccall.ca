@@ -18,7 +18,9 @@ var SITE_TITLE = document.title;
 var SITE_BASE = '/';
 
 var DEFAULT_ASSET_DATA = {
-    'type' : 'picture'
+    'type' : 'picture',
+    'full': {},
+    'thumb': {}
 }
 
 
@@ -39,7 +41,7 @@ function Asset(name, data, galleryName) {
     if (galleryName) defaultCategories.push(galleryName);
     
     this.name = name
-    this.data = $.extend({ 'categories' : defaultCategories}, data);
+    this.data = $.extend({'categories' : defaultCategories}, data);
     this.galleryName = galleryName;
 
     var THUMBNAIL_CLASSES = {
@@ -345,16 +347,20 @@ function ViewerBox(container) {
     var showCaptionForAsset = function(asset) {
         captionBox.empty();
 
-        $('<p>')
-            .addClass('caption-main')
-            .html(asset.data['caption_html'])
-            .appendTo(captionBox);
+        var captionHtml = asset.data['captionHtml'];
+        var extraHtml = asset.data['extraHtml'];
 
-        var printDim = asset.data['print-dimensions'];
-        if (printDim !== undefined) {
+        if (captionHtml) {
+            $('<p>')
+                .addClass('caption-main')
+                .html(captionHtml)
+                .appendTo(captionBox);
+        }
+
+        if (extraHtml) {
             $('<p>')
                 .addClass('caption-extra')
-                .text(printDim[0] + "\u2033 \u00D7 " + printDim[1] + "\u2033")
+                .text(extraHtml)
                 .appendTo(captionBox);
         }
 
@@ -612,7 +618,7 @@ function Filmstrip(container) {
         showPage(0, animate);
 
         if (data['showAsset'] == true) {
-            if (!filter.gallery['abstract-elem']) {
+            if (!filter.gallery['abstractElem']) {
                 selectAsset(visibleAssets[0]);
             } else {
                 selectAsset(undefined);
@@ -1022,8 +1028,11 @@ var loadAsset = function(assetName, assetData, galleryName) {
 var loadGallery = function(galleryName, galleryData) {
     galleries[galleryName] = galleryData
     galleryAssets = galleryData['media'];
-    if (galleryData['abstract-id'] !== undefined) {
-        galleryData['abstract-elem'] = $('#'+galleryData['abstract-id']).detach();
+    if (galleryData['abstractId'] !== undefined) {
+        var abstractElem = $('#'+galleryData['abstractId']);
+        if (abstractElem.length > 0) {
+            galleryData['abstractElem'] = abstractElem.detach();
+        }
     }
     $.each(galleryAssets, function(assetName, assetData) {
         assetData = $.extend({}, DEFAULT_ASSET_DATA, assetData);
@@ -1133,8 +1142,8 @@ $(document).ready(function() {
             $('body').addClass('showing-gallery');
             galleryContent.children().detach();
 
-            if (filter.gallery && filter.gallery['abstract-elem']) {
-                galleryContent.append(filter.gallery['abstract-elem']);
+            if (filter.gallery && filter.gallery['abstractElem']) {
+                galleryContent.append(filter.gallery['abstractElem']);
                 galleryContentWrapper.show();
             } else {
                 galleryContentWrapper.hide();

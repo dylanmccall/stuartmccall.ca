@@ -46,6 +46,14 @@ class Gallery(models.Model):
     def get_absolute_url(self):
         return reverse('gallery', kwargs={'gallery_slug': self.slug})
 
+    @cached_property
+    def feature_thumbnail(self):
+        if self.thumbnail:
+            return self.thumbnail
+        else:
+            first_media = self.gallerymedia_set.select_related('media').first()
+            return first_media.media.thumbnail
+
     def get_all_media(self):
         for gallerymedia in self.gallerymedia_set.select_related('media'):
             yield gallerymedia.media
