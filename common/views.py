@@ -10,7 +10,10 @@ from galleries import models
 
 from collections import OrderedDict
 
-import urlparse
+try:
+    from urlparse import urlparse, parse_qs
+except ImportError:
+    from urllib.parse import urlparse, parse_qs
 
 
 class JsonResponseMixin(object):
