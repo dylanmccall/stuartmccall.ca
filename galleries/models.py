@@ -19,7 +19,7 @@ class Portfolio(models.Model):
         verbose_name = _("portfolio")
         verbose_name_plural = _("portfolios")
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
 
     objects = PortfolioManager()
@@ -38,7 +38,7 @@ class Gallery(models.Model):
     name = models.CharField(max_length=100)
     synopsis = models.TextField(blank=True, null=True)
     abstract = models.TextField(blank=True, null=True)
-    thumbnail = models.ImageField(blank=True)
+    thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
 
     def __str__(self):
         return self.name
@@ -72,8 +72,8 @@ class Media(models.Model):
 
     title = models.CharField(max_length=100)
     media_type = models.CharField(choices=MEDIA_TYPES, max_length=100, default='image')
-    thumbnail = models.ImageField(blank=True)
-    image = models.ImageField(blank=True)
+    thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
+    image = models.ImageField(blank=True, upload_to='full')
     link = models.URLField(blank=True, null=True)
     caption = models.TextField(max_length=200, blank=True, null=True)
     extra = models.TextField(blank=True, null=True)
