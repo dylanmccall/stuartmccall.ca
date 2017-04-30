@@ -81,19 +81,19 @@ class PortfolioDataView(ListView):
                 }
 
                 if media.image:
-                    thumbnail = get_thumbnail(media.image, '650x650', quality=95)
+                    image = self._compress_full(media.image)
                     media_obj['full'] = {
-                        'src': thumbnail.url,
-                        'width': thumbnail.width,
-                        'height': thumbnail.height
+                        'src': image.url,
+                        'width': image.width,
+                        'height': image.height
                     }
 
                 if media.thumbnail:
-                    thumbnail = get_thumbnail(media.thumbnail, '80x80', crop='center', quality=95)
+                    image = self._compress_thumbnail(media.thumbnail)
                     media_obj['thumb'] = {
-                        'width': thumbnail.width,
-                        'height': thumbnail.height,
-                        'src': thumbnail.url
+                        'width': image.width,
+                        'height': image.height,
+                        'src': image.url
                     }
 
                 media_list.append(media_obj)
@@ -106,3 +106,16 @@ class PortfolioDataView(ListView):
 
         context['galleries_dict'] = galleries_dict
         return context
+
+    def _compress_full(self, image):
+        ratio = image.width / float(image.height)
+
+        if ratio >= 2.0:
+            crop = 'x400'
+        else:
+            crop = '650x650'
+
+        return get_thumbnail(image, crop, quality=95)
+
+    def _compress_thumbnail(self, image):
+        return get_thumbnail(image, '80x80', crop='center', quality=95)
