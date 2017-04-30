@@ -7,6 +7,9 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from orderable.models import Orderable
+from markdownx.models import MarkdownxField
+
+from markdownx.utils import markdownify
 
 
 class PortfolioManager(models.Manager):
@@ -37,7 +40,7 @@ class Gallery(models.Model):
     slug = models.CharField(max_length=30)
     name = models.CharField(max_length=100)
     synopsis = models.TextField(blank=True, null=True)
-    abstract = models.TextField(blank=True, null=True)
+    abstract = MarkdownxField(blank=True, null=True)
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
 
     def __str__(self):
@@ -53,6 +56,10 @@ class Gallery(models.Model):
         else:
             first_media = self.gallerymedia_set.select_related('media').first()
             return first_media.media.thumbnail
+
+    @cached_property
+    def abstract_html(self):
+        return markdownify(self.abstract)
 
     def get_all_media(self):
         for gallerymedia in self.gallerymedia_set.select_related('media'):

@@ -304,7 +304,7 @@
     {% for gallery in galleries %}
         {% if gallery.abstract %}
             <div class="abstract" id="abstract-{{ gallery.slug }}">
-                {{ gallery.abstract }}
+                {{ gallery.abstract_html|safe }}
             </div>
         {% endif %}
     {% endfor %}

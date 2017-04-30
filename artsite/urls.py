@@ -5,6 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^markdownx/', include('markdownx.urls')),
     url(r'^', include('common.urls')),
 ]
 

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'orderable',
     'sorl.thumbnail',
+    'markdownx',
 ]
 
 INSTALLED_APPS += [
@@ -102,7 +103,6 @@ WSGI_APPLICATION = 'artsite.wsgi.application'
 
 DATABASES = {}
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -121,6 +121,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# MarkdownX
+
+MARKDOWNX_UPLOAD_CONTENT_TYPES = []
+MARKDOWNX_EDITOR_RESIZABLE = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
