@@ -129,10 +129,10 @@ class PortfolioDataView(ListView):
         }
 
         if media.link:
-            url = urlparse.urlparse(media.link)
+            url = urlparse(media.link)
 
             if url.hostname == 'youtube.com':
-                params = urlparse.parse_qs(url.query)
+                params = parse_qs(url.query)
                 result['type'] = 'video-youtube'
                 result['youtube-video-id'] = params['v']
             elif url.hostname == 'youtu.be':
