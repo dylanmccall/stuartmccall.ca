@@ -28,7 +28,7 @@ class PortfolioGalleryInline(OrderableTabularInline):
 
     def gallery_preview(self, obj):
         if obj.gallery:
-            return _gallery_preview(obj.gallery)
+            return _image_preview(obj.gallery.featured_thumbnail)
         else:
             return None
 
@@ -54,7 +54,7 @@ class GalleryMediaInline(OrderableTabularInline):
 
     def media_preview(self, obj):
         if obj.media:
-            return _media_preview(obj.media)
+            return _image_preview(obj.media.featured_thumbnail)
         else:
             return None
 
@@ -81,7 +81,7 @@ class GalleryAdmin(MarkdownxModelAdmin):
     }
 
     def gallery_preview(self, obj):
-        return _gallery_preview(obj)
+        return _image_preview(obj.featured_thumbnail)
 
 
 @admin.register(models.Media)
@@ -92,33 +92,19 @@ class MediaAdmin(admin.ModelAdmin):
     )
 
     def media_preview(self, obj):
-        return _media_preview(obj)
-
-
-def _gallery_preview(gallery):
-    if gallery.thumbnail:
-        return _image_preview(gallery.thumbnail)
-    else:
-        return None
-
-
-def _media_preview(media):
-    if media.thumbnail:
-        return _image_preview(media.thumbnail)
-    elif media.image:
-        return _image_preview(media.image)
-    else:
-        return None
+        return _image_preview(obj.featured_thumbnail)
 
 
 def _image_preview(image, size=80):
-    # TODO: Return image resized through django-compressor
-    geometry = '{size}x{size}'.format(size=size)
-    thumbnail = get_thumbnail(image, geometry, crop='center', quality=95)
+    if image:
+        geometry = '{size}x{size}'.format(size=size)
+        thumbnail = get_thumbnail(image, geometry, crop='center', quality=95)
 
-    return format_html('<img class="admin-preview" src="{url}" width={width} height={height} style="{style}" />',
-        url=thumbnail.url,
-        width=thumbnail.width,
-        height=thumbnail.height,
-        style='height: {size}; width: auto'.format(size=size)
-    )
+        return format_html('<img class="admin-preview" src="{url}" width={width} height={height} style="{style}" />',
+            url=thumbnail.url,
+            width=thumbnail.width,
+            height=thumbnail.height,
+            style='height: {size}; width: auto'.format(size=size)
+        )
+    else:
+        return None

@@ -25,11 +25,19 @@ class Portfolio(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
 
+    # Reverse reference: portfoliogallery_set (0-n)
+
     objects = PortfolioManager()
 
     def get_all_galleries(self):
         for portfoliogallery in self.portfoliogallery_set.select_related('gallery'):
             yield portfoliogallery.gallery
+
+    @cached_property
+    def featured_gallery(self):
+        portfoliogallery = self.portfoliogallery_set.select_related('media').first()
+        if portfoliogallery:
+            portfoliogallery.gallery
 
 
 class Gallery(models.Model):
@@ -43,6 +51,9 @@ class Gallery(models.Model):
     abstract = MarkdownxField(blank=True, null=True)
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
 
+    # Reverse reference: portfoliogallery_set (0-n)
+    # Reverse reference: gallerymedia_set (0-n)
+
     def __str__(self):
         return self.name
 
@@ -50,29 +61,26 @@ class Gallery(models.Model):
         return reverse('gallery', kwargs={'gallery_slug': self.slug})
 
     @cached_property
-    def feature_thumbnail(self):
-        if self.thumbnail:
-            return self.thumbnail
-        else:
-            first_media = self.gallerymedia_set.select_related('media').first()
-            return first_media.media.thumbnail
-
-    @cached_property
     def abstract_html(self):
         return markdownify(self.abstract)
+
+    @cached_property
+    def featured_thumbnail(self):
+        if self.thumbnail:
+            return self.thumbnail
+        elif self.featured_media:
+            return self.featured_media.featured_thumbnail
+        else:
+            return None
+
+    @cached_property
+    def featured_media(self):
+        gallerymedia = self.gallerymedia_set.select_related('media').first()
+        return gallerymedia.media if gallerymedia else None
 
     def get_all_media(self):
         for gallerymedia in self.gallerymedia_set.select_related('media'):
             yield gallerymedia.media
-
-
-class PortfolioGallery(Orderable):
-    class Meta(Orderable.Meta):
-        verbose_name = _("portfolio gallery")
-        verbose_name_plural = _("portfolio galleries")
-
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
-    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
 
 
 class Media(models.Model):
@@ -93,8 +101,28 @@ class Media(models.Model):
     caption = models.TextField(max_length=200, blank=True, null=True)
     extra = models.TextField(blank=True, null=True)
 
+    # Reverse reference: gallerymedia_set (0-n)
+
     def __str__(self):
         return "{} - {}".format(self.get_media_type_display(), self.title)
+
+    @cached_property
+    def featured_thumbnail(self):
+        if self.thumbnail:
+            return self.thumbnail
+        elif self.image:
+            return self.image
+        else:
+            return None
+
+
+class PortfolioGallery(Orderable):
+    class Meta(Orderable.Meta):
+        verbose_name = _("portfolio gallery")
+        verbose_name_plural = _("portfolio galleries")
+
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
 
 
 class GalleryMedia(Orderable):
