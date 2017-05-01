@@ -60,7 +60,7 @@ class GalleryMediaInline(OrderableTabularInline):
 
 
 @admin.register(models.Portfolio)
-class PortfolioAdmin(admin.ModelAdmin):
+class PortfolioAdmin(MarkdownxModelAdmin):
     list_display = ('title', 'site')
     list_filter = (
         'site',

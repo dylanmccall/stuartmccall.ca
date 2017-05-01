@@ -24,10 +24,18 @@ class Portfolio(models.Model):
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
+    blurb = MarkdownxField(blank=True, null=True)
 
     # Reverse reference: portfoliogallery_set (0-n)
 
     objects = PortfolioManager()
+
+    @cached_property
+    def blurb_html(self):
+        if self.blurb:
+            return markdownify(self.blurb)
+        else:
+            return self.blurb
 
     def get_all_galleries(self):
         for portfoliogallery in self.portfoliogallery_set.select_related('gallery'):
@@ -62,7 +70,10 @@ class Gallery(models.Model):
 
     @cached_property
     def abstract_html(self):
-        return markdownify(self.abstract)
+        if self.abstract:
+            return markdownify(self.abstract)
+        else:
+            return self.abstract
 
     @cached_property
     def featured_thumbnail(self):
