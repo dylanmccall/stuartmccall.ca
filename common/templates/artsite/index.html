@@ -1,7 +1,15 @@
 {% extends "artsite/base.html" %}
 {% load i18n %}
+{% load json_tools %}
 {% load thumbnail %}
-{% load debug_tools %}
+
+{% block js_data %}
+{% spaceless %}
+    <script type="text/javascript">
+        var SMC_GALLERIES = {{ galleries_js_dict|json_dumps|safe }};
+    </script>
+{% endspaceless %}
+{% endblock %}
 
 {% block main %}
     <div class="portfolio">

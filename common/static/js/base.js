@@ -21,7 +21,7 @@ var DEFAULT_ASSET_DATA = {
     'type' : 'picture',
     'full': {},
     'thumb': {}
-}
+};
 
 
 var trackEvent = function(data) {
@@ -30,7 +30,29 @@ var trackEvent = function(data) {
     } else {
         console.log("Tracking event", data);
     }
-}
+};
+
+
+var onHistoryChange = function() {
+    // Check window.history.location for compatibility with devote/HTML5-History-API
+    var location = window.history.location || window.location;
+    var state = window.history.state;
+
+    var stateFilter = filterForPath(location.pathname);
+    selectFilter(stateFilter, state);
+
+    if (stateFilter) {
+        $('.nav-menu').val(stateFilter.name);
+    } else {
+        $('.nav-menu').val('');
+    }
+};
+
+
+var pushHistory = function(data, title, url) {
+    window.history.pushState(data, title, url);
+    onHistoryChange();
+};
 
 
 function Asset(name, data, galleryName) {
@@ -39,7 +61,7 @@ function Asset(name, data, galleryName) {
     var defaultCategories = [];
 
     if (galleryName) defaultCategories.push(galleryName);
-    
+
     this.name = name
     this.data = $.extend({'categories' : defaultCategories}, data);
     this.galleryName = galleryName;
@@ -47,8 +69,8 @@ function Asset(name, data, galleryName) {
     var THUMBNAIL_CLASSES = {
         'picture' : 'picture',
         'video-youtube' : 'video'
-    }
-    
+    };
+
     var thumbnailForSize = function(size) {
         var thumbnailName = asset.data.thumbnail || asset.name;
         var thumbnailClass = THUMBNAIL_CLASSES[data.type];
@@ -84,8 +106,8 @@ function Asset(name, data, galleryName) {
         }).appendTo(thumbnail);
 
         return thumbnail;
-    }
-    
+    };
+
     var onAssetSelectedCb = function(selectedAsset) {
         if (selectedAsset == asset) {
             asset.thumbnail.addClass('current');
@@ -93,14 +115,14 @@ function Asset(name, data, galleryName) {
             asset.thumbnail.removeClass('current');
             asset.thumbnail.removeClass('loading');
         }
-    }
+    };
 
     this.getHeightForWidth = function(maxWidth) {
         var ratio = this.data['full'].height / this.data['full'].width;
         var displayWidth = Math.min(this.data['full'].width, maxWidth);
         var displayHeight = Math.min(displayWidth * ratio, this.data['full'].height);
         return displayHeight;
-    }
+    };
 
     this.refreshView = function(existingView) {
         if (existingView !== undefined && existingView.fitsAsset(this)) {
@@ -110,16 +132,17 @@ function Asset(name, data, galleryName) {
         } else if (this.data['type'] === 'video-youtube') {
             return new VideoAssetView();
         }
-    }
-    
+    };
+
     var init = function() {
         assetSelectedCbs.push(onAssetSelectedCb);
-        
+
         asset.thumbnail = thumbnailForSize(80);
         asset.thumbnail.on('click', function(event) {
             event.preventDefault();
         });
-    }
+    };
+
     init();
 }
 
@@ -134,11 +157,11 @@ function AssetView() {
 
     this.fitsAsset = function(asset) {
         return false;
-    }
+    };
 
     this.getHeightForAsset = function(asset, container) {
         return asset.getHeightForWidth(container.innerWidth());
-    }
+    };
 
     this.display = function(asset) {
         if (content === undefined) {
@@ -146,12 +169,12 @@ function AssetView() {
         } else {
             content = this.updateContent(asset, content);
         }
-    }
+    };
 
     this.remove = function() {
         this.contentBox.empty();
         content = undefined;
-    }
+    };
 }
 
 
@@ -162,7 +185,7 @@ function PictureAssetView() {
 
     this.fitsAsset = function(asset) {
         return asset.data['type'] === 'picture';
-    }
+    };
 
     this.createContent = function(asset) {
         var content = $('<img>')
@@ -173,7 +196,7 @@ function PictureAssetView() {
         loadingAsset(asset, true, pictureAssetView);
 
         return content;
-    }
+    };
 
     this.updateContent = function(asset, content) {
         if (content.attr('src') === asset.data['full'].src) {
@@ -185,7 +208,7 @@ function PictureAssetView() {
         }
 
         return content;
-    }
+    };
 
     var updateImgWithAsset = function(img, asset) {
         var fullImg = asset.data['full'] || {};
@@ -206,12 +229,12 @@ function PictureAssetView() {
         });
 
         img.data('asset', asset);
-    }
+    };
 
     var onImgLoaded = function(event) {
         asset = $(this).data('asset');
         if (asset) loadedAsset(asset, pictureAssetView);
-    }
+    };
 }
 PictureAssetView.prototype = new AssetView();
 
@@ -229,7 +252,7 @@ function VideoAssetView() {
 
     this.fitsAsset = function(asset) {
         return asset.data['type'] === 'video-youtube';
-    }
+    };
 
     this.createContent = function(asset) {
         var playerElem = $('<div>')
@@ -261,27 +284,27 @@ function VideoAssetView() {
         //loadingAsset(asset, false, videoAssetView);
         loadedAsset(selectedAsset, videoAssetView);
         return playerElem;
-    }
+    };
 
     this.updateContent = function(asset, content) {
         this.videoSelected(asset);
         loadedAsset(asset, videoAssetView);
         return content;
-    }
+    };
 
     var onPlayerReady = function() {
         playerReady = true;
         if (selectedAsset) videoAssetView.videoSelected(selectedAsset);
         loadedAsset(selectedAsset, videoAssetView);
         $(player.getIframe()).css({'visibility' : 'visible'})
-    }
+    };
 
     this.videoSelected = function(asset) {
         if (!playerReady) return;
-        
+
         var previousVideo = playerVideo;
         var previousState = player.getPlayerState();
-        
+
         if (previousVideo == asset) {
             player.playVideo();
         } else {
@@ -293,23 +316,23 @@ function VideoAssetView() {
             }
             player.setSize(asset.data['full'].width, asset.data['full'].height);
         }
-        
+
         playerVideo = asset;
-    }
+    };
 }
 VideoAssetView.prototype = new AssetView();
 
 
 function ViewerBox(container) {
     var viewerBox = this;
-    
+
     container = $(container);
-    
+
     var contentWrapper = $('.viewer-content-wrapper', container);
     var captionBox = $('.caption', container);
 
     var assetView = undefined;
-    
+
     var hide = function() {
         container.stop(true, false).animate({
             'opacity' : 0
@@ -332,8 +355,8 @@ function ViewerBox(container) {
                 changedLayout();
             }
         });
-    }
-    
+    };
+
     var showAsset = function(asset, replaceExisting) {
         if (replaceExisting === undefined) replaceExisting = true;
 
@@ -352,7 +375,7 @@ function ViewerBox(container) {
             if (oldAssetView !== undefined) oldAssetView.remove();
         }
         assetView.display(asset);
-        
+
         var displayHeight = asset.getHeightForWidth(contentWrapper.innerWidth());
         if (displayHeight > contentWrapper.height()) {
             /* Grow contentWrapper if necessary */
@@ -366,7 +389,7 @@ function ViewerBox(container) {
                 }
             });
         }
-    }
+    };
 
     var showCaptionForAsset = function(asset) {
         captionBox.empty();
@@ -393,12 +416,12 @@ function ViewerBox(container) {
             'opacity' : 1,
             'max-width' : asset.data['full'].width
         });
-    }
+    };
 
     var stopLoadingTimeoutId = undefined;
     var stopLoadingTimeout = function() {
         container.removeClass('loading');
-    }
+    };
 
     var onAssetLoading = function(asset, isTransitioning) {
         container.addClass('loading');
@@ -414,12 +437,12 @@ function ViewerBox(container) {
         } else {
             showCaptionForAsset(asset);
         }
-    }
-    
+    };
+
     var onAssetLoaded = function(asset) {
         container.removeClass('loading');
         asset.thumbnail.removeClass('loading');
-        
+
         var displayHeight = asset.getHeightForWidth(contentWrapper.innerWidth());
         contentWrapper.stop(true, false).animate({
             'min-height' : 0,
@@ -433,18 +456,18 @@ function ViewerBox(container) {
         });
 
         showCaptionForAsset(asset);
-        
+
         window.clearTimeout(stopLoadingTimeoutId);
-    }
-    
+    };
+
     var onAssetSelectedCb = function(asset) {
         if (asset) {
             showAsset(asset);
         } else {
             hide();
         }
-    }
-    
+    };
+
     var init = function() {
         assetSelectedCbs.push(onAssetSelectedCb);
         assetLoadingCbs.push(onAssetLoading);
@@ -453,22 +476,23 @@ function ViewerBox(container) {
         contentWrapper.css({'cursor' : 'pointer' }).on('click', function(event) {
             selectNextAsset();
         });
-    }
+    };
+
     init();
 }
 
 
 function Filmstrip(container) {
     var filmstrip = this;
-    
+
     container = $(container);
-    
+
     var synopsisBox = ('.synopsis', container);
     var overflow = $('.overflow', container);
     var leftOverflow = $('.overflow.left', container);
     var rightOverflow = $('.overflow.right', container);
     var pager = $('.pager', container);
-    
+
     var thumbnailsBox = $('.thumbnails', container);
 
     var thumbnails = [];
@@ -476,11 +500,11 @@ function Filmstrip(container) {
     var pagesTotal = 1;
     var pageSize = 0;
     var currentPage = 0;
-    
+
     var pagerIsHiding = false;
     var updatePages = function(initial) {
         initial = initial || false;
-        
+
         if (thumbnailSize) {
             pageSize = Math.floor(container.width() / thumbnailSize);
             pagesTotal = Math.ceil(thumbnails.length / pageSize);
@@ -488,12 +512,12 @@ function Filmstrip(container) {
             pageSize = 0;
             pagesTotal = 0;
         }
-        
+
         var updateText = function() {
             $('.total', pager).text('/'+pagesTotal);
             pagerIsHiding = false;
         }
-        
+
         if (initial) {
             updateText();
             if (pagesTotal <= 1) {
@@ -511,19 +535,19 @@ function Filmstrip(container) {
                 pager.animate({'opacity' : 1}, 150, 'linear');
             }
         }
-        
+
         if (pagesTotal.toString().length > 1) {
             /* Pager needs to make extra space for big numbers */
             pager.addClass('bignumber');
         } else {
             pager.removeClass('bignumber');
         }
-    }
-    
+    };
+
     var updateLayout = function(newThumbnails, initial) {
         newThumbnails = newThumbnails || false;
         initial = initial || false;
-        
+
         function layoutForSize(size) {
             $.each(thumbnails, function(index, thumbnail) {
                 $(thumbnail).css({
@@ -532,7 +556,7 @@ function Filmstrip(container) {
                 });
             });
         }
-        
+
         if (thumbnails.length > 0) {
             container.removeClass('empty');
             var newSize = $(thumbnails[0]).width();
@@ -543,10 +567,10 @@ function Filmstrip(container) {
         } else {
             container.addClass('empty');
         }
-        
+
         updatePages(initial)
-    }
-    
+    };
+
     var _firstLoad = true;
     var loadAssets = function(assets, size) {
         $.each(thumbnails, function(index, thumbnail) {
@@ -560,25 +584,25 @@ function Filmstrip(container) {
             thumbnails.push(thumbnail);
             asset._filmstripThumbnail = thumbnail;
         });
-        
+
         updateLayout(true, _firstLoad);
         _firstLoad = false;
-    }
-    
+    };
+
     var pageForIndex = function(index) {
         var page = Math.floor(index / pageSize);
         if (page < 0 || isNaN(page)) page = 0;
         if (page >= pagesTotal) page = pagesTotal-1;
         return page;
-    }
-    
+    };
+
     var nearestPageForPosition = function(position) {
         var page = Math.round(position / (thumbnailSize*pageSize));
         if (page < 0 || isNaN(page)) page = 0;
         if (page >= pagesTotal) page = pagesTotal-1;
         return page;
-    }
-    
+    };
+
     var nearestAdjacentPageForPosition = function(position) {
         var page = nearestPageForPosition(position);
         if (page > currentPage) {
@@ -587,8 +611,8 @@ function Filmstrip(container) {
             page = currentPage-1;
         }
         return page;
-    }
-    
+    };
+
     var showFromIndex = function(startIndex, animate) {
         if (pageSize >= visibleAssets.length) {
             startIndex = 0;
@@ -596,7 +620,7 @@ function Filmstrip(container) {
         } else {
             var endIndex = startIndex + pageSize;
         }
-        
+
         var startThumbnail = thumbnailForAsset(visibleAssets[startIndex]);
         var left = startThumbnail ? -(startThumbnail.position().left) : 0;
         $(thumbnailsBox).stop(true, false);
@@ -607,34 +631,34 @@ function Filmstrip(container) {
         } else {
             $(thumbnailsBox).css('left', left);
         }
-        
+
         currentPage = pageForIndex(startIndex);
         if (pagesTotal >= 0 && ! pagerIsHiding) {
             $('.current', pager).text(currentPage+1);
         }
-    }
-    
+    };
+
     var showPage = function(pageNumber, animate) {
         if (pageNumber < 0) pageNumber = 0;
         if (pageNumber >= pagesTotal) pageNumber = pagesTotal-1;
         startIndex = pageNumber * pageSize;
         showFromIndex(startIndex, animate);
-    }
-    
+    };
+
     var shiftPage = function(direction) {
         var nextPage = currentPage + direction;
         if (nextPage < 0 || nextPage >= pagesTotal) nextPage = 0;
         showPage(nextPage, true);
-    }
-    
+    };
+
     var thumbnailForAsset = function(asset) {
         if (asset) {
             return asset._filmstripThumbnail;
         } else {
             return undefined;
         }
-    }
-    
+    };
+
     var onFilterSelectedCb = function(filter, lastFilter, data) {
         loadAssets(visibleAssets, 80);
         var changed = (filter != lastFilter);
@@ -650,8 +674,8 @@ function Filmstrip(container) {
         } else if (data['showAsset'] == false) {
             selectAsset(undefined);
         }
-    }
-    
+    };
+
     var onAssetSelectedCb = function(asset) {
         if (asset !== undefined && visibleFilter !== undefined) {
             assetPage = pageForIndex(visibleFilter.assetNumber(asset));
@@ -661,45 +685,45 @@ function Filmstrip(container) {
         } else {
             //showPage(0, true);
         }
-    }
-    
+    };
+
     var thumbnailsStartPosition = undefined;
     var touchMoved = false;
     var touchStart = {x : 0, y : 0};
     var touchStartTime = 0;
-    
+
     var onContainerTouchStart = function(event) {
         thumbnailsStartPosition = thumbnailsBox.position();
-        
+
         thumbnailsBox.stop(true, false);
-        
+
         touchMoved = false;
         touchStart.x = event.originalEvent.touches[0].pageX;
         touchStart.y = event.originalEvent.touches[0].pageY;
         touchStartTime = new Date().getTime();
-    }
-    
+    };
+
     var onContainerTouchMove = function(event) {
         var offsetX = touchStart.x - event.originalEvent.touches[0].pageX;
         var offsetY = touchStart.y - event.originalEvent.touches[0].pageY;
-        
+
         if (Math.abs(offsetX) > Math.abs(offsetY)) {
             touchMoved = true;
             event.preventDefault();
         }
-        
+
         thumbnailsBox.css({
             'left' : thumbnailsStartPosition.left - offsetX
         });
         var currentPage = nearestPageForPosition(-thumbnailsBox.position().left);
         $('.current', pager).text(currentPage+1);
-    }
-    
+    };
+
     var onContainerTouchEnd = function(event) {
         /* Snap to the nearest page (bounceback) */
-        
+
         var now = new Date().getTime();
-        
+
         /* Calculate average momentum */
         var touchDuration = now - touchStartTime;
         var touchDistance = thumbnailsBox.position().left - thumbnailsStartPosition.left;
@@ -708,73 +732,74 @@ function Filmstrip(container) {
         var slippiness = 800;
         if (Math.abs(touchDistance) < 65) slippiness = 0;
         var touchMomentum = slippiness * touchVelocity;
-        
+
         var left = -(thumbnailsBox.position().left + touchMomentum);
         var snapPage = nearestAdjacentPageForPosition(left);
         showPage(snapPage, true);
-        
+
         touchMoved = false;
         touchStart.x = 0;
         touchStart.y = 0;
-    }
-    
+    };
+
     var onContainerTouchCancel = function(event) {
         onContainerTouchEnd(event);
-    }
+    };
 
     this.rewind = function(animate) {
         showPage(0, animate);
-    }
+    };
 
     this.isAtStart = function() {
         return currentPage == 0;
-    }
-    
+    };
+
     var init = function() {
         filterSelectedCbs.push(onFilterSelectedCb);
         assetSelectedCbs.push(onAssetSelectedCb);
-        
+
         $(window).on('resize', function(event) {
             updateLayout();
             showPage(currentPage, true);
         });
-        
+
         container.on('touchstart', onContainerTouchStart);
         container.on('touchmove', onContainerTouchMove);
         container.on('touchend', onContainerTouchEnd);
         container.on('touchcancel', onContainerTouchCancel);
-        
+
         thumbnailsBox.on('click', 'a.asset', function(event) {
             event.preventDefault();
             var asset = $(this).data('asset');
             toggleAsset(asset);
         });
-        
+
         leftOverflow.on('click', function(event) {
             event.preventDefault();
             shiftPage(-1);
         });
-        
+
         rightOverflow.on('click', function(event) {
             event.preventDefault();
             shiftPage(1);
         });
-    }
+    };
+
     init();
 }
 
 
 function Filter(allAssets, button) {
     var filter = this;
-    
+
     button = $(button);
 
     this.name = undefined;
-    
+
     this.assetNumber = function(asset) {
         return $.inArray(selectedAsset, this.assets);
-    }
-    
+    };
+
     this.getNextAsset = function(direction) {
         assetNumber = $.inArray(selectedAsset, this.assets);
         if (assetNumber < 0) {
@@ -783,19 +808,19 @@ function Filter(allAssets, button) {
             assetNumber = modWithNegative(assetNumber+direction, this.assets.length);
         }
         return this.assets[assetNumber];
-    }
-    
+    };
+
     this.containsAsset = function(asset) {
         return $.inArray(asset, this.assets) >= 0;
-    }
-    
+    };
+
     var modWithNegative = function(a, b) {
         return ((a%b)+b)%b;
-    }
-    
+    };
+
     var arrayContainsAny = function(a, b) {
         if (a.length == 0) return true;
-        
+
         for (i = 0; i < a.length; i++) {
             var aItem = a[i];
             if ($.inArray(aItem, b) >= 0) {
@@ -803,19 +828,19 @@ function Filter(allAssets, button) {
             }
         }
         return false;
-    }
-    
+    };
+
     var onFilterSelectedCb = function(newFilter) {
         if (newFilter == filter) {
             button.addClass('current');
         } else {
             button.removeClass('current');
         }
-    }
-    
+    };
+
     var init = function() {
         filterSelectedCbs.push(onFilterSelectedCb);
-        
+
         var categoriesStr = $(button).data('filter-category');
         if (categoriesStr) {
             filter.categories = categoriesStr.split(' ');
@@ -831,7 +856,7 @@ function Filter(allAssets, button) {
         }
 
         filter.name = mainStr || categoriesStr || '[All]';
-        
+
         $(button).on('click', function(event) {
             event.preventDefault();
             if (filter == selectedFilter && selectedAsset !== undefined) {
@@ -844,21 +869,22 @@ function Filter(allAssets, button) {
                 goToFilter(filter);
             }
         });
-        
+
         filter.assets = [];
         $.each(allAssets, function(index, asset) {
             if (arrayContainsAny(filter.categories, asset.data['categories'])) {
                 filter.assets.push(asset);
             }
         });
-    }
+    };
+
     init();
 }
 
 
 function Portfolio(container) {
     var portfolio = this;
-    
+
     container = $(container);
 
     var synopsisBox = $('.synopsis', container);
@@ -887,7 +913,7 @@ function Portfolio(container) {
                 'height' : 'hide'
             }, 150);*/
         }
-    }
+    };
 
     this.navUp = function() {
         if (selectedAsset === undefined) {
@@ -901,14 +927,15 @@ function Portfolio(container) {
             selectAsset(undefined);
             goToFilter(selectedFilter);
         }
-    }
+    };
 
     var init = function() {
         portfolio.filmstrip = new Filmstrip(filmstripBox);
         portfolio.viewerBox = new ViewerBox(viewerBox);
 
         filterSelectedCbs.push(onFilterSelectedCb);
-    }
+    };
+
     init();
 }
 
@@ -925,21 +952,21 @@ var selectFilter = function(filter, data) {
         data = $.extend({'showAsset' : false}, data);
     }
     data = $.extend({}, _DEFAULT_SELECT_FILTER_DATA, data);
-    
+
     var lastFilter = selectedFilter;
     selectedFilter = filter;
     visibleFilter = filter || defaultFilter;
     visibleAssets = (visibleFilter) ? visibleFilter.assets : [];
-    
+
     $.each(filterSelectedCbs, function(index, cb) {
         cb(filter, lastFilter, data);
     });
-    
+
     if (lastFilter !== undefined && lastFilter != visibleFilter) {
         var filterName = (visibleFilter) ? visibleFilter.name : '/';
         trackEvent(['_trackEvent', 'Portfolio', 'Filter', filterName]);
     }
-}
+};
 
 
 var _DEFAULT_SELECT_ASSET_DATA = {}
@@ -960,7 +987,7 @@ var selectAsset = function(asset, data) {
     } else {
         trackEvent(['_trackEvent', 'Portfolio', 'Deselected']);
     }
-}
+};
 
 
 var goToFilter = function(filter) {
@@ -969,11 +996,11 @@ var goToFilter = function(filter) {
         'scrollTop' : filtersTop
     }, 150);
     if (filter) {
-        History.pushState(undefined, SITE_TITLE, SITE_BASE+filter.name);
+        pushHistory(undefined, SITE_TITLE, SITE_BASE+filter.name);
     } else {
-        History.pushState(undefined, SITE_TITLE, SITE_BASE);
+        pushHistory(undefined, SITE_TITLE, SITE_BASE);
     }
-}
+};
 
 
 var toggleAsset = function(asset) {
@@ -984,7 +1011,7 @@ var toggleAsset = function(asset) {
     } else {
         selectAsset(undefined);
     }
-}
+};
 
 
 var selectNextAsset = function(direction) {
@@ -993,7 +1020,7 @@ var selectNextAsset = function(direction) {
         var nextAsset = selectedFilter.getNextAsset(direction);
         selectAsset(nextAsset);
     }
-}
+};
 
 
 var assetLoadingCbs = [];
@@ -1002,7 +1029,7 @@ var loadingAsset = function(asset, isTransitioning, assetView) {
     $.each(assetLoadingCbs, function(index, cb) {
         cb(asset, isTransitioning, assetView);
     });
-}
+};
 
 
 var assetLoadedCbs = [];
@@ -1011,7 +1038,7 @@ var loadedAsset = function(asset, assetView) {
     $.each(assetLoadedCbs, function(index, cb) {
         cb(asset, assetView);
     });
-}
+};
 
 
 var layoutChangedCbs = [];
@@ -1019,7 +1046,7 @@ var changedLayout = function() {
     $.each(layoutChangedCbs, function(index, cb) {
         cb();
     });
-}
+};
 
 
 var filterNameFromUrl = function(url) {
@@ -1033,20 +1060,20 @@ var filterNameFromUrl = function(url) {
     } else {
         return undefined;
     }
-}
+};
 
 
 var filterForPath = function(url) {
     var filterName = filterNameFromUrl(url);
     return filters[filterName];
-}
+};
 
 
 var loadAsset = function(assetName, assetData, galleryName) {
     var asset = new Asset(assetName, assetData, galleryName);
     assets.push(asset);
     assetsByName[assetName] = asset;
-}
+};
 
 
 var loadGallery = function(galleryName, galleryData) {
@@ -1062,7 +1089,7 @@ var loadGallery = function(galleryName, galleryData) {
         assetData = $.extend({}, DEFAULT_ASSET_DATA, assetData);
         loadAsset(assetName, assetData, galleryName);
     });
-}
+};
 
 
 $(document).ready(function () {
@@ -1120,7 +1147,7 @@ $(document).ready(function () {
         //  selectAsset(visibleAssets[0]);
         // }
     });
-    
+
     $(document).on('keydown', function(event) {
         if (event.which == 37 && selectedFilter !== undefined) {
             // left arrow
@@ -1212,32 +1239,8 @@ $(document).ready(function() {
 
 
 $(document).ready(function () {
-    var History = window.History;
-    if (!History.enabled ) {
-        // Fall back to hash change events. Automatic?
-    }
-
-    var getPath = function(href) {
-        var parser = document.createElement("a");
-        parser.href = href;
-        return parser.pathname;
-    };
-
-    History.Adapter.bind(window, 'statechange', function() {
-        var State = History.getState();
-        // var statePath = getPath(State.cleanUrl);
-        var statePath = State.cleanUrl;
-        // filter name?
-        var stateFilter = filterForPath(statePath);
-        selectFilter(stateFilter, State.data);
-        if (stateFilter) {
-            $('.nav-menu').val(stateFilter.name);
-        } else {
-            $('.nav-menu').val('');
-        }
-    });
-
-    History.Adapter.trigger(window, 'statechange');
+    $(window).on('popstate', onHistoryChange);
+    onHistoryChange();
 });
 
 

@@ -26,6 +26,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 
 # Application definition
 
@@ -58,16 +62,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+COMPRESS_CSS_FILTERS = (
+    'django_compressor_autoprefixer.AutoprefixerFilter',
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSMinFilter'
+)
+
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter',
+]
+
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage' 
+
 COMPRESS_PRECOMPILERS = (
     ('text/less', 'lessc {infile} {outfile}'),
 )
 
-COMPRESS_CSS_FILTERS = (
-    'django_compressor_autoprefixer.AutoprefixerFilter',
-)
-
-# Don't do postcss stuff
-COMPRESS_ENABLED = False
+COMPRESS_AUTOPREFIXER_BINARY = 'postcss'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',

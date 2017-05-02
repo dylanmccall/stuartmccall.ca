@@ -51,9 +51,12 @@ class PortfolioView(TemplateView):
         else:
             selected_gallery = None
 
+        galleries_js_dict = self._get_galleries_js_dict(all_galleries)
+
         context['portfolio'] = portfolio
         context['all_galleries'] = all_galleries
         context['selected_gallery'] = selected_gallery
+        context['galleries_js_dict'] = galleries_js_dict
 
         return context
 
@@ -66,33 +69,10 @@ class PortfolioView(TemplateView):
         else:
             return self.render_to_response(context)
 
+    def _get_galleries_js_dict(self, galleries_list):
+        result = OrderedDict()
 
-class PortfolioDataView(ListView):
-    model = models.Gallery
-
-    template_name = 'artsite/gallery-data.js'
-    content_type = 'application/javascript'
-
-    def get_queryset(self):
-        # Return a list of galleries for the current portfolio.
-        # TODO: this should really be a serializer for Portfolio.
-        site = get_current_site(self.request)
-
-        try:
-            portfolio = models.Portfolio.objects.get_for_site(site)
-        except models.Portfolio.DoesNotExist:
-            raise Http404(_("There is no portfolio for this site"))
-
-        return self.model.objects.filter(
-            portfoliogallery__portfolio=portfolio
-        )
-
-    def get_context_data(self, **kwargs):
-        context = super(PortfolioDataView, self).get_context_data(**kwargs)
-
-        galleries_dict = OrderedDict()
-
-        for gallery in context['gallery_list']:
+        for gallery in galleries_list:
             media_list = []
 
             for media in gallery.get_all_media():
@@ -106,14 +86,13 @@ class PortfolioDataView(ListView):
                 if media_obj:
                     media_list.append(media_obj)
 
-            galleries_dict[gallery.slug] = {
+            result[gallery.slug] = {
                 'synopsis': gallery.synopsis,
                 'abstractId': 'abstract-{slug}'.format(slug=gallery.slug),
                 'media': media_list
             }
 
-        context['galleries_dict'] = galleries_dict
-        return context
+        return result
 
     def _media_obj_image(self, media):
         result = {

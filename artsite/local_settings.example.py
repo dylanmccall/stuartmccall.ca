@@ -32,6 +32,10 @@ TIME_ZONE = 'America/Vancouver'
 #     'localhost',
 # ]
 
+# INTERNAL_IPS = [
+#     '127.0.0.1',
+# ]
+
 ##### Development settings #####
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -46,9 +50,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # MEDIA_ROOT = '/path/to/dynamic/media/directory/'
 # MEDIA_URL = SITE_URL+'/media/'
 
+# COMPRESS_ENABLED = True
+
 # COMPRESS_PRECOMPILERS = (
 #     ('text/less', '/path/to/node /path/to/lessc {infile} {outfile}'),
 # )
+
+# COMPRESS_AUTOPREFIXER_BINARY = '/path/to/node /path/to/postcss'
 
 # SERVER_EMAIL = "stuartmccall.ca <admin@example.com>"
 # ADMINS = [
