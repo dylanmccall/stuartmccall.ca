@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'orderable',
     'sorl.thumbnail',
-    'markdownx',
+    'simplemde',
 ]
 
 INSTALLED_APPS += [
@@ -97,7 +97,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'artsite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -121,11 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# MarkdownX
-
-MARKDOWNX_UPLOAD_CONTENT_TYPES = []
-MARKDOWNX_EDITOR_RESIZABLE = False
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -139,6 +133,25 @@ USE_L10N = True
 
 USE_TZ = True
 
+# SimpleMDE
+
+SIMPLEMDE_OPTIONS = {
+    'spellChecker': False,
+    'toolbar': [
+        'bold',
+        'italic',
+        'heading',
+        '|',
+        'quote',
+        'unordered-list',
+        'ordered-list',
+        '|',
+        'link',
+        'image',
+        '|',
+        'guide'
+    ]
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

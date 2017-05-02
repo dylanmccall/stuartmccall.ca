@@ -2,8 +2,6 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from markdownx.widgets import AdminMarkdownxWidget
-from markdownx.admin import MarkdownxModelAdmin
 from orderable.admin import OrderableAdmin, OrderableTabularInline
 
 from sorl.thumbnail import get_thumbnail
@@ -60,7 +58,7 @@ class GalleryMediaInline(OrderableTabularInline):
 
 
 @admin.register(models.Portfolio)
-class PortfolioAdmin(MarkdownxModelAdmin):
+class PortfolioAdmin(admin.ModelAdmin):
     list_display = ('title', 'site')
     list_filter = (
         'site',
@@ -71,14 +69,11 @@ class PortfolioAdmin(MarkdownxModelAdmin):
 
 
 @admin.register(models.Gallery)
-class GalleryAdmin(MarkdownxModelAdmin):
+class GalleryAdmin(admin.ModelAdmin):
     list_display = ('name', 'gallery_preview',)
     inlines = [
         GalleryMediaInline,
     ]
-    widgets = {
-        'abstract': AdminMarkdownxWidget
-    }
 
     def gallery_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)

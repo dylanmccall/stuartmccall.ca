@@ -7,9 +7,9 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from orderable.models import Orderable
-from markdownx.models import MarkdownxField
+from simplemde.fields import SimpleMDEField
 
-from markdownx.utils import markdownify
+from common.utils import markdownify
 
 
 class PortfolioManager(models.Manager):
@@ -24,7 +24,7 @@ class Portfolio(models.Model):
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
-    blurb = MarkdownxField(blank=True, null=True)
+    blurb = SimpleMDEField(blank=True, null=True)
 
     # Reverse reference: portfoliogallery_set (0-n)
 
@@ -56,7 +56,7 @@ class Gallery(models.Model):
     slug = models.CharField(max_length=30)
     name = models.CharField(max_length=100)
     synopsis = models.TextField(blank=True, null=True)
-    abstract = MarkdownxField(blank=True, null=True)
+    abstract = SimpleMDEField(blank=True, null=True)
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
 
     # Reverse reference: portfoliogallery_set (0-n)
