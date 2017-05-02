@@ -1,11 +1,20 @@
-/* This file (base.css) is generated with lessc (http://lesscss.org/).
- * Please do not edit it directly.
- */
-
 @import (less) "_common.less";
 @import (less) "_prefixer.less";
 
 @inner_margin_h: 30px;
+@gallery_bg: #f7f7f7;
+
+@keyframes pulse {
+    0% {
+        border-color: #eee;
+    }
+    70% {
+        border-color: #bbb;
+    }
+    100% {
+        border-color: #eee;
+    }
+}
 
 /*****
  * Common styles
@@ -209,7 +218,7 @@ a {
 
 .portfolio {
     padding: 0;
-    background-color: #f7f7f7;
+    background-color: @gallery_bg;
     
     .filters {
         display: block;
@@ -383,14 +392,6 @@ a {
                 line-height: 1.2em;
             }
         }
-        
-        /*
-        &.loading .caption {
-            background-image: url('/static/img/spinner.gif');
-            background-repeat: no-repeat;
-            background-position: (@inner_margin_h - 16px - 8px) 6px;
-        }
-        */
     }
 }
 
@@ -485,7 +486,8 @@ body.showing-asset .portfolio {
             }
 
             &.picture .overlay {
-                background-image: url('/static/img/thumbnail-arrow-84.png');
+                background-image: url('/static/img/thumbnail-arrow-84.svg');
+                background-size: 84px 84px;
                 background-position: center bottom;
                 bottom: -22px;
                 opacity: 0;
@@ -493,7 +495,8 @@ body.showing-asset .portfolio {
             }
 
             &.video .overlay {
-                background-image: url('/static/img/play40.png');
+                background-image: url('/static/img/play-45.svg');
+                background-size: 45px 45px;
                 background-position: center 45%;
                 opacity: 0.6;
                 .transition(opacity 100ms ease-out);
@@ -528,12 +531,9 @@ body.showing-asset .portfolio {
             }
             
             &.picture.loading {
-                background-image: url('/static/img/spinner.gif');
-                background-repeat: no-repeat;
-                background-position: center;
-                
                 img {
                     opacity: 0.7;
+                    animation: pulse 2s infinite;
                 }
             }
         }
@@ -550,17 +550,13 @@ body.showing-asset .portfolio {
         &.left {
             width: 24px;
             left: 0px;
-            background-image: url('/static/img/filmstrip-overflow-left.png');
-            background-position: top left;
-            background-repeat: repeat-y;
+            background: linear-gradient(90deg, fade(@gallery_bg, 90%), fade(@gallery_bg, 0%));
         }
         
         &.right {
             width: 80px;
             right: 0px;
-            background-image: url('/static/img/filmstrip-overflow-right.png');
-            background-position: top right;
-            background-repeat: repeat-y;
+            background: linear-gradient(90deg, fade(@gallery_bg, 0%), fade(@gallery_bg, 90%));
         }
         
         .pager {
@@ -650,11 +646,14 @@ body.showing-asset .portfolio {
                 }
 
                 &.picture .overlay {
-                    background-image: url('/static/img/thumbnail-arrow-67.png');
+                    background-image: url('/static/img/thumbnail-arrow-67.svg');
+                    background-size: 67px 67px;
                     bottom: -16px;
                 }
 
                 &.video .overlay {
+                    background-image: url('/static/img/play-45.svg');
+                    background-size: 35px 35px;
                 }
             }
         }
@@ -666,7 +665,7 @@ body.showing-asset .portfolio {
             &.right {
                 width: 48px;
                 right: 0px;
-                background-image: url('/static/img/filmstrip-overflow-right-small.png');
+                background: linear-gradient(90deg, fade(@gallery_bg, 0%), fade(@gallery_bg, 90%));
             }
             
             .pager {
@@ -894,7 +893,7 @@ body.showing-gallery .intro {
                     width: 80px;
                     height: 80px;
                     margin: 0 4px;
-                    border: 2px solid #EEE;
+                    border: 2px solid #eee;
                     opacity: 0.85;
                 }
             }
