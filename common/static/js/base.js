@@ -66,6 +66,17 @@ function Asset(name, data, galleryName) {
     this.data = $.extend({'categories' : defaultCategories}, data);
     this.galleryName = galleryName;
 
+    this.full = this.data['full'] || {};
+    this.fullSizes = this.full['sizes'] || [];
+    this.fullDefault = this.full['default'] || {};
+
+    this.thumb = this.data['thumb'] || {};
+    this.thumbSizes = this.thumb['sizes'] || [];
+    this.thumbDefault = this.thumb['default'] || {};
+
+    this.width = this.fullDefault.width;
+    this.height = this.fullDefault.height;
+
     var THUMBNAIL_CLASSES = {
         'picture' : 'picture',
         'video-youtube' : 'video'
@@ -78,7 +89,7 @@ function Asset(name, data, galleryName) {
         var thumbnail = $('<a>').attr({
             'role' : 'img button',
             'class' : 'asset',
-            'href' : asset.data['full'].src,
+            'href' : asset.fullDefault.src,
             'title' : asset.data['title']
         }).addClass(thumbnailClass).data('asset', asset);
 
@@ -86,20 +97,16 @@ function Asset(name, data, galleryName) {
             'class' : 'overlay'
         }).appendTo(thumbnail);
 
-
-        var thumbImg = asset.data['thumb'] || {};
-        var imgDefault = thumbImg['default'] || {};
-        var imgSizes = thumbImg['sizes'] || [];
         var srcset = [];
 
-        $.each(thumbImg['sizes'], function(index, imgSize) {
+        $.each(asset.thumbSizes, function(index, imgSize) {
             srcset.push(imgSize['src'] + ' ' + imgSize['x']);
         });
 
         $('<img>').attr({
-            'src' : imgDefault.src,
-            'width' : imgDefault.width,
-            'height' : imgDefault.height,
+            'src' : asset.thumbDefault.src,
+            'width' : asset.thumbDefault.width,
+            'height' : asset.thumbDefault.height,
             'alt' : '',
             'srcset': srcset.join(', '),
             'aria-hidden' : 'true'
@@ -118,9 +125,9 @@ function Asset(name, data, galleryName) {
     };
 
     this.getHeightForWidth = function(maxWidth) {
-        var ratio = this.data['full'].height / this.data['full'].width;
-        var displayWidth = Math.min(this.data['full'].width, maxWidth);
-        var displayHeight = Math.min(displayWidth * ratio, this.data['full'].height);
+        var ratio = this.height / this.width;
+        var displayWidth = Math.min(this.width, maxWidth);
+        var displayHeight = Math.min(displayWidth * ratio, this.height);
         return displayHeight;
     };
 
@@ -199,7 +206,7 @@ function PictureAssetView() {
     };
 
     this.updateContent = function(asset, content) {
-        if (content.attr('src') === asset.data['full'].src) {
+        if (content.attr('src') === asset.fullDefault.src) {
             loadedAsset(asset, pictureAssetView);
         } else {
             // I wish I could set width and height here, but it causes the existing image to stretch
@@ -211,19 +218,16 @@ function PictureAssetView() {
     };
 
     var updateImgWithAsset = function(img, asset) {
-        var fullImg = asset.data['full'] || {};
-        var imgDefault = fullImg['default'] || {};
-        var imgSizes = fullImg['sizes'] || [];
         var srcset = [];
 
-        $.each(fullImg['sizes'], function(index, imgSize) {
+        $.each(asset.fullSizes, function(index, imgSize) {
             srcset.push(imgSize['src'] + ' ' + imgSize['x']);
         });
 
         img.attr({
-            'src' : imgDefault.src,
-            'width' : imgDefault.width,
-            'height' : imgDefault.height,
+            'src' : asset.fullDefault.src,
+            'width' : asset.fullDefault.width,
+            'height' : asset.fullDefault.height,
             'alt' : asset.name,
             'srcset': srcset.join(', ')
         });
@@ -261,9 +265,9 @@ function VideoAssetView() {
             .css({'visibility' : 'hidden'});
 
         player = new YT.Player(playerElem[0], {
-            'width': asset.data['full'].width,
-            'height': asset.data['full'].height,
-            'videoId': asset.data['youtube-video-id'],
+            'width': asset.fullDefault.width,
+            'height': asset.fullDefault.height,
+            'videoId': asset.fullDefault.videoId,
             'playerVars': {
                 'autoplay': 0,
                 'autohide': 1,
@@ -281,7 +285,6 @@ function VideoAssetView() {
             }
         });
 
-        //loadingAsset(asset, false, videoAssetView);
         loadedAsset(selectedAsset, videoAssetView);
         return playerElem;
     };
@@ -309,12 +312,13 @@ function VideoAssetView() {
             player.playVideo();
         } else {
             var wasPlaying = (previousState == 0 || previousState == 1 || previousState == 3);
+
             if (wasPlaying) {
-                player.loadVideoById(asset.data['youtube-video-id'], 0, 'large');
+                player.loadVideoById(asset.fullDefault.videoId, 0, 'large');
             } else  {
-                player.cueVideoById(asset.data['youtube-video-id'], 0, 'large');
+                player.cueVideoById(asset.fullDefault.videoId, 0, 'large');
             }
-            player.setSize(asset.data['full'].width, asset.data['full'].height);
+            player.setSize(asset.fullDefault.width, asset.fullDefault.height);
         }
 
         playerVideo = asset;
@@ -414,7 +418,7 @@ function ViewerBox(container) {
         captionBox.stop(true, false);
         captionBox.css({
             'opacity' : 1,
-            'max-width' : asset.data['full'].width
+            'max-width' : asset.fullDefault.width
         });
     };
 

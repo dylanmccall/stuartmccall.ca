@@ -101,6 +101,8 @@ class PortfolioView(TemplateView):
             'extraHtml': media.extra,
         }
 
+        result['type'] = 'picture'
+
         if media.image:
             result['full'] = self._compress_full(media.image)
 
@@ -116,24 +118,31 @@ class PortfolioView(TemplateView):
             'extraHtml': media.extra,
         }
 
+        if media.thumbnail:
+            result['thumb'] = self._compress_thumbnail(media.thumbnail)
+
         if media.link:
             url = urlparse(media.link)
 
             if url.hostname == 'youtube.com':
                 params = parse_qs(url.query)
-                result['type'] = 'video-youtube'
-                result['youtube-video-id'] = params['v']
+                video_type = 'video-youtube'
+                video_id = params['v']
             elif url.hostname == 'youtu.be':
-                result['type'] = 'video-youtube'
-                result['youtube-video-id'] = url.path.lstrip('/')
+                video_type = 'video-youtube'
+                video_id = url.path.lstrip('/')
+            else:
+                video_id = None
 
-        result['full'] = {
-            'width': 640,
-            'height': 360
-        }
-
-        if media.thumbnail:
-            result['thumb'] = self._compress_thumbnail(media.thumbnail)
+            if video_id:
+                result['type'] = video_type
+                result['full'] = {
+                    'default': {
+                        'videoId': video_id,
+                        'width': 640,
+                        'height': 360
+                    }
+                }
 
         return result
 
