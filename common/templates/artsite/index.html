@@ -66,7 +66,7 @@
                 {% for gallery in all_galleries %}
                     <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
                         <div class="gallery-pic">
-                            {% thumbnail gallery.featured_thumbnail "40x40" quality=95 crop="center" as im %}
+                            {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
                             {% endthumbnail %}
                         </div>

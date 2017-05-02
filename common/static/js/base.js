@@ -59,14 +59,27 @@ function Asset(name, data, galleryName) {
             'href' : asset.data['full'].src,
             'title' : asset.data['title']
         }).addClass(thumbnailClass).data('asset', asset);
+
         $('<div>').attr({
             'class' : 'overlay'
         }).appendTo(thumbnail);
+
+
+        var thumbImg = asset.data['thumb'] || {};
+        var imgDefault = thumbImg['default'] || {};
+        var imgSizes = thumbImg['sizes'] || [];
+        var srcset = [];
+
+        $.each(thumbImg['sizes'], function(index, imgSize) {
+            srcset.push(imgSize['src'] + ' ' + imgSize['x']);
+        });
+
         $('<img>').attr({
-            'src' : asset.data['thumb'].src,
-            'width' : asset.data['thumb'].width,
-            'height' : asset.data['thumb'].height,
+            'src' : imgDefault.src,
+            'width' : imgDefault.width,
+            'height' : imgDefault.height,
             'alt' : '',
+            'srcset': srcset.join(', '),
             'aria-hidden' : 'true'
         }).appendTo(thumbnail);
 
@@ -175,12 +188,23 @@ function PictureAssetView() {
     }
 
     var updateImgWithAsset = function(img, asset) {
-        img.attr({
-            'src' : asset.data['full'].src,
-            'width' : asset.data['full'].width,
-            'height' : asset.data['full'].height,
-            'alt' : asset.name
+        var fullImg = asset.data['full'] || {};
+        var imgDefault = fullImg['default'] || {};
+        var imgSizes = fullImg['sizes'] || [];
+        var srcset = [];
+
+        $.each(fullImg['sizes'], function(index, imgSize) {
+            srcset.push(imgSize['src'] + ' ' + imgSize['x']);
         });
+
+        img.attr({
+            'src' : imgDefault.src,
+            'width' : imgDefault.width,
+            'height' : imgDefault.height,
+            'alt' : asset.name,
+            'srcset': srcset.join(', ')
+        });
+
         img.data('asset', asset);
     }
 

@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from orderable.admin import OrderableAdmin, OrderableTabularInline
 
-from sorl.thumbnail import get_thumbnail
+from common.utils import compress_image
 
 from galleries import models
 
@@ -92,14 +92,28 @@ class MediaAdmin(admin.ModelAdmin):
 
 def _image_preview(image, size=80):
     if image:
-        geometry = '{size}x{size}'.format(size=size)
-        thumbnail = get_thumbnail(image, geometry, crop='center', quality=95)
+        image_dict = compress_image(image, width=80, height=80, crop='center', quality=95)
+    else:
+        return None
 
-        return format_html('<img class="admin-preview" src="{url}" width={width} height={height} style="{style}" />',
-            url=thumbnail.url,
-            width=thumbnail.width,
-            height=thumbnail.height,
-            style='height: {size}; width: auto'.format(size=size)
+    if image_dict:
+        image_default = image_dict.get('default', {})
+        srcset = []
+
+        for image_variant in image_dict.get('sizes'):
+            srcset.append('{src} {x}'.format(
+                src=image_variant.get('src'),
+                x=image_variant.get('x')
+            ))
+
+        style = 'height: {size}; width: auto'.format(size=size)
+
+        return format_html('<img class="admin-preview" src="{src}" width="{width}" height="{height}" srcset="{srcset}" style="{style}" />',
+            src=image_default.get('src'),
+            width=image_default.get('width'),
+            height=image_default.get('height'),
+            srcset=str(', ').join(srcset),
+            style=style
         )
     else:
         return None

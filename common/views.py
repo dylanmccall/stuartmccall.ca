@@ -4,9 +4,9 @@ from django.http import JsonResponse, Http404, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
-from sorl.thumbnail import get_thumbnail
-
 from galleries import models
+
+from common.utils import compress_image
 
 from collections import OrderedDict
 
@@ -123,20 +123,10 @@ class PortfolioDataView(ListView):
         }
 
         if media.image:
-            image = self._compress_full(media.image)
-            result['full'] = {
-                'src': image.url,
-                'width': image.width,
-                'height': image.height
-            }
+            result['full'] = self._compress_full(media.image)
 
         if media.thumbnail:
-            image = self._compress_thumbnail(media.thumbnail)
-            result['thumb'] = {
-                'width': image.width,
-                'height': image.height,
-                'src': image.url
-            }
+            result['thumb'] = self._compress_thumbnail(media.thumbnail)
 
         return result
 
@@ -164,24 +154,19 @@ class PortfolioDataView(ListView):
         }
 
         if media.thumbnail:
-            image = self._compress_thumbnail(media.thumbnail)
-            result['thumb'] = {
-                'width': image.width,
-                'height': image.height,
-                'src': image.url
-            }
+            result['thumb'] = self._compress_thumbnail(media.thumbnail)
 
         return result
 
     def _compress_full(self, image):
+        result = {}
+
         ratio = image.width / float(image.height)
 
         if ratio >= 2.0:
-            crop = 'x400'
+            return compress_image(image, height=400, srcset=[1, 1.5], quality=95)
         else:
-            crop = '650x650'
-
-        return get_thumbnail(image, crop, quality=95)
+            return compress_image(image, width=650, height=650, srcset=[1, 1.5], quality=95)
 
     def _compress_thumbnail(self, image):
-        return get_thumbnail(image, '80x80', crop='center', quality=95)
+        return compress_image(image, width=80, height=80, crop='center', quality=95)
