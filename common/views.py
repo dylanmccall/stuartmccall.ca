@@ -1,6 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 
@@ -41,11 +41,30 @@ class PortfolioView(TemplateView):
             portfolio = models.Portfolio.objects.get_for_site(site)
         except models.Portfolio.DoesNotExist:
             raise Http404(_("There is no portfolio for this site"))
+        else:
+            all_galleries = list(portfolio.get_all_galleries())
+
+        gallery_slug = kwargs.get('gallery_slug')
+
+        if gallery_slug:
+            selected_gallery = next((x for x in all_galleries if x.slug == gallery_slug), None)
+        else:
+            selected_gallery = None
 
         context['portfolio'] = portfolio
-        context['galleries'] = list(portfolio.get_all_galleries())
+        context['all_galleries'] = all_galleries
+        context['selected_gallery'] = selected_gallery
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        if kwargs.get('gallery_slug') and not context.get('selected_gallery'):
+            index_url = reverse('index')
+            return HttpResponseRedirect(index_url)
+        else:
+            return self.render_to_response(context)
 
 
 class PortfolioDataView(ListView):
