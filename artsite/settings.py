@@ -150,7 +150,8 @@ SIMPLEMDE_OPTIONS = {
         'image',
         '|',
         'guide'
-    ]
+    ],
+    'status': False
 }
 
 # Static files (CSS, JavaScript, Images)
