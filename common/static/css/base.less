@@ -1,5 +1,4 @@
 @import (less) "_common.less";
-@import (less) "_prefixer.less";
 
 @inner_margin_h: 30px;
 
@@ -146,7 +145,7 @@ a {
         border: none;
     }
 }
-    
+
 .header {
     display: block;
     position: relative;
@@ -154,13 +153,13 @@ a {
     background-color: #565656;
 
     h1.sitetitle {
-        .user_select_none();
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
         font-size: 3.8em;
         line-height: 1em;
         color: #333;
         text-align: center;
+        user-select: none;
+
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
         .main {
             display: block;
@@ -183,7 +182,7 @@ a {
             vertical-align: middle;
         }
     }
-    
+
     img.sitetitle {
         display: block;
         max-width: 100%;
@@ -212,15 +211,14 @@ a {
 .portfolio {
     padding: 0;
     background-color: @gallery_bg;
-    
+
     .filters {
         display: block;
         padding: 8px 24px;
         text-align: center;
         cursor: default;
+        user-select: none;
 
-        .user_select_none();
-        
         .filter {
             display: inline-block;
             font-family: @filter_font;
@@ -245,7 +243,7 @@ a {
                     width: 80px;
                     height: auto;
                     opacity: 0.85;
-                    .transition(opacity 200ms ease-out);
+                    transition: opacity 200ms ease-out;
                 }
             }
 
@@ -300,12 +298,12 @@ a {
                 }
             }
         }
-        
+
         /* Special padding for the Tahoma font's black circle character */
         .filter.filter-all {
             padding: 5px 8px 7px 8px;
         }
-        
+
         .filter:hover, .filter:focus {
             background-color: #e9e9e9;
 
@@ -313,7 +311,7 @@ a {
                 opacity: 1;
             }
         }
-        
+
         .filter.current {
             background-color: #d6d6d6;
             box-shadow: inset 0 0 8px #CCC;
@@ -336,7 +334,7 @@ a {
         color: #666;
         font-style: italic;
     }
-    
+
     .viewer {
         position: relative;
         padding: 12px @inner_margin_h;
@@ -348,9 +346,10 @@ a {
         }
 
         .asset-content.asset-picture {
-            .user_select_none();
+            user-select: none;
+
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            
+
             img {
                 display: block;
                 margin: 0 auto;
@@ -366,14 +365,14 @@ a {
                 max-width: 100%;
             }
         }
-        
+
         .caption {
             padding: 6px 0 0 0;
             color: #555;
             max-width: @max_image_size;
             margin: 0 auto;
             text-align: center;
-            
+
             p.caption-main {
                 margin: 0;
             }
@@ -430,14 +429,14 @@ body.showing-asset .portfolio {
     height: 80px + 4px + 12px;
     overflow: hidden;
     padding: 0 80px 0 24px;
+    user-select: none;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     &.empty {
         display: none;
     }
-    
-    .user_select_none();
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    
+
     .thumbnails {
         display: block;
         position: absolute;
@@ -446,12 +445,12 @@ body.showing-asset .portfolio {
         margin-left: (@inner_margin_h - 6px);
         z-index: 1;
         overflow: visible;
-        
+
         a.asset {
             display: block;
             text-decoration: none;
             cursor: pointer;
-            
+
             img {
                 display: block;
                 position: relative;
@@ -461,7 +460,7 @@ body.showing-asset .portfolio {
                 margin: 0 4px;
                 border: 2px solid #EEE;
                 opacity: 0.85;
-                .transition(opacity 200ms ease-out);
+                transition: opacity 200ms ease-out;
             }
 
             .icon {
@@ -484,7 +483,7 @@ body.showing-asset .portfolio {
                 background-position: center bottom;
                 bottom: -22px;
                 opacity: 0;
-                .transition(bottom 100ms ease-out);
+                transition: bottom 100ms ease-out;
             }
 
             &.video .overlay {
@@ -492,16 +491,16 @@ body.showing-asset .portfolio {
                 background-size: 45px 45px;
                 background-position: center 45%;
                 opacity: 0.6;
-                .transition(opacity 100ms ease-out);
+                transition: opacity 100ms ease-out;
             }
-            
+
             .caption {
                 display: none;
             }
-            
+
             &:hover, &:focus, &.current {
                 outline: none;
-                
+
                 img {
                     opacity: 1;
                     border-color: #ddd;
@@ -522,7 +521,7 @@ body.showing-asset .portfolio {
                     opacity: 0.85;
                 }
             }
-            
+
             &.picture.loading {
                 img {
                     opacity: 0.7;
@@ -531,7 +530,7 @@ body.showing-asset .portfolio {
             }
         }
     }
-    
+
     .overflow {
         display: block;
         position: absolute;
@@ -539,19 +538,19 @@ body.showing-asset .portfolio {
         background-repeat: repeat-y;
         z-index: 5;
         cursor: pointer;
-        
+
         &.left {
             width: 24px;
             left: 0px;
             background: linear-gradient(90deg, fade(@gallery_bg, 90%), fade(@gallery_bg, 0%));
         }
-        
+
         &.right {
             width: 80px;
             right: 0px;
             background: linear-gradient(90deg, fade(@gallery_bg, 0%), fade(@gallery_bg, 90%));
         }
-        
+
         .pager {
             display: block;
             position: absolute;
@@ -562,35 +561,35 @@ body.showing-asset .portfolio {
             background-color: #d9d9d9;
             border-radius: 50%;
             text-decoration: none;
-            .transition(background-color 200ms ease-out);
-            
+            transition: background-color 200ms ease-out;
+
             .pager-inner {
                 display: block;
                 padding: 12px 6px 4px 6px;
                 text-align: center;
             }
-            
+
             .current {
                 font-size: 24px;
                 line-height: 1em;
                 font-weight: bold;
                 color: #000;
             }
-            
+
             .total {
                 font-size: 16px;
                 line-height: 1em;
                 color: #555;
                 vertical-align: bottom;
             }
-            
+
             .arrow {
                 display: none;
                 font-size: 24px;
                 line-height: 1em;
                 color: #000;
             }
-            
+
             &.bignumber {
                 letter-spacing:-1px;
             }
@@ -606,7 +605,7 @@ body.showing-asset .portfolio {
                 line-height: 1em;
             }
         }
-        
+
         &:hover, &:focus {
             .pager {
                 outline: none;
@@ -650,27 +649,27 @@ body.showing-asset .portfolio {
                 }
             }
         }
-        
+
         .overflow {
             &.left {
             }
-            
+
             &.right {
                 width: 48px;
                 right: 0px;
                 background: linear-gradient(90deg, fade(@gallery_bg, 0%), fade(@gallery_bg, 90%));
             }
-            
+
             .pager {
                 top: 22px;
                 right: 8px;
                 width: 32px;
                 height: 32px;
-                
+
                 .pager-inner {
                     padding: 4px 2px 4px 0px;
                 }
-                
+
                 /*
                 .arrow {
                     display: block;
@@ -680,18 +679,18 @@ body.showing-asset .portfolio {
                     color: #000;
                 }
                 */
-                
+
                 .current {
                     font-size: 24px;
                     line-height: 1em;
                     font-weight: normal;
                     color: #000;
                 }
-                
+
                 .total {
                     display: none;
                 }
-                
+
                 &.bignumber {
                     letter-spacing:-1px;
                 }
@@ -776,11 +775,11 @@ body.showing-gallery .intro {
         .fn {
             font-weight: normal;
         }
-        
+
         .adr {
             margin-bottom: 0.5em;
         }
-        
+
         .email, .tel {
             margin: 0.5em 0;
         }
@@ -826,7 +825,7 @@ body.showing-gallery .intro {
                 height: auto;
                 opacity: 0.85;
                 margin: 0;
-                .transition(opacity 200ms ease-out);
+                transition: opacity 200ms ease-out;
             }
 
             &:hover img, &:focus img {
@@ -929,7 +928,7 @@ ul.years-list {
         color: #777;
         font-size: 0.85em;
         cursor: default;
-        .user_select_none();
+        user-select: none;
     }
 
     .desc {
@@ -997,17 +996,15 @@ ul.years-list {
 
     ul.years-list {
         max-height: none;
-        .column-count(3);
-        .column-gap(1em);
+        column-count: 3;
+        column-gap: 1em;
 
         @media screen and (max-width: @big_screen) {
-            .column-count(2);
+            column-count: 2;
         }
 
         @media screen and (max-width: @small_screen) {
-            .column-count(1);
-            /*max-height: 40em;
-            overflow-y: auto;*/
+            column-count: 1;
         }
     }
 }
@@ -1015,7 +1012,7 @@ ul.years-list {
 #footer {
     margin: 2em 0;
     padding: 0 @inner_margin_h;
-    
+
     .copyright, .contact {
         display: block;
         margin: 1em 0;
@@ -1023,11 +1020,11 @@ ul.years-list {
         line-height: 1.4em;
         color: #555;
         text-align: center;
-        
+
         a {
             text-decoration: none;
             color: #555;
-            
+
             &:hover, &:focus {
                 text-decoration: underline;
             }
@@ -1048,8 +1045,8 @@ ul.years-list {
     position: relative;
     opacity: 1;
     top: 0;
-    .transition(opacity 200ms ease-out);
-    .transition(top 200ms ease-out);
+    transition: opacity 200ms ease-out;
+    transition: top 200ms ease-out;
 
     &.offscreen {
         top: 1em;
