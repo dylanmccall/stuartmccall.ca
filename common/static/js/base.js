@@ -1206,45 +1206,37 @@ $(document).ready(function() {
     });
 });
 
-
-// $(document).ready(function () {
-//  var updateBlurElems = function() {
-//      $('.blur').each(function(id, blur) {
-//          var topEdge = $(blur).offset().top;
-//          var bottomEdge = topEdge + $(blur).height();
-
-//          var blurMiddleRatio = Number($(blur).data('blur-from')) || 0.5;
-
-//          var scrollHeight = $(window).height();
-//          var scrollTop = $(window).scrollTop();
-//          var scrollMiddle = scrollTop + (scrollHeight * blurMiddleRatio);
-//          var scrollBottom = scrollTop + scrollHeight;
-
-//          // element is considered onscreen if it is within the top 40% of
-//          // the viewport, or its bottom edge is visible.
-//          var onscreen = false
-//              || (scrollTop > topEdge)
-//              || (topEdge > scrollTop && topEdge < scrollMiddle)
-//              || (bottomEdge < scrollBottom);
-
-//          if (!onscreen) {
-//              $(blur).addClass('offscreen');
-//          } else {
-//              $(blur).removeClass('offscreen');
-//          }
-//      });
-//  }
-
-//  $(window).on('scroll resize', updateBlurElems);
-//  filterSelectedCbs.push(updateBlurElems);
-//  layoutChangedCbs.push(updateBlurElems);
-// });
-
-
 $(document).ready(function () {
     $(window).on('popstate', onHistoryChange);
     onHistoryChange();
 });
+
+(function() {
+    var _YOUTUBE_IS_READY = false;
+    var _YOUTUBE_READY_CALLBACKS = [];
+
+    // Load YouTube IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onYouTubeIframeAPIReady() {
+        _YOUTUBE_IS_READY = true;
+        $.each(_YOUTUBE_READY_CALLBACKS, function(index, callback) {
+            callback();
+        });
+    }
+
+    function doWhenYouTubeIsReady(callback) {
+        if (_YOUTUBE_IS_READY) {
+            callback();
+        } else {
+            _YOUTUBE_READY_CALLBACKS.push(callback);
+        }
+    }
+})();
 
 
 })();

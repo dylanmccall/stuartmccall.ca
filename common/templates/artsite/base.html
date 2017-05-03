@@ -24,26 +24,6 @@
         </script>
     {% endblock %}
 
-    <script type="text/javascript">
-        var _YOUTUBE_IS_READY = false;
-        var _YOUTUBE_READY_CALLBACKS = [];
-
-        function onYouTubePlayerAPIReady() {
-            _YOUTUBE_IS_READY = true;
-            $.each(_YOUTUBE_READY_CALLBACKS, function(index, callback) {
-                callback();
-            });
-        }
-
-        function doWhenYouTubeIsReady(callback) {
-            if (_YOUTUBE_IS_READY) {
-                callback();
-            } else {
-                _YOUTUBE_READY_CALLBACKS.push(callback);
-            }
-        }
-    </script>
-
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic%7CPT+Sans+Narrow:400,700%7CPT+Serif:400,400italic" type="text/css" />
 
     {% compress css %}
@@ -53,7 +33,6 @@
     {% endcompress %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
 
     {% compress js %}
         <script type="text/javascript" src="{% static 'js/history.js' %}"></script>
