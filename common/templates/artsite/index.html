@@ -1,8 +1,7 @@
 {% extends "artsite/base.html" %}
 {% load cache %}
 {% load i18n %}
-{% load json_tools %}
-{% load thumbnail %}
+{% load image_tools %}
 
 {% block js_data %}
     {% spaceless %}
@@ -27,9 +26,7 @@
                     {% for gallery in all_galleries %}
                         <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
                             <div aria-hidden="true" class="filter-pic">
-                                {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
-                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
-                                {% endthumbnail %}
+                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
                             </div>
                             <span class="filter-label">{{ gallery.name }}</span>
                         </a>
@@ -78,9 +75,7 @@
                     {% for gallery in all_galleries %}
                         <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
                             <div class="gallery-pic">
-                                {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
-                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
-                                {% endthumbnail %}
+                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
                             </div>
                             <div class="gallery-label">{{ gallery.name }}</div>
                         </a>

@@ -3,6 +3,27 @@ from django.utils.html import format_html
 from markdown import markdown
 from sorl.thumbnail import get_thumbnail
 
+IMAGE_STYLES = {
+    'thumb': {
+        'width': 80,
+        'height': 80,
+        'crop': 'center',
+        'quality': 95,
+        'srcset': [1, 1.5, 2]
+    },
+    'full': {
+        'width': 650,
+        'height': 650,
+        'quality': 95,
+        'srcset': [1, 1.5]
+    },
+    'full--pano': {
+        'height': 400,
+        'quality': 95,
+        'srcset': [1, 1.5]
+    }
+}
+
 def markdownify(content):
     return markdown(
         text=content,
@@ -10,7 +31,14 @@ def markdownify(content):
         extension_configs=[]
     )
 
-def compress_image(image, width=None, height=None, srcset=[1, 1.5, 2], **kwargs):
+def get_image_style(image, style_str):
+    style_kwargs = IMAGE_STYLES.get(style_str)
+    if style_kwargs is None:
+        raise ValueError("Provided image style does not exist")
+
+    return _compress_image(image, **style_kwargs)
+
+def _compress_image(image, width=None, height=None, srcset=[1, 1.5, 2], **kwargs):
     sizes = []
 
     for density in srcset:

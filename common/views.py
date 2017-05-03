@@ -8,7 +8,7 @@ from django.views.generic import ListView, TemplateView
 
 from galleries import models
 
-from common.utils import compress_image
+from common.utils import get_image_style
 
 from collections import OrderedDict
 import json
@@ -116,10 +116,14 @@ class PortfolioView(TemplateView):
         result['type'] = 'picture'
 
         if media.image:
-            result['full'] = self._compress_full(media.image)
+            ratio = media.image.width / float(media.image.height)
+            if ratio >= 2.0:
+                result['full'] = get_image_style(media.image, 'full--pano')
+            else:
+                result['full'] = get_image_style(media.image, 'full')
 
         if media.thumbnail:
-            result['thumb'] = self._compress_thumbnail(media.thumbnail)
+            result['thumb'] = get_image_style(media.thumbnail, 'thumb')
 
         return result
 
@@ -131,7 +135,7 @@ class PortfolioView(TemplateView):
         }
 
         if media.thumbnail:
-            result['thumb'] = self._compress_thumbnail(media.thumbnail)
+            result['thumb'] = get_image_style(media.thumbnail, 'thumb')
 
         if media.link:
             url = urlparse(media.link)
@@ -157,16 +161,3 @@ class PortfolioView(TemplateView):
                 }
 
         return result
-
-    def _compress_full(self, image):
-        result = {}
-
-        ratio = image.width / float(image.height)
-
-        if ratio >= 2.0:
-            return compress_image(image, height=400, srcset=[1, 1.5], quality=95)
-        else:
-            return compress_image(image, width=650, height=650, srcset=[1, 1.5], quality=95)
-
-    def _compress_thumbnail(self, image):
-        return compress_image(image, width=80, height=80, crop='center', quality=95)

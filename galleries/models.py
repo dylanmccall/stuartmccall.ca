@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -74,10 +74,6 @@ class Gallery(models.Model):
     def get_absolute_url(self):
         return reverse('gallery', kwargs={'gallery_slug': self.slug})
 
-    def _get_portfolios(self):
-        for portfoliogallery in self.portfoliogallery_set.select_related('portfolio'):
-            yield portfoliogallery.portfolio
-
     @cached_property
     def abstract_html(self):
         if self.abstract:
@@ -129,10 +125,6 @@ class Media(models.Model):
     def __str__(self):
         return "{} - {}".format(self.get_media_type_display(), self.title)
 
-    def _get_portfolios(self):
-        for gallerymedia in self.gallerymedia_set.all():
-            yield from gallerymedia._get_portfolios()
-
     @cached_property
     def featured_thumbnail(self):
         if self.thumbnail:
@@ -152,9 +144,6 @@ class PortfolioGallery(Orderable):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
 
-    def _get_portfolios(self):
-        yield self.portfolio
-
 
 class GalleryMedia(Orderable):
     class Meta(Orderable.Meta):
@@ -165,16 +154,23 @@ class GalleryMedia(Orderable):
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
 
-    def _get_portfolios(self):
-        yield from self.gallery._get_portfolios()
 
+# Crudely bump modified_date for related portfolios to break their cache
 
-def _update_parent_portfolio_revision(sender, instance, **kwargs):
-    # Crudely bump modified_date for related portfolios to break their cache
-    for portfolio in instance._get_portfolios():
-        portfolio.save()
+@receiver(pre_save, sender=Gallery)
+def _gallery_bubble_change(sender, instance, **kwargs):
+    for portfoliogallery in instance.portfoliogallery_set.all():
+        portfoliogallery.save()
 
-post_save.connect(_update_parent_portfolio_revision, Gallery)
-post_save.connect(_update_parent_portfolio_revision, Media)
-post_save.connect(_update_parent_portfolio_revision, GalleryMedia)
-post_save.connect(_update_parent_portfolio_revision, PortfolioGallery)
+@receiver(pre_save, sender=Media)
+def _media_bubble_change(sender, instance, **kwargs):
+    for gallerymedia in instance.gallerymedia_set.all():
+        gallerymedia.save()
+
+@receiver(pre_save, sender=GalleryMedia)
+def _gallerymedia_bubble_change(sender, instance, **kwargs):
+    self.gallery.save()
+
+@receiver(pre_save, sender=PortfolioGallery)
+def _portfoliogallery_bubble_change(sender, instance, **kwargs):
+    self.portfolio.save()
