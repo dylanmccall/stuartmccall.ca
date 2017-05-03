@@ -229,7 +229,7 @@ function PictureAssetView() {
             'src' : asset.fullDefault.src,
             'width' : asset.fullDefault.width,
             'height' : asset.fullDefault.height,
-            'alt' : asset.name,
+            'alt': '',
             'srcset': srcset.join(', ')
         });
 
