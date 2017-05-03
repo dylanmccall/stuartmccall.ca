@@ -178,8 +178,8 @@ def _media_bubble_change(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=GalleryMedia)
 def _gallerymedia_bubble_change(sender, instance, **kwargs):
-    self.gallery.save()
+    instance.gallery.save()
 
 @receiver(pre_save, sender=PortfolioGallery)
 def _portfoliogallery_bubble_change(sender, instance, **kwargs):
-    self.portfolio.save()
+    instance.portfolio.save()
