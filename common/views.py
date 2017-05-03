@@ -54,17 +54,17 @@ class PortfolioView(TemplateView):
         else:
             selected_gallery = None
 
-        key = make_template_fragment_key('galleries_js_str', [portfolio.pk, portfolio.modified_date])
-        galleries_js_str = cache.get_or_set(
+        key = make_template_fragment_key('portfolio_js_str', [portfolio.pk, portfolio.modified_date])
+        portfolio_js_str = cache.get_or_set(
             key,
-            lambda: self._get_galleries_js_str(all_galleries),
+            lambda: self._get_portfolio_js_str(all_galleries),
             None
         )
 
         context['portfolio'] = portfolio
         context['all_galleries'] = all_galleries
         context['selected_gallery'] = selected_gallery
-        context['galleries_js_str'] = galleries_js_str
+        context['portfolio_js_str'] = portfolio_js_str
 
         return context
 
@@ -77,34 +77,42 @@ class PortfolioView(TemplateView):
         else:
             return self.render_to_response(context)
 
-    def _get_galleries_js_str(self, galleries_list):
-        galleries_js_dict = self._get_galleries_js_dict(galleries_list)
+    def _get_portfolio_js_str(self, galleries_list):
+        galleries_js_dict = self._get_portfolio_js_dict(galleries_list)
         return json.dumps(galleries_js_dict)
 
-    def _get_galleries_js_dict(self, galleries_list):
+    def _get_portfolio_js_dict(self, galleries_list):
         result = OrderedDict()
 
         for gallery in galleries_list:
-            media_list = []
-
-            for media in gallery.get_all_media():
-                if media.media_type == 'image':
-                    media_obj = self._media_obj_image(media)
-                elif media.media_type == 'external-video':
-                    media_obj = self._media_obj_external_video(media)
-                else:
-                    media_obj = None
-
-                if media_obj:
-                    media_list.append(media_obj)
-
-            result[gallery.slug] = {
-                'synopsis': gallery.synopsis,
-                'abstractId': 'abstract-{slug}'.format(slug=gallery.slug),
-                'media': media_list
-            }
+            key = make_template_fragment_key('gallery_js_dict', [gallery.pk, gallery.modified_date])
+            result[gallery.slug] = cache.get_or_set(
+                key,
+                lambda: self._get_gallery_js_dict(gallery),
+                None
+            )
 
         return result
+
+    def _get_gallery_js_dict(self, gallery):
+        media_list = []
+
+        for media in gallery.get_all_media():
+            if media.media_type == 'image':
+                media_obj = self._media_obj_image(media)
+            elif media.media_type == 'external-video':
+                media_obj = self._media_obj_external_video(media)
+            else:
+                media_obj = None
+
+            if media_obj:
+                media_list.append(media_obj)
+
+        return {
+            'synopsis': gallery.synopsis,
+            'abstractId': 'abstract-{slug}'.format(slug=gallery.slug),
+            'media': media_list
+        }
 
     def _media_obj_image(self, media):
         result = {
