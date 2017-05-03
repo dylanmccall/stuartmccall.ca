@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from orderable.models import Orderable
 from simplemde.fields import SimpleMDEField
 
-from common.utils import markdownify
+from common.utils import markdownify, generate_image_styles
 
 
 class PortfolioManager(models.Manager):
@@ -143,6 +143,13 @@ class Media(models.Model):
         else:
             return 0
 
+    def generate_image_styles(self):
+        if self.image:
+            generate_image_styles(self.image)
+
+        if self.featured_thumbnail:
+            generate_image_styles(self.featured_thumbnail, ['thumb'])
+
 
 class PortfolioGallery(Orderable):
     class Meta(Orderable.Meta):
@@ -168,12 +175,12 @@ class GalleryMedia(Orderable):
 
 @receiver(pre_save, sender=Gallery)
 def _gallery_bubble_change(sender, instance, **kwargs):
-    for portfoliogallery in instance.portfoliogallery_set.all():
+    for portfoliogallery in instance.portfoliogallery_set.iterator():
         portfoliogallery.save()
 
 @receiver(pre_save, sender=Media)
 def _media_bubble_change(sender, instance, **kwargs):
-    for gallerymedia in instance.gallerymedia_set.all():
+    for gallerymedia in instance.gallerymedia_set.iterator():
         gallerymedia.save()
 
 @receiver(pre_save, sender=GalleryMedia)
@@ -183,3 +190,7 @@ def _gallerymedia_bubble_change(sender, instance, **kwargs):
 @receiver(pre_save, sender=PortfolioGallery)
 def _portfoliogallery_bubble_change(sender, instance, **kwargs):
     instance.portfolio.save()
+
+@receiver(post_save, sender=Media)
+def _media_generate_image_styles(sender, instance, **kwargs):
+    instance.generate_image_styles()

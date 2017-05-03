@@ -38,6 +38,13 @@ def get_image_style(image, style_str):
 
     return _compress_image(image, **style_kwargs)
 
+def generate_image_styles(image, styles=None):
+    if styles is None:
+        styles = IMAGE_STYLES.keys()
+
+    for style_str in styles:
+        get_image_style(image, style_str)
+
 def _compress_image(image, width=None, height=None, srcset=[1, 1.5, 2], **kwargs):
     sizes = []
 

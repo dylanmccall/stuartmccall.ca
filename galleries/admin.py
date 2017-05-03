@@ -8,6 +8,8 @@ from common.templatetags.image_tools import image_style
 
 from galleries import models
 
+import os
+
 
 class PortfolioGalleryInline(OrderableTabularInline):
     model = models.PortfolioGallery
@@ -105,7 +107,7 @@ class MediaAdmin(admin.ModelAdmin):
 
     def media_id(self, obj):
         if obj.image:
-            return obj.image.name
+            return os.path.basename(obj.image.name)
         elif obj.link:
             return obj.link
         else:
