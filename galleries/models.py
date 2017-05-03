@@ -144,8 +144,10 @@ class Media(models.Model):
             return 0
 
     def generate_image_styles(self):
-        if self.image:
-            generate_image_styles(self.image)
+        if self.image and self.image_ratio >= 2.0:
+            generate_image_styles(self.image, ['full--pano'])
+        elif self.image:
+            generate_image_styles(self.image, ['full'])
 
         if self.featured_thumbnail:
             generate_image_styles(self.featured_thumbnail, ['thumb'])

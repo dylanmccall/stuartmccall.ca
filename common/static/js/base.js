@@ -201,23 +201,21 @@ function PictureAssetView() {
 
         updateImgWithAsset(content, asset)
         loadingAsset(asset, true, pictureAssetView);
+        console.log("NEW CONTENT", content);
 
         return content;
     };
 
     this.updateContent = function(asset, content) {
-        content.remove();
-        return this.createContent(asset);
-
-        // if (content.attr('src') === asset.fullDefault.src) {
-        //     loadedAsset(asset, pictureAssetView);
-        // } else {
-        //     // I wish I could set width and height here, but it causes the existing image to stretch
-        //     loadingAsset(asset, false, pictureAssetView);
-        //     updateImgWithAsset(content, asset);
-        // }
-
-        // return content;
+        if (content.attr('src') === asset.fullDefault.src) {
+            loadedAsset(asset, pictureAssetView);
+        } else {
+            content.addClass('fadeout');
+            setTimeout(function() {
+                content.remove();
+            }, 1000);
+            return this.createContent(asset);
+        }
     };
 
     var updateImgWithAsset = function(img, asset) {
