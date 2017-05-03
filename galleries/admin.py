@@ -83,6 +83,10 @@ class GalleryAdmin(admin.ModelAdmin):
     list_filter = (
         'portfoliogallery__portfolio',
     )
+    readonly_fields = (
+        'created_date',
+        'modified_date',
+    )
     inlines = [
         GalleryMediaInline,
     ]
@@ -114,7 +118,10 @@ class MediaAdmin(admin.ModelAdmin):
             'fields': ('caption', 'extra', 'created_date', 'modified_date',)
         })
     )
-    readonly_fields = ('created_date', 'modified_date',)
+    readonly_fields = (
+        'created_date',
+        'modified_date',
+    )
 
     def media_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)

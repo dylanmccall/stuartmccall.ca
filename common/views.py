@@ -116,7 +116,7 @@ class PortfolioView(TemplateView):
 
     def _media_obj_image(self, media):
         result = {
-            'title': media.title,
+            'title': media.pretty_title,
             'captionHtml': media.caption,
             'extraHtml': media.extra,
         }
@@ -136,7 +136,7 @@ class PortfolioView(TemplateView):
 
     def _media_obj_external_video(self, media):
         result = {
-            'title': media.title,
+            'title': media.pretty_title,
             'captionHtml': media.caption,
             'extraHtml': media.extra,
         }

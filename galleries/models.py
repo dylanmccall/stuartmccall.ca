@@ -110,7 +110,7 @@ class Media(models.Model):
         ('external-video', _("Video")),
     )
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(blank=True, null=True, max_length=100)
     media_type = models.CharField(choices=MEDIA_TYPES, max_length=100, default='image')
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
     image = models.ImageField(blank=True, upload_to='full', width_field='image_width', height_field='image_height')
@@ -125,7 +125,11 @@ class Media(models.Model):
     # Reverse reference: gallerymedia_set (0-n)
 
     def __str__(self):
-        return "{} - {}".format(self.get_media_type_display(), self.title)
+        return "{} - {}".format(self.get_media_type_display(), self.pretty_title)
+
+    @cached_property
+    def pretty_title(self):
+        return self.title or self.caption or _("Untitled")
 
     @cached_property
     def featured_thumbnail(self):
