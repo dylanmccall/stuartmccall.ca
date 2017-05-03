@@ -9,17 +9,20 @@ IMAGE_STYLES = {
         'height': 80,
         'crop': 'center',
         'quality': 95,
+        'progressive': False,
         'srcset': [1, 1.5, 2]
     },
     'full': {
         'width': 650,
         'height': 650,
         'quality': 95,
+        'progressive': False,
         'srcset': [1, 1.5]
     },
     'full--pano': {
         'height': 400,
         'quality': 95,
+        'progressive': False,
         'srcset': [1, 1.5]
     }
 }
