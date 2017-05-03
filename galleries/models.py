@@ -117,7 +117,7 @@ class Media(models.Model):
     image_width = models.PositiveIntegerField(blank=True, null=True, editable=False)
     image_height = models.PositiveIntegerField(blank=True, null=True, editable=False)
     link = models.URLField(blank=True, null=True)
-    caption = models.TextField(max_length=200, blank=True, null=True)
+    caption = models.TextField(blank=True, null=True, max_length=200)
     extra = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)

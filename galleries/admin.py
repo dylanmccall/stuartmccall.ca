@@ -92,7 +92,7 @@ class GalleryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('media_preview', 'title',)
+    list_display = ('media_preview', 'title', 'media_id',)
     list_display_links = ('media_preview', 'title',)
     list_filter = (
         'media_type',
@@ -102,6 +102,15 @@ class MediaAdmin(admin.ModelAdmin):
     def media_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)
     media_preview.short_description = _("Preview")
+
+    def media_id(self, obj):
+        if obj.image:
+            return obj.image.name
+        elif obj.link:
+            return obj.link
+        else:
+            return None
+    media_id.short_description = _("ID")
 
 
 def _image_preview(image, size=80):

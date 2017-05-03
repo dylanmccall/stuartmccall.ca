@@ -121,8 +121,8 @@ class PortfolioView(TemplateView):
             else:
                 result['full'] = get_image_style(media.image, 'full')
 
-        if media.thumbnail:
-            result['thumb'] = get_image_style(media.thumbnail, 'thumb')
+        if media.featured_thumbnail:
+            result['thumb'] = get_image_style(media.featured_thumbnail, 'thumb')
 
         return result
 
@@ -133,8 +133,8 @@ class PortfolioView(TemplateView):
             'extraHtml': media.extra,
         }
 
-        if media.thumbnail:
-            result['thumb'] = get_image_style(media.thumbnail, 'thumb')
+        if media.featured_thumbnail:
+            result['thumb'] = get_image_style(media.featured_thumbnail, 'thumb')
 
         if media.link:
             url = urlparse(media.link)
