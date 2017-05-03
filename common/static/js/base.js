@@ -25,11 +25,8 @@ var DEFAULT_ASSET_DATA = {
 
 
 var trackEvent = function(data) {
-    if (typeof _gaq !== 'undefined') {
-        _gaq.push(data);
-    } else {
-        console.log("Tracking event", data);
-    }
+    window._gaq = window._gaq || [];
+    window._gaq.push(data);
 };
 
 

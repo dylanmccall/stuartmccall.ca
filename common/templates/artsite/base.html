@@ -18,29 +18,11 @@
 
     <!-- <link rel="shortcut icon" href="" type="image/x-icon" /> -->
 
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic%7CPT+Sans+Narrow:400,700%7CPT+Serif:400,400italic" type="text/css" />
-
-    {% compress css %}
-        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/reset.less' %}" />
-        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/base.less' %}" />
-        <link rel="stylesheet" type="text/less" media="print" href="{% static 'css/print.less' %}" />
-    {% endcompress %}
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-2068654-5']);
-        _gaq.push(['_trackPageview']);
-
-        {% if not debug and not request.user.is_authenticated %}
-            (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-        {% endif %}
-    </script>
+    {% block js_data %}
+        <script type="text/javascript">
+            var SMC_GALLERIES = {};
+        </script>
+    {% endblock %}
 
     <script type="text/javascript">
         var _YOUTUBE_IS_READY = false;
@@ -62,18 +44,35 @@
         }
     </script>
 
-    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic%7CPT+Sans+Narrow:400,700%7CPT+Serif:400,400italic" type="text/css" />
 
-    {% block js_data %}
-        <script type="text/javascript">
-            var SMC_GALLERIES = {};
-        </script>
-    {% endblock %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/reset.less' %}" />
+        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/base.less' %}" />
+        <link rel="stylesheet" type="text/less" media="print" href="{% static 'css/print.less' %}" />
+    {% endcompress %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
 
     {% compress js %}
         <script type="text/javascript" src="{% static 'js/history.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
     {% endcompress %}
+
+    {% if not debug and not request.user.is_authenticated %}
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-2068654-5']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+    {% endif %}
 </head>
 
 <body id="page-home">
