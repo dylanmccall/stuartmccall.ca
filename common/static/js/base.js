@@ -196,12 +196,12 @@ function PictureAssetView() {
 
     this.createContent = function(asset) {
         var content = $('<img>')
+            .addClass('loading')
             .on('load', onImgLoaded)
             .appendTo(this.contentBox);
 
         updateImgWithAsset(content, asset)
         loadingAsset(asset, true, pictureAssetView);
-        console.log("NEW CONTENT", content);
 
         return content;
     };
@@ -238,6 +238,7 @@ function PictureAssetView() {
 
     var onImgLoaded = function(event) {
         asset = $(this).data('asset');
+        $(this).removeClass('loading');
         if (asset) loadedAsset(asset, pictureAssetView);
     };
 }
