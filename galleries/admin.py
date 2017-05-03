@@ -29,6 +29,7 @@ class PortfolioGalleryInline(OrderableTabularInline):
             return _image_preview(obj.gallery.featured_thumbnail)
         else:
             return None
+    gallery_preview.short_description = _("Preview")
 
 
 class GalleryMediaInline(OrderableTabularInline):
@@ -55,6 +56,7 @@ class GalleryMediaInline(OrderableTabularInline):
             return _image_preview(obj.media.featured_thumbnail)
         else:
             return None
+    media_preview.short_description = _("Preview")
 
 
 @admin.register(models.Portfolio)
@@ -63,6 +65,10 @@ class PortfolioAdmin(admin.ModelAdmin):
     list_filter = (
         'site',
     )
+    readonly_fields = (
+        'created_date',
+        'modified_date',
+    )
     inlines = [
         PortfolioGalleryInline,
     ]
@@ -70,24 +76,32 @@ class PortfolioAdmin(admin.ModelAdmin):
 
 @admin.register(models.Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'gallery_preview',)
+    list_display = ('gallery_preview', 'name',)
+    list_display_links = ('gallery_preview', 'name',)
+    list_filter = (
+        'portfoliogallery__portfolio',
+    )
     inlines = [
         GalleryMediaInline,
     ]
 
     def gallery_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)
+    gallery_preview.short_description = _("Preview")
 
 
 @admin.register(models.Media)
 class MediaAdmin(admin.ModelAdmin):
     list_display = ('media_preview', 'title',)
+    list_display_links = ('media_preview', 'title',)
     list_filter = (
         'media_type',
+        'gallerymedia__gallery'
     )
 
     def media_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)
+    media_preview.short_description = _("Preview")
 
 
 def _image_preview(image, size=80):
@@ -106,14 +120,11 @@ def _image_preview(image, size=80):
                 x=image_variant.get('x')
             ))
 
-        style = 'height: {size}; width: auto'.format(size=size)
-
-        return format_html('<img class="admin-preview" src="{src}" width="{width}" height="{height}" srcset="{srcset}" style="{style}" />',
+        return format_html('<img class="admin-preview" src="{src}" width="{width}" height="{height}" srcset="{srcset}" />',
             src=image_default.get('src'),
             width=image_default.get('width'),
             height=image_default.get('height'),
             srcset=str(', ').join(srcset),
-            style=style
         )
     else:
         return None

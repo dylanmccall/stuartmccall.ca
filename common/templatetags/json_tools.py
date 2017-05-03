@@ -1,4 +1,7 @@
 from django.template import Library
+from django.utils.functional import Promise
+
+from collections import OrderedDict
 
 import json
 
@@ -6,16 +9,12 @@ register = Library()
 
 @register.filter
 def json_dumps(json_object):
+    if isinstance(json_object, Promise):
+        json_object = OrderedDict(json_object)
     return json.dumps(json_object)
 
 @register.filter
 def json_dumps_pretty(json_object):
+    if isinstance(json_object, Promise):
+        json_object = OrderedDict(json_object)
     return json.dumps(json_object, indent=4, separators=(',', ': '))
-
-@register.filter
-def json_data(json_object, path_str):
-    path = path_str.split('.')
-    while isinstance(json_object, dict) and len(path) > 0:
-        part = path.pop(0)
-        json_object = json_object.get(part)
-    return json_object

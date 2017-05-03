@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
@@ -25,6 +27,8 @@ class Portfolio(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
     blurb = SimpleMDEField(blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
     # Reverse reference: portfoliogallery_set (0-n)
 
@@ -58,6 +62,8 @@ class Gallery(models.Model):
     synopsis = models.TextField(blank=True, null=True)
     abstract = SimpleMDEField(blank=True, null=True)
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
     # Reverse reference: portfoliogallery_set (0-n)
     # Reverse reference: gallerymedia_set (0-n)
@@ -67,6 +73,10 @@ class Gallery(models.Model):
 
     def get_absolute_url(self):
         return reverse('gallery', kwargs={'gallery_slug': self.slug})
+
+    def _get_portfolios(self):
+        for portfoliogallery in self.portfoliogallery_set.select_related('portfolio'):
+            yield portfoliogallery.portfolio
 
     @cached_property
     def abstract_html(self):
@@ -111,11 +121,17 @@ class Media(models.Model):
     link = models.URLField(blank=True, null=True)
     caption = models.TextField(max_length=200, blank=True, null=True)
     extra = models.TextField(blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
     # Reverse reference: gallerymedia_set (0-n)
 
     def __str__(self):
         return "{} - {}".format(self.get_media_type_display(), self.title)
+
+    def _get_portfolios(self):
+        for gallerymedia in self.gallerymedia_set.all():
+            yield from gallerymedia._get_portfolios()
 
     @cached_property
     def featured_thumbnail(self):
@@ -132,8 +148,12 @@ class PortfolioGallery(Orderable):
         verbose_name = _("portfolio gallery")
         verbose_name_plural = _("portfolio galleries")
 
+    sort_order = models.IntegerField(_("Sort"), blank=True, db_index=True)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
+
+    def _get_portfolios(self):
+        yield self.portfolio
 
 
 class GalleryMedia(Orderable):
@@ -141,5 +161,20 @@ class GalleryMedia(Orderable):
         verbose_name = _("gallery media")
         verbose_name_plural = _("gallery media")
 
+    sort_order = models.IntegerField(_("Sort"), blank=True, db_index=True)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
+
+    def _get_portfolios(self):
+        yield from self.gallery._get_portfolios()
+
+
+def _update_parent_portfolio_revision(sender, instance, **kwargs):
+    # Crudely bump modified_date for related portfolios to break their cache
+    for portfolio in instance._get_portfolios():
+        portfolio.save()
+
+post_save.connect(_update_parent_portfolio_revision, Gallery)
+post_save.connect(_update_parent_portfolio_revision, Media)
+post_save.connect(_update_parent_portfolio_revision, GalleryMedia)
+post_save.connect(_update_parent_portfolio_revision, PortfolioGallery)

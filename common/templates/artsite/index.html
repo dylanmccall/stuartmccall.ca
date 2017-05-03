@@ -1,14 +1,15 @@
 {% extends "artsite/base.html" %}
+{% load cache %}
 {% load i18n %}
 {% load json_tools %}
 {% load thumbnail %}
 
 {% block js_data %}
-{% spaceless %}
-    <script type="text/javascript">
-        var SMC_GALLERIES = {{ galleries_js_dict|json_dumps|safe }};
-    </script>
-{% endspaceless %}
+    {% spaceless %}
+        <script type="text/javascript">
+            var SMC_GALLERIES = {{ galleries_js_str|safe }};
+        </script>
+    {% endspaceless %}
 {% endblock %}
 
 {% block main %}
@@ -22,16 +23,18 @@
                     {% endfor %}
                 </select>
 
-                {% for gallery in all_galleries %}
-                    <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
-                        <div aria-hidden="true" class="filter-pic">
-                            {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
-                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
-                            {% endthumbnail %}
-                        </div>
-                        <span class="filter-label">{{ gallery.name }}</span>
-                    </a>
-                {% endfor %}
+                {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
+                    {% for gallery in all_galleries %}
+                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
+                            <div aria-hidden="true" class="filter-pic">
+                                {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                {% endthumbnail %}
+                            </div>
+                            <span class="filter-label">{{ gallery.name }}</span>
+                        </a>
+                    {% endfor %}
+                {% endcache %}
 
                 <div class="bottom"></div>
             </div>
@@ -71,16 +74,18 @@
 
         <aside role="complementary" aria-hidden="true" class="projects">
             <div class="galleries-list">
-                {% for gallery in all_galleries %}
-                    <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
-                        <div class="gallery-pic">
-                            {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
-                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
-                            {% endthumbnail %}
-                        </div>
-                        <div class="gallery-label">{{ gallery.name }}</div>
-                    </a>
-                {% endfor %}
+                {% cache 31556926 portfolio_galleries_tiles portfolio.id portfolio.modified_date %}
+                    {% for gallery in all_galleries %}
+                        <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
+                            <div class="gallery-pic">
+                                {% thumbnail gallery.featured_thumbnail "80x80" quality=95 crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="" />
+                                {% endthumbnail %}
+                            </div>
+                            <div class="gallery-label">{{ gallery.name }}</div>
+                        </a>
+                    {% endfor %}
+                {% endcache %}
 
                 <div class="bottom"></div>
             </div>
@@ -304,11 +309,13 @@
 {% endblock %}
 
 {% block js-resource %}
-    {% for gallery in all_galleries %}
-        {% if gallery.abstract %}
-            <div class="abstract" id="abstract-{{ gallery.slug }}">
-                {{ gallery.abstract_html|safe }}
-            </div>
-        {% endif %}
-    {% endfor %}
+    {% cache 31556926 portfolio_galleries_abstracts portfolio.id portfolio.modified_date %}
+        {% for gallery in all_galleries %}
+            {% if gallery.abstract %}
+                <div class="abstract" id="abstract-{{ gallery.slug }}">
+                    {{ gallery.abstract_html|safe }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endcache %}
 {% endblock %}

@@ -1,4 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse, Http404, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +11,7 @@ from galleries import models
 from common.utils import compress_image
 
 from collections import OrderedDict
+import json
 
 try:
     from urlparse import urlparse, parse_qs
@@ -51,12 +54,17 @@ class PortfolioView(TemplateView):
         else:
             selected_gallery = None
 
-        galleries_js_dict = self._get_galleries_js_dict(all_galleries)
+        key = make_template_fragment_key('galleries_js_str', [portfolio.pk, portfolio.modified_date])
+        galleries_js_str = cache.get_or_set(
+            key,
+            lambda: self._get_galleries_js_str(all_galleries),
+            None
+        )
 
         context['portfolio'] = portfolio
         context['all_galleries'] = all_galleries
         context['selected_gallery'] = selected_gallery
-        context['galleries_js_dict'] = galleries_js_dict
+        context['galleries_js_str'] = galleries_js_str
 
         return context
 
@@ -68,6 +76,10 @@ class PortfolioView(TemplateView):
             return HttpResponseRedirect(index_url)
         else:
             return self.render_to_response(context)
+
+    def _get_galleries_js_str(self, galleries_list):
+        galleries_js_dict = self._get_galleries_js_dict(galleries_list)
+        return json.dumps(galleries_js_dict)
 
     def _get_galleries_js_dict(self, galleries_list):
         result = OrderedDict()
