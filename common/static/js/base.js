@@ -206,15 +206,18 @@ function PictureAssetView() {
     };
 
     this.updateContent = function(asset, content) {
-        if (content.attr('src') === asset.fullDefault.src) {
-            loadedAsset(asset, pictureAssetView);
-        } else {
-            // I wish I could set width and height here, but it causes the existing image to stretch
-            loadingAsset(asset, false, pictureAssetView);
-            updateImgWithAsset(content, asset);
-        }
+        content.remove();
+        return this.createContent(asset);
 
-        return content;
+        // if (content.attr('src') === asset.fullDefault.src) {
+        //     loadedAsset(asset, pictureAssetView);
+        // } else {
+        //     // I wish I could set width and height here, but it causes the existing image to stretch
+        //     loadingAsset(asset, false, pictureAssetView);
+        //     updateImgWithAsset(content, asset);
+        // }
+
+        // return content;
     };
 
     var updateImgWithAsset = function(img, asset) {
