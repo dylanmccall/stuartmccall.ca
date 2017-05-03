@@ -116,8 +116,7 @@ class PortfolioView(TemplateView):
         result['type'] = 'picture'
 
         if media.image:
-            ratio = media.image.width / float(media.image.height)
-            if ratio >= 2.0:
+            if media.image_ratio >= 2.0:
                 result['full'] = get_image_style(media.image, 'full--pano')
             else:
                 result['full'] = get_image_style(media.image, 'full')

@@ -113,7 +113,9 @@ class Media(models.Model):
     title = models.CharField(max_length=100)
     media_type = models.CharField(choices=MEDIA_TYPES, max_length=100, default='image')
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
-    image = models.ImageField(blank=True, upload_to='full')
+    image = models.ImageField(blank=True, upload_to='full', width_field='image_width', height_field='image_height')
+    image_width = models.PositiveIntegerField(blank=True, null=True, editable=False)
+    image_height = models.PositiveIntegerField(blank=True, null=True, editable=False)
     link = models.URLField(blank=True, null=True)
     caption = models.TextField(max_length=200, blank=True, null=True)
     extra = models.TextField(blank=True, null=True)
@@ -133,6 +135,13 @@ class Media(models.Model):
             return self.image
         else:
             return None
+
+    @cached_property
+    def image_ratio(self):
+        if self.image_height > 0:
+            return self.image_width / float(self.image_height)
+        else:
+            return 0
 
 
 class PortfolioGallery(Orderable):
