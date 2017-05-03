@@ -100,6 +100,21 @@ class MediaAdmin(admin.ModelAdmin):
         'media_type',
         'gallerymedia__gallery'
     )
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'media_type', 'thumbnail',)
+        }),
+        ("Image", {
+            'fields': ('image',)
+        }),
+        ("Video", {
+            'fields': ('link',)
+        }),
+        ("Details", {
+            'fields': ('caption', 'extra', 'created_date', 'modified_date',)
+        })
+    )
+    readonly_fields = ('created_date', 'modified_date',)
 
     def media_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)
