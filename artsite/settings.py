@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'orderable',
     'sorl.thumbnail',
     'simplemde',
+    'dbbackup',
 ]
 
 INSTALLED_APPS += [
@@ -174,6 +175,12 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 MEDIA_URL = '/media/'
+
+# Backups
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# Local settings
 
 try:
     from .local_settings import *

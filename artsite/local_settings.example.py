@@ -36,6 +36,10 @@ TIME_ZONE = 'America/Vancouver'
 #     '127.0.0.1',
 # ]
 
+# Backup location
+
+# DBBACKUP_STORAGE_OPTIONS = {'location': '/path/to/backups'}
+
 ##### Development settings #####
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
