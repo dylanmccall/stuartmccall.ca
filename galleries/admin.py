@@ -63,9 +63,10 @@ class GalleryMediaInline(OrderableTabularInline):
 
 @admin.register(models.Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ('title', 'site')
+    list_display = ('title', 'site', 'modified_date',)
     list_filter = (
         'site',
+        'modified_date',
     )
     readonly_fields = (
         'created_date',
@@ -78,11 +79,13 @@ class PortfolioAdmin(admin.ModelAdmin):
 
 @admin.register(models.Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ('gallery_preview', 'name',)
+    list_display = ('gallery_preview', 'name', 'modified_date',)
     list_display_links = ('gallery_preview', 'name',)
     list_filter = (
         'portfoliogallery__portfolio',
+        'modified_date',
     )
+    search_fields = ['slug', 'name']
     readonly_fields = (
         'created_date',
         'modified_date',
@@ -98,18 +101,20 @@ class GalleryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('media_preview', 'title', 'media_id',)
-    list_display_links = ('media_preview', 'title',)
+    list_display = ('media_preview', '__str__', 'image_dimensions', 'modified_date',)
+    list_display_links = ('media_preview', '__str__',)
     list_filter = (
         'media_type',
-        'gallerymedia__gallery'
+        'gallerymedia__gallery',
+        'modified_date',
     )
+    search_fields = ['title', 'caption', 'image', 'link', 'gallerymedia__gallery__slug', 'gallerymedia__gallery__name']
     fieldsets = (
         (None, {
             'fields': ('title', 'media_type', 'thumbnail',)
         }),
         ("Image", {
-            'fields': ('image',)
+            'fields': ('image', 'image_dimensions',)
         }),
         ("Video", {
             'fields': ('link',)
@@ -119,6 +124,7 @@ class MediaAdmin(admin.ModelAdmin):
         })
     )
     readonly_fields = (
+        'image_dimensions',
         'created_date',
         'modified_date',
     )
@@ -127,14 +133,12 @@ class MediaAdmin(admin.ModelAdmin):
         return _image_preview(obj.featured_thumbnail)
     media_preview.short_description = _("Preview")
 
-    def media_id(self, obj):
-        if obj.image:
-            return os.path.basename(obj.image.name)
-        elif obj.link:
-            return obj.link
+    def image_dimensions(self, obj):
+        if obj.media_type == 'image' and obj.image_width and obj.image_height:
+            return "{}\u00D7{}".format(obj.image_width, obj.image_height)
         else:
             return None
-    media_id.short_description = _("ID")
+    image_dimensions.short_description = _("Dimensions")
 
 
 def _image_preview(image, size=80):

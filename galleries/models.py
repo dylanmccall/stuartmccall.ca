@@ -125,11 +125,15 @@ class Media(models.Model):
     # Reverse reference: gallerymedia_set (0-n)
 
     def __str__(self):
-        return "{} - {}".format(self.get_media_type_display(), self.pretty_title)
+        return "{} - {}".format(self.get_media_type_display(), self.admin_title)
 
     @cached_property
     def pretty_title(self):
         return self.title or self.caption or _("Untitled")
+
+    @cached_property
+    def admin_title(self):
+        return self.title or self.caption or self._media_id or self.pk
 
     @cached_property
     def featured_thumbnail(self):
@@ -146,6 +150,15 @@ class Media(models.Model):
             return self.image_width / float(self.image_height)
         else:
             return 0
+
+    @cached_property    
+    def _media_id(self, obj):
+        if obj.image:
+            return os.path.basename(obj.image.name)
+        elif obj.link:
+            return obj.link
+        else:
+            return None
 
     def generate_image_styles(self):
         if self.image and self.image_ratio >= 2.0:
