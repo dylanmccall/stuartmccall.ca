@@ -19,6 +19,9 @@ except ImportError:
     from urllib.parse import urlparse, parse_qs
 
 
+RENDER_VERSION = '2017-05-05'
+
+
 class JsonResponseMixin(object):
     # From https://docs.djangoproject.com/en/1.10/topics/class-based-views/mixins/#jsonresponsemixin-example
 
@@ -54,7 +57,7 @@ class PortfolioView(TemplateView):
         else:
             selected_gallery = None
 
-        key = make_template_fragment_key('portfolio_js_str', [portfolio.pk, portfolio.modified_date])
+        key = make_template_fragment_key('portfolio_js_str', [portfolio.pk, portfolio.modified_date, RENDER_VERSION])
         portfolio_js_str = cache.get_or_set(
             key,
             lambda: self._get_portfolio_js_str(all_galleries),
@@ -85,7 +88,7 @@ class PortfolioView(TemplateView):
         result = OrderedDict()
 
         for gallery in galleries_list:
-            key = make_template_fragment_key('gallery_js_dict', [gallery.pk, gallery.modified_date])
+            key = make_template_fragment_key('gallery_js_dict', [gallery.pk, gallery.modified_date, RENDER_VERSION])
             result[gallery.slug] = cache.get_or_set(
                 key,
                 lambda: self._get_gallery_js_dict(gallery),

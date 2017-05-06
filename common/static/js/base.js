@@ -86,8 +86,7 @@ function Asset(name, data, galleryName) {
         var thumbnail = $('<a>').attr({
             'role' : 'img button',
             'class' : 'asset',
-            'href' : asset.fullDefault.src,
-            'title' : asset.data['caption']
+            'href' : asset.fullDefault.src
         }).addClass(thumbnailClass).data('asset', asset);
 
         $('<div>').attr({
