@@ -87,7 +87,7 @@ function Asset(name, data, galleryName) {
             'role' : 'img button',
             'class' : 'asset',
             'href' : asset.fullDefault.src,
-            'title' : asset.data['title']
+            'title' : asset.data['caption']
         }).addClass(thumbnailClass).data('asset', asset);
 
         $('<div>').attr({
