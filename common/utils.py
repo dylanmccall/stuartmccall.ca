@@ -8,20 +8,23 @@ IMAGE_STYLES = {
         'width': 80,
         'height': 80,
         'crop': 'center',
+        'upscale': False,
         'quality': 95,
         'progressive': False,
         'srcset': [1, 1.5, 2]
     },
     'full': {
-        'width': 650,
-        'height': 650,
+        'width': 780,
+        'height': 780,
+        'upscale': False,
         'quality': 95,
         'progressive': False,
         'srcset': [1, 1.5]
     },
     'full--pano': {
-        'height': 400,
+        'height': 450,
         'quality': 95,
+        'upscale': False,
         'progressive': False,
         'srcset': [1, 1.5]
     }
@@ -64,7 +67,7 @@ def _compress_image(image, width=None, height=None, srcset=[1, 1.5, 2], **kwargs
         else:
             geometry = None
 
-        image_variant = get_thumbnail(image, geometry, upscale=False, **kwargs)
+        image_variant = get_thumbnail(image, geometry, **kwargs)
 
         if image_variant.exists():
             sizes.append({
