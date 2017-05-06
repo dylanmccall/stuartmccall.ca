@@ -108,10 +108,10 @@ class MediaAdmin(admin.ModelAdmin):
         'gallerymedia__gallery',
         'modified_date',
     )
-    search_fields = ['title', 'caption', 'image', 'link', 'gallerymedia__gallery__slug', 'gallerymedia__gallery__name']
+    search_fields = ['name', 'caption', 'image', 'link', 'gallerymedia__gallery__slug', 'gallerymedia__gallery__name']
     fieldsets = (
         (None, {
-            'fields': ('title', 'media_type', 'thumbnail',)
+            'fields': ('name', 'media_type', 'thumbnail',)
         }),
         ("Image", {
             'fields': ('image', 'image_dimensions',)

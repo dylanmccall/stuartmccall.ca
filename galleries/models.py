@@ -13,6 +13,8 @@ from simplemde.fields import SimpleMDEField
 
 from common.utils import markdownify, generate_image_styles
 
+import os
+
 
 class PortfolioManager(models.Manager):
     def get_for_site(self, site):
@@ -110,14 +112,14 @@ class Media(models.Model):
         ('external-video', _("Video")),
     )
 
-    title = models.CharField(blank=True, null=True, max_length=100)
+    name = models.CharField(blank=True, null=True, max_length=100)
     media_type = models.CharField(choices=MEDIA_TYPES, max_length=100, default='image')
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
     image = models.ImageField(blank=True, upload_to='full', width_field='image_width', height_field='image_height')
     image_width = models.PositiveIntegerField(blank=True, null=True, editable=False)
     image_height = models.PositiveIntegerField(blank=True, null=True, editable=False)
     link = models.URLField(blank=True, null=True)
-    caption = models.TextField(blank=True, null=True, max_length=200)
+    caption = models.CharField(blank=True, null=True, max_length=200)
     extra = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
@@ -129,11 +131,11 @@ class Media(models.Model):
 
     @cached_property
     def pretty_title(self):
-        return self.title or self.caption or _("Untitled")
+        return self.caption or self.name or _("Untitled")
 
     @cached_property
     def admin_title(self):
-        return self.title or self.caption or self._media_id or self.pk
+        return self.caption or self.name or self._media_id or self.pk
 
     @cached_property
     def featured_thumbnail(self):
@@ -151,12 +153,12 @@ class Media(models.Model):
         else:
             return 0
 
-    @cached_property    
-    def _media_id(self, obj):
-        if obj.image:
-            return os.path.basename(obj.image.name)
-        elif obj.link:
-            return obj.link
+    @cached_property
+    def _media_id(self):
+        if self.image:
+            return os.path.basename(self.image.name)
+        elif self.link:
+            return self.link
         else:
             return None
 

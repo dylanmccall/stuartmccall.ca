@@ -397,13 +397,13 @@ function ViewerBox(container) {
     var showCaptionForAsset = function(asset) {
         captionBox.empty();
 
-        var captionHtml = asset.data['captionHtml'];
+        var caption = asset.data['caption'];
         var extraHtml = asset.data['extraHtml'];
 
-        if (captionHtml) {
+        if (caption) {
             $('<p>')
                 .addClass('caption-main')
-                .html(captionHtml)
+                .text(caption)
                 .appendTo(captionBox);
         }
 
