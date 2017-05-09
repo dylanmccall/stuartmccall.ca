@@ -61,7 +61,7 @@ class Gallery(models.Model):
 
     slug = models.CharField(max_length=30)
     name = models.CharField(max_length=100)
-    synopsis = models.TextField(blank=True, null=True)
+    synopsis = models.CharField(blank=True, null=True, max_length=200)
     abstract = SimpleMDEField(blank=True, null=True)
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
     created_date = models.DateTimeField(auto_now_add=True)
