@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_extensions',
     'orderable',
     'sorl.thumbnail',
     'simplemde',
