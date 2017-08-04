@@ -993,9 +993,13 @@ var selectAsset = function(asset, data) {
 
 
 var goToFilter = function(filter) {
-    filtersTop = filter ? $('.filters').offset().top : 0;
+    var filtersBottom = 0;
+    if (filter) {
+        var filtersBox = $('.filters');
+        filtersBottom = filtersBox.offset().top + filtersBox.outerHeight();
+    }
     $('html, body').stop(true, false).animate({
-        'scrollTop' : filtersTop
+        'scrollTop' : filtersBottom
     }, 150);
     if (filter) {
         pushHistory(undefined, SITE_TITLE, SITE_BASE+filter.name);
