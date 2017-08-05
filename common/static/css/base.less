@@ -1118,3 +1118,70 @@ ul.years-list {
         top: 0;
     }
 }
+
+body.as-admin {
+    .admin-toolbar {
+        display: block;
+        background-color: #b7b7b7;
+        color: #efefef;
+        border-bottom: solid 2px #cfcfcf;
+
+        .admin-toolbar-inner {
+            width: 90%;
+            min-width: 240px;
+            padding: 0 5%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin: 0 -5px;
+
+            > li {
+                display: block;
+                flex-grow: 0;
+                margin: 0 5px;
+            }
+
+            > li.nav-spacer {
+                flex-grow: 1;
+                margin: 0;
+            }
+
+            @media screen and (max-width: @small_screen) {
+                flex-direction: column;
+                margin: 5px 0;
+                justify-content: stretch;
+                text-align: left;
+
+                > li.nav-spacer {
+                    flex-grow: 0;
+                    margin: 1em 0 0 0;
+                }
+            }
+        }
+
+        a.nav-button {
+            display: block;
+            padding: 8px;
+            color: inherit;
+            font-weight: bold;
+            text-decoration: none;
+            background: transparent;
+            transition: background-color 200ms ease;
+
+            &:hover, &:focus {
+                background: #a9a9a9;
+                text-decoration: underline;
+            }
+
+            &.normal-text {
+                font-weight: normal;
+            }
+        }
+    }
+}

@@ -54,7 +54,36 @@
     {% endif %}
 </head>
 
-<body id="page-home">
+<body id="page-home" class="{% if request.user.is_staff %}as-admin{% endif %}">
+
+{% if request.user.is_staff %}
+<div class="admin-toolbar">
+    <div class="admin-toolbar-inner">
+        <ul>
+            <li>
+                <a class="nav-button normal-text" href="{% url 'admin:auth_user_change' request.user.pk %}">
+                    Signed in as <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                </a>
+            </li>
+            <li>
+                <a class="nav-button" href="{% url 'logout' %}">
+                    {% trans "Sign out" %}
+                </a>
+            </li>
+            <li class="nav-spacer">
+            </li>
+            {% block admin_links %}
+                <li>
+                    <a class="nav-button" href="{% url 'admin:index' %}">
+                        {% trans "Django administration" %}
+                    </a>
+                </li>
+            {% endblock %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
 <div id="wrapper">
     <main role="main" id="main">
         <header role="banner" class="header">

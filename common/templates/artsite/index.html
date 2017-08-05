@@ -11,6 +11,15 @@
     {% endspaceless %}
 {% endblock %}
 
+{% block admin_links %}
+    <li>
+        <a class="nav-button" href="{% url 'admin:galleries_portfolio_change' portfolio.pk %}">
+            {% trans "Edit" %}
+        </a>
+    </li>
+    {{ block.super }}
+{% endblock %}
+
 {% block main %}
     <div class="portfolio">
         <nav role="navigation" aria-controls="filmstrip gallery-content" class="filters gallery-filters">
