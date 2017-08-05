@@ -866,6 +866,7 @@ function Filter(allAssets, button) {
                 var History = window.History;
                 goToFilter(filter, {showAsset: true});
             }
+            scrollToMedia();
         });
 
         filter.assets = [];
@@ -945,8 +946,6 @@ var selectedFilter = undefined;
 var visibleFilter = undefined;
 var visibleAssets = [];
 var selectFilter = function(filter, data) {
-    console.log("SELECT FILTER DATA", data);
-
     data = $.extend({}, _DEFAULT_SELECT_FILTER_DATA, data);
 
     if (!filter) {
@@ -1138,10 +1137,12 @@ $(document).ready(function () {
 
     $('.synopsis').on('click', function(event) {
         selectAsset(undefined);
+        scrollToMedia();
     });
 
     $('.action-return').on('click', function(event) {
         goToFilter(undefined);
+        scrollToMedia();
         event.preventDefault();
     });
 
@@ -1149,6 +1150,7 @@ $(document).ready(function () {
         event.preventDefault();
         var destFilter = filters[$(this).val()];
         goToFilter(destFilter, {showAsset: true});
+        scrollToMedia();
     });
 
     $('a.gallery-link').on('click', function(event) {
@@ -1156,6 +1158,7 @@ $(document).ready(function () {
         var destUrl = $(this).attr('href');
         var destFilter = filterForPath(destUrl);
         goToFilter(destFilter, {showAsset: true});
+        scrollToMedia();
     });
 
     $('a.back-to-top-link').on('click', function(event) {
