@@ -139,7 +139,7 @@ a {
 
 #main {
     background-color: #fff;
-    border: 2px solid #E8E8E8;
+    border: 2px solid #e8e8e8;
 
     @media screen and (max-width: @medium_screen) {
         border: none;
@@ -208,13 +208,14 @@ a {
 }
 
 
+
 .portfolio {
     padding: 0;
     background-color: @gallery_bg;
 
     .filters {
         display: block;
-        padding: 8px 24px 4px 24px;
+        padding: 8px 24px;
         text-align: center;
         cursor: default;
         user-select: none;
@@ -323,7 +324,7 @@ a {
 
         .filter.current {
             background-color: #d6d6d6;
-            box-shadow: inset 0 0 8px #CCC;
+            box-shadow: inset 0 0 8px #ccc;
 
             .filter-pic img {
                 opacity: 1;
@@ -425,6 +426,8 @@ a {
 
 body.showing-gallery .portfolio {
     .filters {
+        padding-bottom: 4px;
+
         .filter {
             width: auto;
 
@@ -459,12 +462,12 @@ body.showing-asset .portfolio {
     .filters {
         .filters .filter.current {
             background-color: #ccc;
-            box-shadow: inset 0 0 8px #BBB;
+            box-shadow: inset 0 0 8px #bbb;
         }
     }
 
     .gallery-content {
-        border-top: 1px dotted #DDD;
+        border-top: 1px dotted #ddd;
     }
 }
 
@@ -502,7 +505,7 @@ body.showing-asset .portfolio {
                 width: 80px;
                 height: 80px;
                 margin: 0 4px;
-                border: 2px solid #EEE;
+                border: 2px solid #eee;
                 opacity: 0.85;
                 transition: opacity 200ms ease-out;
             }
@@ -672,7 +675,7 @@ body.showing-asset .portfolio {
                     width: 65px;
                     height: 65px;
                     margin: 0;
-                    border: 1px solid #EEE;
+                    border: 1px solid #eee;
                 }
 
                 .overlay {
@@ -767,7 +770,7 @@ body.showing-asset .portfolio {
     display: none;
     padding-top: 1em;
     padding-bottom: 1em;
-    border-bottom: 1px dotted #DDD;
+    border-bottom: 1px dotted #ddd;
     z-index: 2;
 }
 
@@ -779,7 +782,7 @@ body.showing-asset .portfolio {
     margin-top: 2em;
     padding-top: 1em;
     padding-bottom: 2em;
-    border-top: 1px dotted #DDD;
+    border-top: 1px dotted #ddd;
 }
 
 .abstract, .intro {
@@ -803,14 +806,20 @@ body.showing-asset .portfolio {
     display: none;
 }
 
-body.showing-gallery .site-main {
-    margin-top: 2em;
-    padding-top: 2em;
-}
+body.showing-gallery {
+    .portfolio {
+        box-shadow: 0 2px 2px #ddd;
+    }
 
-body.showing-gallery .intro {
-    h2 {
-        display: block;
+    .site-main {
+        margin-top: 2em;
+        padding-top: 2em;
+    }
+
+    .intro {
+        h2 {
+            display: block;
+        }
     }
 }
 
