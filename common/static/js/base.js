@@ -18,9 +18,9 @@ var SITE_TITLE = document.title;
 var SITE_BASE = '/';
 
 var DEFAULT_ASSET_DATA = {
-    'type' : 'picture',
-    'full': {},
-    'thumb': {}
+    type: 'picture',
+    full: {},
+    thumb: {}
 };
 
 
@@ -203,15 +203,11 @@ function PictureAssetView() {
     };
 
     this.updateContent = function(asset, content) {
-        if (content.attr('src') === asset.fullDefault.src) {
-            loadedAsset(asset, pictureAssetView);
-        } else {
-            content.addClass('fadeout');
-            setTimeout(function() {
-                content.remove();
-            }, 1000);
-            return this.createContent(asset);
-        }
+        content.addClass('fadeout');
+        setTimeout(function() {
+            content.remove();
+        }, 1000);
+        return this.createContent(asset);
     };
 
     var updateImgWithAsset = function(img, asset) {
@@ -262,25 +258,27 @@ function VideoAssetView() {
             .appendTo(this.contentBox)
             .css({'visibility' : 'hidden'});
 
-        player = new YT.Player(playerElem[0], {
-            'width': asset.fullDefault.width,
-            'height': asset.fullDefault.height,
-            'videoId': asset.fullDefault.videoId,
-            'playerVars': {
-                'autoplay': 0,
-                'autohide': 1,
-                'controls': 1,
-                'disablekb' : 1,
-                'enablejsapi': 1,
-                'rel': 0,
-                'showinfo': 0,
-                'suggestedQuality':'large',
-                'modestbranding': 0,
-                'theme' : 'dark'
-            },
-            'events': {
-                'onReady': onPlayerReady
-            }
+        doWhenYouTubeIsReady(function() {
+            player = new window.YT.Player(playerElem[0], {
+                'width': asset.fullDefault.width,
+                'height': asset.fullDefault.height,
+                'videoId': asset.fullDefault.videoId,
+                'playerVars': {
+                    'autoplay': 0,
+                    'autohide': 1,
+                    'controls': 1,
+                    'disablekb' : 1,
+                    'enablejsapi': 1,
+                    'rel': 0,
+                    'showinfo': 0,
+                    'suggestedQuality':'large',
+                    'modestbranding': 0,
+                    'theme' : 'dark'
+                },
+                'events': {
+                    'onReady': onPlayerReady
+                }
+            });
         });
 
         loadedAsset(selectedAsset, videoAssetView);
@@ -303,21 +301,17 @@ function VideoAssetView() {
     this.videoSelected = function(asset) {
         if (!playerReady) return;
 
-        var previousVideo = playerVideo;
         var previousState = player.getPlayerState();
 
-        if (previousVideo == asset) {
-            player.playVideo();
-        } else {
-            var wasPlaying = (previousState == 0 || previousState == 1 || previousState == 3);
+        var wasPlaying = (previousState == 0 || previousState == 1 || previousState == 3);
 
-            if (wasPlaying) {
-                player.loadVideoById(asset.fullDefault.videoId, 0, 'large');
-            } else  {
-                player.cueVideoById(asset.fullDefault.videoId, 0, 'large');
-            }
-            player.setSize(asset.fullDefault.width, asset.fullDefault.height);
+        if (wasPlaying) {
+            player.loadVideoById(asset.fullDefault.videoId, 0, 'large');
+        } else  {
+            player.cueVideoById(asset.fullDefault.videoId, 0, 'large');
         }
+
+        player.setSize(asset.fullDefault.width, asset.fullDefault.height);
 
         playerVideo = asset;
     };
@@ -668,11 +662,7 @@ function Filmstrip(container) {
         showPage(0, animate);
 
         if (data['showAsset'] == true) {
-            if (!filter.gallery['abstractElem']) {
-                selectAsset(visibleAssets[0]);
-            } else {
-                selectAsset(undefined);
-            }
+            selectAsset(visibleAssets[0]);
         } else if (data['showAsset'] == false) {
             selectAsset(undefined);
         }
@@ -684,8 +674,6 @@ function Filmstrip(container) {
             if (currentPage != assetPage) {
                 showPage(assetPage, true);
             }
-        } else {
-            //showPage(0, true);
         }
     };
 
@@ -804,12 +792,20 @@ function Filter(allAssets, button) {
 
     this.getNextAsset = function(direction) {
         assetNumber = $.inArray(selectedAsset, this.assets);
+        assetNumber += direction;
         if (assetNumber < 0) {
-            assetNumber = 0;
+            return undefined;
+        } else if (assetNumber >= this.assets.length) {
+            return undefined;
         } else {
-            assetNumber = modWithNegative(assetNumber+direction, this.assets.length);
+            return this.assets[assetNumber];
         }
-        return this.assets[assetNumber];
+        // if (assetNumber < 0) {
+        //     assetNumber = 0;
+        // } else {
+        //     assetNumber = modWithNegative(assetNumber+direction, this.assets.length);
+        // }
+        // return this.assets[assetNumber];
     };
 
     this.containsAsset = function(asset) {
@@ -868,7 +864,7 @@ function Filter(allAssets, button) {
                 selectAsset(visibleAssets[0]);
             } else {
                 var History = window.History;
-                goToFilter(filter);
+                goToFilter(filter, {showAsset: true});
             }
         });
 
@@ -920,15 +916,14 @@ function Portfolio(container) {
     this.navUp = function() {
         if (selectedAsset === undefined) {
             if (this.filmstrip.isAtStart()) {
-                goToFilter(undefined);
+                goToFilter(undefined, {showAsset: false});
             } else {
                 this.filmstrip.rewind(true);
-                goToFilter(selectedFilter);
             }
         } else {
             selectAsset(undefined);
-            goToFilter(selectedFilter);
         }
+        scrollToMedia();
     };
 
     var init = function() {
@@ -943,17 +938,20 @@ function Portfolio(container) {
 
 
 var _DEFAULT_SELECT_FILTER_DATA = {
-    'showAsset' : false
+    showAsset: false
 }
 var filterSelectedCbs = [];
 var selectedFilter = undefined;
 var visibleFilter = undefined;
 var visibleAssets = [];
 var selectFilter = function(filter, data) {
-    if (filter === undefined) {
-        data = $.extend({'showAsset' : false}, data);
-    }
+    console.log("SELECT FILTER DATA", data);
+
     data = $.extend({}, _DEFAULT_SELECT_FILTER_DATA, data);
+
+    if (!filter) {
+        data['showAsset'] = false;
+    }
 
     var lastFilter = selectedFilter;
     selectedFilter = filter;
@@ -992,31 +990,22 @@ var selectAsset = function(asset, data) {
 };
 
 
-var goToFilter = function(filter) {
-    var filtersBottom = 0;
+var goToFilter = function(filter, data) {
     if (filter) {
-        var filtersBox = $('.filters');
-        filtersBottom = filtersBox.offset().top + filtersBox.outerHeight();
-    }
-    $('html, body').stop(true, false).animate({
-        'scrollTop' : filtersBottom
-    }, 150);
-    if (filter) {
-        pushHistory(undefined, SITE_TITLE, SITE_BASE+filter.name);
+        pushHistory(data, SITE_TITLE, SITE_BASE+filter.name);
     } else {
-        pushHistory(undefined, SITE_TITLE, SITE_BASE);
+        pushHistory(data, SITE_TITLE, SITE_BASE);
     }
 };
 
 
 var toggleAsset = function(asset) {
     if (asset != selectedAsset) {
-        // TODO: Can we rely on the StateChange handler being called before selectAsset?
-        goToFilter(visibleFilter);
         selectAsset(asset);
     } else {
         selectAsset(undefined);
     }
+    scrollToMedia();
 };
 
 
@@ -1025,6 +1014,10 @@ var selectNextAsset = function(direction) {
     if (selectedFilter) {
         var nextAsset = selectedFilter.getNextAsset(direction);
         selectAsset(nextAsset);
+        if (!nextAsset) {
+            selectFilter(selectedFilter, {showAsset: false});
+        }
+        scrollToMedia();
     }
 };
 
@@ -1097,6 +1090,29 @@ var loadGallery = function(galleryName, galleryData) {
     });
 };
 
+var scrollToMedia = function() {
+    var focusTop = 0;
+
+    if (selectedAsset && selectedFilter) {
+        var synopsisBox = $('.synopsis');
+        var filmstripBox = $('.filmstrip');
+        if (synopsisBox.length > 0) {
+            focusTop = synopsisBox.offset().top - 4;
+        } else if (filmstripBox.length > 0) {
+            focusTop = filmstripBox.offset().top - 4;
+        }
+    } else if (selectedFilter) {
+        var filtersBox = $('.filters');
+        if (filtersBox.length > 0) {
+            focusTop = filtersBox.offset().top;
+        }
+    }
+
+    $('html, body').stop(true, false).animate({
+        'scrollTop' : focusTop
+    }, 150);
+}
+
 
 $(document).ready(function () {
     $.each(SMC_GALLERIES, loadGallery);
@@ -1121,7 +1137,7 @@ $(document).ready(function () {
     });
 
     $('.synopsis').on('click', function(event) {
-            selectAsset(undefined);
+        selectAsset(undefined);
     });
 
     $('.action-return').on('click', function(event) {
@@ -1132,14 +1148,14 @@ $(document).ready(function () {
     $('.nav-menu').on('change', function(event) {
         event.preventDefault();
         var destFilter = filters[$(this).val()];
-        goToFilter(destFilter);
+        goToFilter(destFilter, {showAsset: true});
     });
 
     $('a.gallery-link').on('click', function(event) {
         event.preventDefault();
         var destUrl = $(this).attr('href');
         var destFilter = filterForPath(destUrl);
-        goToFilter(destFilter);
+        goToFilter(destFilter, {showAsset: true});
     });
 
     $('a.back-to-top-link').on('click', function(event) {
@@ -1176,15 +1192,6 @@ $(document).ready(function() {
         } else {
             $('body').addClass('showing-asset');
         }
-
-        // if (asset === undefined) {
-        //  var filtersTop = 0;
-        // } else {
-        //  var filtersTop = filtersBox.offset().top;
-        // }
-        // $('html, body').stop(true, false).animate({
-        //  'scrollTop' : filtersTop
-        // }, 150);
     });
 
     filterSelectedCbs.push(function(filter, lastFilter, data) {
@@ -1214,32 +1221,31 @@ $(document).ready(function () {
     onHistoryChange();
 });
 
-(function() {
-    var _YOUTUBE_IS_READY = false;
-    var _YOUTUBE_READY_CALLBACKS = [];
-
-    // Load YouTube IFrame Player API code asynchronously.
-    var tag = document.createElement('script');
-
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    function onYouTubeIframeAPIReady() {
-        _YOUTUBE_IS_READY = true;
-        $.each(_YOUTUBE_READY_CALLBACKS, function(index, callback) {
-            callback();
-        });
-    }
-
-    function doWhenYouTubeIsReady(callback) {
-        if (_YOUTUBE_IS_READY) {
-            callback();
-        } else {
-            _YOUTUBE_READY_CALLBACKS.push(callback);
-        }
-    }
 })();
 
+// Global setup
 
-})();
+var _YOUTUBE_IS_READY = false;
+var _YOUTUBE_READY_CALLBACKS = [];
+
+// Load YouTube IFrame Player API code asynchronously.
+var tag = document.createElement('script');
+
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubeIframeAPIReady() {
+    _YOUTUBE_IS_READY = true;
+    $.each(_YOUTUBE_READY_CALLBACKS, function(index, callback) {
+        callback();
+    });
+}
+
+function doWhenYouTubeIsReady(callback) {
+    if (_YOUTUBE_IS_READY) {
+        callback();
+    } else {
+        _YOUTUBE_READY_CALLBACKS.push(callback);
+    }
+}
