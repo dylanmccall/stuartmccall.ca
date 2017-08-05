@@ -12,6 +12,7 @@ from common.utils import get_image_style
 
 from collections import OrderedDict
 import json
+import re
 
 try:
     from urlparse import urlparse, parse_qs
@@ -120,7 +121,7 @@ class PortfolioView(TemplateView):
     def _media_obj_image(self, media):
         result = {
             'caption': media.caption,
-            'extraHtml': media.extra,
+            'extraHtml': _format_extra_dimensions(media.extra),
         }
 
         result['type'] = 'picture'
@@ -139,7 +140,7 @@ class PortfolioView(TemplateView):
     def _media_obj_external_video(self, media):
         result = {
             'caption': media.caption,
-            'extraHtml': media.extra,
+            'extraHtml': _format_extra_dimensions(media.extra),
         }
 
         if media.featured_thumbnail:
@@ -169,3 +170,16 @@ class PortfolioView(TemplateView):
                 }
 
         return result
+
+
+DIMENSION_PATTERN = re.compile(r'(\d+)[\"\u201d\u2033]?\s?[xX*\u00d7]\s?(\d+)[\"\u201d\u2033]?')
+
+def _format_extra_dimensions(text):
+    if text:
+        return DIMENSION_PATTERN.sub(_dimension_re_replace, text)
+    else:
+        return text
+
+def _dimension_re_replace(match):
+    n1, n2 = match.groups()
+    return "{}\u2033 \u00d7 {}\u2033".format(n1, n2)
