@@ -105,7 +105,7 @@ class Gallery(models.Model):
 class Media(models.Model):
     class Meta:
         verbose_name = _("media")
-        verbose_name_plural = _("media items")
+        verbose_name_plural = _("images and videos")
 
     MEDIA_TYPES = (
         ('image', _("Image")),
