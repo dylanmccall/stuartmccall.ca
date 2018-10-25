@@ -86,6 +86,9 @@ class GalleryAdmin(admin.ModelAdmin):
         'modified_date',
     )
     search_fields = ['slug', 'name']
+    prepopulated_fields = {
+        'slug': ('name',)
+    }
     readonly_fields = (
         'created_date',
         'modified_date',

@@ -59,7 +59,7 @@ class Gallery(models.Model):
         verbose_name = _("gallery")
         verbose_name_plural = _("galleries")
 
-    slug = models.CharField(max_length=30)
+    slug = models.SlugField(max_length=50)
     name = models.CharField(max_length=100)
     synopsis = models.CharField(blank=True, null=True, max_length=200)
     abstract = SimpleMDEField(blank=True, null=True)
