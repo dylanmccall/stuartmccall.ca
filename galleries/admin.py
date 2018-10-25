@@ -89,6 +89,13 @@ class GalleryAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('name',)
     }
+    fields = (
+        'name',
+        'slug',
+        'synopsis',
+        'abstract',
+        'thumbnail'
+    )
     readonly_fields = (
         'created_date',
         'modified_date',
