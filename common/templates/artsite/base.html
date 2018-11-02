@@ -89,11 +89,8 @@
         <header role="banner" class="header">
             {% block header %}
                 <h1 class="sitetitle"><a href="/" class="action-return">
-                    <span class="main">Stuart McCall</span>
-                    <span class="subtitle">Fine Art</span>
+                    <span class="main">{{ portfolio.title }}</span>
                 </a></h1>
-
-                <!--<div class="header-contact">Vancouver, BC, Canada / <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></div>-->
             {% endblock %}
         </header>
 
@@ -103,26 +100,7 @@
 
     <footer id="footer">
         {% block footer %}
-            <span class="copyright">&#169; <a href="mailto:stuart@northlightimages.com">Stuart McCall</a>. All Rights Reserved</span>
-
-            <span class="contact mini-contact"><a href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></span>
-
-            <div class="contact expanded-contact">
-                <div class="vcard">
-                    <div>
-                        <span class="fn">Stuart McCall</span> <span class="note">fine art photography</span>
-                    </div>
-                    <div class="adr">
-                        <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
-                    </div>
-                    <div>
-                        <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
-                    </div>
-                    <div>
-                        <span class="tel">(1) 604-684-6760</span>
-                    </div>
-                </div>
-            </div>
+            <span class="copyright">Web design and devleopment &#169; <a href="https://dylanmc.ca//-">Dylan McCall</a></span>
         {% endblock %}
     </footer>
 

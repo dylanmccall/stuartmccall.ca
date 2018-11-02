@@ -12,6 +12,7 @@ from orderable.models import Orderable
 from simplemde.fields import SimpleMDEField
 
 from common.utils import markdownify, generate_image_styles
+from common.site_themes import SITE_THEME_OPTIONS, SITE_THEMES
 
 import os
 
@@ -29,6 +30,7 @@ class Portfolio(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
     blurb = SimpleMDEField(blank=True, null=True)
+    theme_id = models.CharField(max_length=50, choices=SITE_THEME_OPTIONS, verbose_name=_('theme'))
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
@@ -46,6 +48,10 @@ class Portfolio(models.Model):
     def get_all_galleries(self):
         for portfoliogallery in self.portfoliogallery_set.select_related('gallery'):
             yield portfoliogallery.gallery
+
+    @cached_property
+    def theme(self):
+        return SITE_THEMES.get(self.theme_id)
 
     @cached_property
     def featured_gallery(self):

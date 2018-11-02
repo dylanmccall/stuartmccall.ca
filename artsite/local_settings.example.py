@@ -14,7 +14,7 @@ DATABASES = {}
 #     }
 # }
 
-# The site's absolute URL - used for emails and generated reports
+# The site's absolute URL
 SITE_URL = 'http://localhost:8000'
 
 FROM_EMAIL = "stuartmccall.ca <noreply@example.com>"

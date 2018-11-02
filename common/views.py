@@ -39,9 +39,18 @@ class JsonResponseMixin(object):
 class PortfolioView(TemplateView):
     template_name = 'artsite/index.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(PortfolioView, self).get_context_data(**kwargs)
+    def get(self, request, *args, **kwargs):
+        self.portfolio = self.get_portfolio()
 
+        context = self.get_context_data(portfolio=self.portfolio, **kwargs)
+
+        if kwargs.get('gallery_slug') and not context.get('selected_gallery'):
+            index_url = reverse('index')
+            return HttpResponseRedirect(index_url)
+        else:
+            return self.render_to_response(context)
+
+    def get_portfolio(self):
         site = get_current_site(self.request)
 
         try:
@@ -49,7 +58,12 @@ class PortfolioView(TemplateView):
         except models.Portfolio.DoesNotExist:
             raise Http404(_("There is no portfolio for this site"))
         else:
-            all_galleries = list(portfolio.get_all_galleries())
+            return portfolio
+
+    def get_context_data(self, portfolio=None, **kwargs):
+        context = super(PortfolioView, self).get_context_data(**kwargs)
+
+        all_galleries = list(portfolio.get_all_galleries())
 
         gallery_slug = kwargs.get('gallery_slug')
 
@@ -72,14 +86,14 @@ class PortfolioView(TemplateView):
 
         return context
 
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        if kwargs.get('gallery_slug') and not context.get('selected_gallery'):
-            index_url = reverse('index')
-            return HttpResponseRedirect(index_url)
+    def get_template_names(self):
+        if self.portfolio.theme:
+            return [
+                self.portfolio.theme.get_themed_template_name('artsite/index.html'),
+                self.template_name
+            ]
         else:
-            return self.render_to_response(context)
+            return super(PortfolioView, self).get_template_names()
 
     def _get_portfolio_js_str(self, galleries_list):
         galleries_js_dict = self._get_portfolio_js_dict(galleries_list)
