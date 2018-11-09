@@ -1,0 +1,231 @@
+{% extends "artsite/base.html" %}
+{% load cache %}
+{% load compress %}
+{% load i18n %}
+{% load image_tools %}
+{% load staticfiles %}
+
+{% block js_data %}
+    {% spaceless %}
+        <script type="text/javascript">
+            var SMC_GALLERIES = {{ portfolio_js_str|safe }};
+        </script>
+    {% endspaceless %}
+{% endblock %}
+
+{% block css_theme %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/sitetheme_northlightimages_com.less' %}" />
+    {% endcompress %}
+{% endblock %}
+
+{% block admin_links %}
+    <li>
+        <a class="nav-button" href="{% url 'admin:galleries_portfolio_change' portfolio.pk %}">
+            {% trans "Edit" %}
+        </a>
+    </li>
+    {{ block.super }}
+{% endblock %}
+
+{% block header %}
+    <a href="/" class="action-return">
+        <img class="sitetitle" src="{% static 'img/northlight_logo.png' %}" width="348" height="97" alt="North Light - Images by Stuart McCall" />
+    </a>
+{% endblock %}
+
+{% block main %}
+    <div class="portfolio">
+        <nav role="navigation" aria-controls="filmstrip gallery-content" class="filters gallery-filters">
+            <div class="filters-inner">
+                <select class="nav-menu nav-min">
+                    <option value="" selected="selected">Select</option>
+                    {% cache 31556926 portfolio_galleries_select portfolio.id portfolio.modified_date %}
+                        {% for gallery in all_galleries %}
+                            <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
+                        {% endfor %}
+                    {% endcache %}
+                </select>
+
+                {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
+                    <a class="filter filter-all" href="#" data-filter-category="" title="All images">●</a>
+                    {% for gallery in all_galleries %}
+                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}" data-filter-category="{{ gallery.slug }}">
+                            <div aria-hidden="true" class="filter-pic">
+                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
+                            </div>
+                            <span class="filter-label">{{ gallery.name }}</span>
+                        </a>
+                    {% endfor %}
+                {% endcache %}
+
+                <div class="bottom"></div>
+            </div>
+        </nav>
+
+        <aside role="complementary" class="synopsis" style="display:none;"></aside>
+
+        <nav role="navigation" aria-controls="viewer" id="filmstrip" class="filmstrip empty">
+            <div aria-label="Images" class="thumbnails"></div>
+
+            <div role="button" aria-hidden="true" aria-label="Next page" class="overflow right">
+                <a class="pager" href="#" title="Next page"><span class="pager-inner">
+                    <span class="current"></span><span class="total"></span>
+                    <span class="arrow">&gt;</span>
+                </span></a>
+            </div>
+
+            <div role="button" aria-hidden="true" aria-label="Previous page" title="Previous page" class="overflow left">
+            </div>
+        </nav>
+
+        <article role="article" aria-owns="gallery-content" id="viewer" class="viewer" style="display: none;">
+            <section role="main" class="viewer-content-wrapper"></section>
+            <aside role="complementary" class="caption"><div class="caption-text"></div></aside>
+        </article>
+
+        <article role="document" id="gallery-content" class="gallery-content" style="display:none">
+            <section role="main" class="content-inner"></section>
+            <div aria-hidden="true" class="back-to-top"><a href="#" class="back-to-top-link">Back to top</a></div>
+        </article>
+    </div>
+
+    <article role="document" aria-owns="site-extra" id="site-main" class="site-main" data-blur-from="0.5"><div class="content-inner">
+        <section role="main" class="intro">
+            {{ portfolio.blurb_html|safe }}
+        </section>
+
+        <aside role="complementary" aria-hidden="true" class="projects">
+            <div class="galleries-list">
+                {% cache 31556926 portfolio_galleries_tiles portfolio.id portfolio.modified_date %}
+                    {% for gallery in all_galleries %}
+                        <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
+                            <div class="gallery-pic">
+                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
+                            </div>
+                            <div class="gallery-label">{{ gallery.name }}</div>
+                        </a>
+                    {% endfor %}
+                {% endcache %}
+
+                <div class="bottom"></div>
+            </div>
+        </aside>
+
+        <aside role="complementary" class="contact">
+            <h2>Contact</h2>
+            <div id="hcard-Stuart-McCall" class="vcard">
+                <span class="fn">Stuart McCall</span>
+                <div class="org">North Light Images Ltd.</div>
+                <div class="adr">
+                    <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
+                </div>
+                <div>
+                    <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
+                </div>
+                <div>
+                    <span class="tel">(1) 604-684-6760</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="bottom"></div>
+    </div></article>
+
+    <article role="document" id="site-extra" class="site-extra" data-blur-from="0.7"><div class="content-inner">
+        <div class="info">
+            <section class="list-block professional-affiliation">
+                <h2>Professional Affiliation</h2>
+                <ul>
+                    <li><a href="http://www.asmp.org/findaphotographer/profile.php?id=6631">American Society of Media Photographers</a>. Member since 1987.</p></li>
+                </ul>
+            </section>
+
+            <section class="list-block awards">
+                <h2>Awards</h2>
+                <ul>
+                    <li>2015 British Columbia Arts Council Award</li>
+                    <li>2006 IPA &mdash; Industrial</li>
+                    <li>2005 IPA &mdash; Editorial</li>
+                    <li>1994 Lotus Awards &mdash; Advertising/Print</li>
+                    <li>1989 Communications Arts Photography</li>
+                </ul>
+            </section>
+
+            <section class="list-block representation">
+                <h2>Representation</h2>
+
+
+                <div class="subsection assignments">
+                    <h3>Assignments</h3>
+                    <ul>
+                        <li><a href="http://www.theverbatimagency.com/">Verbatim Agency</a>, Worldwide</li>
+                        <li><a href="http://gpaphoto.com/">Global Photo Associates</a>, New York</li>
+                    </ul>
+                </div>
+
+
+                <div class="subsection stock">
+                    <h3>Stock Photography</h3>
+                    <ul>
+                        <li><a href="http://www.gettyimages.ca/Search/Search.aspx?assettype=image&amp;artist=Stuart+McCall&amp;Language=en-US">Getty Images</a>, Seattle &mdash; stock photography</li>
+                        <li><a href="http://www.agefotostock.com/age/ingles/tpisem1b.asp?querystr=">agefotostock</a>, Barcelona</li>
+                    </ul>
+                </div>
+
+
+                <div class="subsection art">
+                    <h3>Fine Art</h3>
+                    <ul>
+                        <li><a href="http://www.stuartmccall.ca/">StuartMcCall.ca,</a> Fine Art portfolio</li>
+                        <li><a href="http://www.artrentalandsales.com/catalogue.php?artistID=307">Vancouver Art Gallery</a>, Art Sales &amp; Rental</li>
+                        <li><a href="http://www.newzones.com/dynamic/artist.asp?ArtistID=177">Newzones Contemporary Art</a>, Calgary, AB</li>
+                        <li><a href="http://www.mrfinearts.com/artists/represented/McCall-Stuart/">Marcia Rafelman Fine Art</a>, Toronto, ON</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="list-block clients">
+                <h2>Selected Clients</h2>
+                <p>American Bridge, Baytex Energy, BC Hydro, Bechtel Corp, Boston Globe, Finning International, Flatiron, Kiewit, London Times, McKinsey & Co, Mercer International, Natural Resources Canada, Plenary Group, Precision Drilling, Time Magazine, Transportation Investment Corp</p>
+            </section>
+
+            <div class="bottom"></div>
+        </div>
+    </div></article>
+{% endblock %}
+
+{% block js-resource %}
+    {% cache 31556926 portfolio_galleries_abstracts portfolio.id portfolio.modified_date %}
+        {% for gallery in all_galleries %}
+            {% if gallery.abstract %}
+                <div class="abstract" id="abstract-{{ gallery.slug }}">
+                    {{ gallery.abstract_html|safe }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endcache %}
+{% endblock %}
+
+{% block footer %}
+<span class="copyright">All images and content &#169; <a href="mailto:stuart@northlightimages.com">Stuart McCall / North Light Images Ltd.</a> All Rights Reserved</span>
+
+<span class="contact mini-contact"><a href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></span>
+
+<div class="contact expanded-contact">
+    <div class="vcard">
+        <div>
+            <span class="fn">Stuart McCall</span> <span class="note">fine art photography</span>
+        </div>
+        <div class="adr">
+            <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
+        </div>
+        <div>
+            <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
+        </div>
+        <div>
+            <span class="tel">(1) 604-684-6760</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
