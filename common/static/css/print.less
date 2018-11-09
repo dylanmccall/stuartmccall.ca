@@ -1,127 +1,120 @@
-/* This file (print.css) is generated with lessc (http://lesscss.org/).
- * Please do not edit it directly.
- */
+@media print {
+    body {
+        background-color: none;
+    }
 
-@import (less) "_common.less";
+    #wrapper {
+        width: auto;
+        min-width: 0;
+        padding: 0;
+        margin: 0;
+    }
 
-body {
-    background-color: none;
-}
-
-#wrapper {
-    width: auto;
-    min-width: 0;
-    padding: 0;
-    margin: 0;
-}
-
-#main {
-    border: none;
-}
-
-.portfolio .synopsis {
-    margin: 6px 0;
-}
-
-.portfolio .filters {
-    .filter {
-        background: none;
+    #main {
         border: none;
     }
 
-    .filter.current {
-        background: none !important;
-        box-shadow: none !important;
-    }
-}
-
-body.showing-gallery .portfolio .filters {
-    .filter {
-        font-weight: normal;
-        color: #555;
+    .portfolio .synopsis {
+        margin: 6px 0;
     }
 
-    .filter.current {
-        color: #333;
-        font-weight: bold;
-    }
-}
+    .portfolio .filters {
+        .filter {
+            background: none;
+            border: none;
+        }
 
-.filmstrip {
-    .overflow {
-        display: none;
-    }
-}
-
-.portfolio {
-    .gallery-content {
-        border-top: none !important;
-        border-bottom: none !important;
-    }
-
-    .thumbnails .overlay {
-        display: none !important;
-    }
-}
-
-.back-to-top {
-    display: none;
-}
-
-.galleries-list {
-    display: none;
-}
-
-#main .intro h3 {
-    display: block;
-}
-
-#main .contact {
-    display: block;
-}
-
-.site-main {
-}
-
-.site-extra {
-    margin-top: 1em;
-    border-top: none;
-}
-
-#main .contact,
-#main .gallery-representation {
-    page-break-inside: avoid;
-}
-
-#main .site-extra .exhibitions ul {
-    max-height: none;
-    column-count: 2;
-    column-gap: 1em;
-
-    li {
-        display: inline-block;
-        width: 100%;
-
-        .year {
-            color: #555;
+        .filter.current {
+            background: none !important;
+            box-shadow: none !important;
         }
     }
-}
 
-#footer {
-    page-break-before: avoid;
-    page-break-inside: avoid;
-}
+    body.showing-gallery .portfolio .filters {
+        .filter {
+            font-weight: normal;
+            color: #555;
+        }
 
-#footer .mini-contact {
-    display: block;
-}
+        .filter.current {
+            color: #333;
+            font-weight: bold;
+        }
+    }
 
-#footer .expanded-contact {
-    display: none;
-}
+    .filmstrip {
+        .overflow {
+            display: none;
+        }
+    }
 
-.blur.offscreen {
-    opacity: 1;
-    top: 0;
+    .portfolio {
+        .gallery-content {
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+
+        .thumbnails .overlay {
+            display: none !important;
+        }
+    }
+
+    .back-to-top {
+        display: none;
+    }
+
+    .galleries-list {
+        display: none;
+    }
+
+    #main .intro h3 {
+        display: block;
+    }
+
+    #main .contact {
+        display: block;
+    }
+
+    .site-extra {
+        margin-top: 1em;
+        border-top: none;
+    }
+
+    #main .contact,
+    #main .gallery-representation {
+        page-break-inside: avoid;
+    }
+
+    #main .site-extra .exhibitions ul {
+        max-height: none;
+        column-count: 2;
+        column-gap: 1em;
+
+        li {
+            display: inline-block;
+            width: 100%;
+
+            .year {
+                color: #555;
+            }
+        }
+    }
+
+    #footer {
+        page-break-before: avoid;
+        page-break-inside: avoid;
+    }
+
+    #footer .mini-contact {
+        display: block;
+    }
+
+    #footer .expanded-contact {
+        display: none;
+    }
+
+    .blur.offscreen {
+        opacity: 1;
+        top: 0;
+    }
 }

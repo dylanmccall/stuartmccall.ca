@@ -24,13 +24,8 @@
         </script>
     {% endblock %}
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic%7CPT+Sans+Narrow:400,700%7CPT+Serif:400,400italic" type="text/css" />
-
-    {% compress css %}
-        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/reset.less' %}" />
-        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/base.less' %}" />
-        <link rel="stylesheet" type="text/less" media="print" href="{% static 'css/print.less' %}" />
-    {% endcompress %}
+    {% block css_theme %}
+    {% endblock %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 

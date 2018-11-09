@@ -1,7 +1,9 @@
 {% extends "artsite/base.html" %}
 {% load cache %}
+{% load compress %}
 {% load i18n %}
 {% load image_tools %}
+{% load staticfiles %}
 
 {% block js_data %}
     {% spaceless %}
@@ -9,6 +11,13 @@
             var SMC_GALLERIES = {{ portfolio_js_str|safe }};
         </script>
     {% endspaceless %}
+{% endblock %}
+
+{% block css_theme %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic%7CPT+Sans+Narrow:400,700%7CPT+Serif:400,400italic" type="text/css" />
+    {% compress css %}
+        <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/sitetheme_stuartmccall_ca.less' %}" />
+    {% endcompress %}
 {% endblock %}
 
 {% block admin_links %}
@@ -25,8 +34,6 @@
     <span class="main">Stuart McCall</span>
     <span class="subtitle">Fine Art</span>
 </a></h1>
-
-<!--<div class="header-contact">Vancouver, BC, Canada / <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></div>-->
 {% endblock %}
 
 {% block main %}
@@ -35,9 +42,11 @@
             <div class="filters-inner">
                 <select class="nav-menu nav-min">
                     <option value="" selected="selected">Select</option>
-                    {% for gallery in all_galleries %}
-                        <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
-                    {% endfor %}
+                    {% cache 31556926 portfolio_galleries_select portfolio.id portfolio.modified_date %}
+                        {% for gallery in all_galleries %}
+                            <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
+                        {% endfor %}
+                    {% endcache %}
                 </select>
 
                 {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
