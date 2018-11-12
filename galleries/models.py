@@ -38,6 +38,9 @@ class Portfolio(models.Model):
 
     objects = PortfolioManager()
 
+    def get_absolute_url(self):
+        return reverse('index')
+
     @cached_property
     def blurb_html(self):
         if self.blurb:

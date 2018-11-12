@@ -9,6 +9,7 @@
     {% spaceless %}
         <script type="text/javascript">
             var SMC_GALLERIES = {{ portfolio_js_str|safe }};
+            var SMC_AUTOSCROLL = true;
         </script>
     {% endspaceless %}
 {% endblock %}
@@ -51,7 +52,7 @@
 
                 {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
                     {% for gallery in all_galleries %}
-                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
+                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}" data-filter-auto-open>
                             <div aria-hidden="true" class="filter-pic">
                                 <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
                             </div>

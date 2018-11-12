@@ -9,6 +9,7 @@
     {% spaceless %}
         <script type="text/javascript">
             var SMC_GALLERIES = {{ portfolio_js_str|safe }};
+            var SMC_AUTOSCROLL = false;
         </script>
     {% endspaceless %}
 {% endblock %}
@@ -48,12 +49,10 @@
                 </select>
 
                 {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
-                    <a class="filter filter-all" href="#" data-filter-category="" title="All images">●</a>
+                    <a class="filter filter-all" href="{{ portfolio.get_absolute_url }}" data-filter-default title="All images">●</a>
+
                     {% for gallery in all_galleries %}
-                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}" data-filter-category="{{ gallery.slug }}">
-                            <div aria-hidden="true" class="filter-pic">
-                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
-                            </div>
+                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
                             <span class="filter-label">{{ gallery.name }}</span>
                         </a>
                     {% endfor %}
@@ -62,8 +61,6 @@
                 <div class="bottom"></div>
             </div>
         </nav>
-
-        <aside role="complementary" class="synopsis" style="display:none;"></aside>
 
         <nav role="navigation" aria-controls="viewer" id="filmstrip" class="filmstrip empty">
             <div aria-label="Images" class="thumbnails"></div>
@@ -94,23 +91,6 @@
         <section role="main" class="intro">
             {{ portfolio.blurb_html|safe }}
         </section>
-
-        <aside role="complementary" aria-hidden="true" class="projects">
-            <div class="galleries-list">
-                {% cache 31556926 portfolio_galleries_tiles portfolio.id portfolio.modified_date %}
-                    {% for gallery in all_galleries %}
-                        <a href="{{ gallery.get_absolute_url }}" class="gallery-link">
-                            <div class="gallery-pic">
-                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
-                            </div>
-                            <div class="gallery-label">{{ gallery.name }}</div>
-                        </a>
-                    {% endfor %}
-                {% endcache %}
-
-                <div class="bottom"></div>
-            </div>
-        </aside>
 
         <aside role="complementary" class="contact">
             <h2>Contact</h2>
@@ -209,23 +189,4 @@
 
 {% block footer %}
 <span class="copyright">All images and content &#169; <a href="mailto:stuart@northlightimages.com">Stuart McCall / North Light Images Ltd.</a> All Rights Reserved</span>
-
-<span class="contact mini-contact"><a href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a></span>
-
-<div class="contact expanded-contact">
-    <div class="vcard">
-        <div>
-            <span class="fn">Stuart McCall</span> <span class="note">fine art photography</span>
-        </div>
-        <div class="adr">
-            <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
-        </div>
-        <div>
-            <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
-        </div>
-        <div>
-            <span class="tel">(1) 604-684-6760</span>
-        </div>
-    </div>
-</div>
 {% endblock %}

@@ -785,6 +785,10 @@ function Filter(allAssets, button) {
     button = $(button);
 
     this.name = undefined;
+    this.url = undefined;
+    this.categories = [];
+    this.autoOpen = false;
+    this.isDefaultFilter = undefined;
 
     this.assetNumber = function(asset) {
         return $.inArray(selectedAsset, this.assets);
@@ -800,12 +804,6 @@ function Filter(allAssets, button) {
         } else {
             return this.assets[assetNumber];
         }
-        // if (assetNumber < 0) {
-        //     assetNumber = 0;
-        // } else {
-        //     assetNumber = modWithNegative(assetNumber+direction, this.assets.length);
-        // }
-        // return this.assets[assetNumber];
     };
 
     this.containsAsset = function(asset) {
@@ -839,21 +837,26 @@ function Filter(allAssets, button) {
     var init = function() {
         filterSelectedCbs.push(onFilterSelectedCb);
 
-        var categoriesStr = $(button).data('filter-category');
-        if (categoriesStr) {
-            filter.categories = categoriesStr.split(' ');
-        } else {
-            filter.categories = [];
-        }
+        var autoOpen = $(button).data('filter-auto-open') !== undefined;
+        var isDefaultFilter = $(button).data('filter-default') !== undefined;
 
-        var mainStr = filterNameFromUrl($(button).attr('href'));
+        var url = $(button).attr('href');
+
+        var mainStr = filterNameFromUrl(url);
         if (mainStr && mainStr in galleries) {
             filter.galleryName = mainStr;
             filter.gallery = galleries[filter.galleryName];
             filter.categories.push(filter.galleryName);
         }
 
-        filter.name = mainStr || categoriesStr || '[All]';
+        filter.autoOpen = autoOpen;
+        filter.isDefaultFilter = isDefaultFilter;
+        filter.url = url;
+        if (mainStr) {
+            filter.name = mainStr;
+        } else if (mainStr && isDefaultFilter) {
+            filter.name = '*';
+        }
 
         $(button).on('click', function(event) {
             event.preventDefault();
@@ -866,7 +869,7 @@ function Filter(allAssets, button) {
                 var History = window.History;
                 goToFilter(filter, {showAsset: true});
             }
-            scrollToMedia();
+            scrollToMedia(false);
         });
 
         filter.assets = [];
@@ -924,7 +927,7 @@ function Portfolio(container) {
         } else {
             selectAsset(undefined);
         }
-        scrollToMedia();
+        scrollToMedia(true);
     };
 
     var init = function() {
@@ -950,6 +953,8 @@ var selectFilter = function(filter, data) {
 
     if (!filter) {
         data['showAsset'] = false;
+    } else if (!filter.autoOpen) {
+        data['showAsset'] = false;
     }
 
     var lastFilter = selectedFilter;
@@ -958,7 +963,7 @@ var selectFilter = function(filter, data) {
     visibleAssets = (visibleFilter) ? visibleFilter.assets : [];
 
     $.each(filterSelectedCbs, function(index, cb) {
-        cb(filter, lastFilter, data);
+        cb(visibleFilter, lastFilter, data);
     });
 
     if (lastFilter !== undefined && lastFilter != visibleFilter) {
@@ -991,7 +996,7 @@ var selectAsset = function(asset, data) {
 
 var goToFilter = function(filter, data) {
     if (filter) {
-        pushHistory(data, SITE_TITLE, SITE_BASE+filter.name);
+        pushHistory(data, SITE_TITLE, filter.url);
     } else {
         pushHistory(data, SITE_TITLE, SITE_BASE);
     }
@@ -1004,7 +1009,7 @@ var toggleAsset = function(asset) {
     } else {
         selectAsset(undefined);
     }
-    scrollToMedia();
+    scrollToMedia(false);
 };
 
 
@@ -1016,7 +1021,7 @@ var selectNextAsset = function(direction) {
         if (!nextAsset) {
             selectFilter(selectedFilter, {showAsset: false});
         }
-        scrollToMedia();
+        scrollToMedia(false);
     }
 };
 
@@ -1089,7 +1094,7 @@ var loadGallery = function(galleryName, galleryData) {
     });
 };
 
-var scrollToMedia = function() {
+var scrollToMedia = function(force) {
     var focusTop = 0;
 
     if (selectedAsset && selectedFilter) {
@@ -1107,9 +1112,11 @@ var scrollToMedia = function() {
         }
     }
 
-    $('html, body').stop(true, false).animate({
-        'scrollTop' : focusTop
-    }, 150);
+    if (SMC_AUTOSCROLL === true || force === true) {
+        $('html, body').stop(true, false).animate({
+            'scrollTop' : focusTop
+        }, 150);
+    }
 }
 
 
@@ -1124,7 +1131,7 @@ $(document).ready(function () {
         var filter = new Filter(assets, filterButton);
         filters[filter.name] = filter;
 
-        if ($(this).data('default-filter') !== undefined) {
+        if (filter.isDefaultFilter) {
             defaultFilter = filter;
         }
     });
@@ -1137,12 +1144,12 @@ $(document).ready(function () {
 
     $('.synopsis').on('click', function(event) {
         selectAsset(undefined);
-        scrollToMedia();
+        scrollToMedia(false);
     });
 
     $('.action-return').on('click', function(event) {
         goToFilter(undefined);
-        scrollToMedia();
+        scrollToMedia(false);
         event.preventDefault();
     });
 
@@ -1150,7 +1157,7 @@ $(document).ready(function () {
         event.preventDefault();
         var destFilter = filters[$(this).val()];
         goToFilter(destFilter, {showAsset: true});
-        scrollToMedia();
+        scrollToMedia(false);
     });
 
     $('a.gallery-link').on('click', function(event) {
@@ -1158,7 +1165,7 @@ $(document).ready(function () {
         var destUrl = $(this).attr('href');
         var destFilter = filterForPath(destUrl);
         goToFilter(destFilter, {showAsset: true});
-        scrollToMedia();
+        scrollToMedia(false);
     });
 
     $('a.back-to-top-link').on('click', function(event) {
@@ -1167,10 +1174,6 @@ $(document).ready(function () {
         $('html, body').stop(true, false).animate({
             'scrollTop' : $('.filters').offset().top
         }, 150);
-
-        // if (visibleAssets && selectedAsset === undefined) {
-        //  selectAsset(visibleAssets[0]);
-        // }
     });
 
     $(document).on('keydown', function(event) {

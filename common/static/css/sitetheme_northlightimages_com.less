@@ -8,3 +8,35 @@
 @header_fg: #ccc;
 @header_title_fg: #ccc;
 @header_faint_fg: #ddd;
+
+.portfolio {
+    .filters {
+        padding: 8px 28px;
+        padding-bottom: 0;
+        text-align: left;
+
+        .filter {
+            width: auto;
+            margin: 2px 2px;
+
+            .filter-label {
+                margin: 0;
+                text-transform: uppercase;
+                font-weight: normal;
+            }
+        }
+    }
+
+    .synopsis {
+        display: none;
+    }
+}
+
+body.showing-gallery .portfolio {
+    border-bottom: none;
+    padding-bottom: 0;
+
+    .filters {
+        padding-bottom: 0;
+    }
+}
