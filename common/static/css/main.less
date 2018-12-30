@@ -125,7 +125,7 @@ a {
 
     h2 {
         font-family: @text_title_font;
-        margin: 0 0 0.5em 0;
+        margin: 0 0 0.8rem 0;
         font-size: 1.7em;
         line-height: 1.2em;
         font-weight: normal;
@@ -846,16 +846,20 @@ body.showing-asset .portfolio {
 }
 
 .smc-content-block {
-    .smc-content-block-subsection {
-        padding: 1em 0;
+    h2 {
+        margin-top: 2rem;
+    }
 
-        &:first-child {
-            padding-top: 0;
-        }
+    h2:first-child {
+        margin-top: 0;
+    }
 
-        &:last-child {
-            padding-bottom: 0;
-        }
+    h3 {
+        margin-top: 1rem;
+    }
+
+    h2 + h3 {
+        margin-top: 0;
     }
 }
 
@@ -868,11 +872,11 @@ body.showing-asset .portfolio {
 body.showing-gallery {
     .portfolio {
         border-bottom: @portfolio_separator;
-        padding-bottom: 1em;
+        padding-bottom: 1rem;
     }
 
     .smc-content-wrapper--main {
-        padding-top: 4em;
+        padding-top: 4rem;
     }
 
     .smc-content-block--intro {
@@ -982,13 +986,13 @@ body.showing-gallery {
 }
 
 #footer {
-    margin: 2em 0;
+    margin: 2rem 0;
     padding: 0 @inner_margin_h;
     color: @footer_fg;
 
     .copyright, .contact {
         display: block;
-        margin: 1em 0;
+        margin: 1rem 0;
         font-size: 0.9em;
         line-height: 1.4em;
         color: @footer_fg;
@@ -1010,7 +1014,7 @@ body.showing-gallery {
 
     .expanded-contact {
         display: block;
-        margin-top: 2em;
+        margin-top: 2rem;
     }
 }
 
@@ -1055,7 +1059,7 @@ body.as-admin {
 
                 > li.nav-spacer {
                     flex-grow: 0;
-                    margin: 1em 0 0 0;
+                    margin: 1rem 0 0 0;
                 }
             }
         }
