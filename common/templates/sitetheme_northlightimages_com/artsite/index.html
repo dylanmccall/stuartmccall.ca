@@ -15,6 +15,7 @@
 {% endblock %}
 
 {% block css_theme %}
+    <link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
     {% compress css %}
         <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/sitetheme_northlightimages_com.less' %}" />
     {% endcompress %}
@@ -81,18 +82,18 @@
             <aside role="complementary" class="caption"><div class="caption-text"></div></aside>
         </article>
 
-        <article role="document" id="gallery-content" class="gallery-content" style="display:none">
+        <article role="document" id="gallery-content" class="smc-content-wrapper smc-content-wrapper--gallery-content" style="display:none">
             <section role="main" class="content-inner"></section>
             <div aria-hidden="true" class="back-to-top"><a href="#" class="back-to-top-link">Back to top</a></div>
         </article>
     </div>
 
-    <article role="document" aria-owns="site-extra" id="site-main" class="site-main" data-blur-from="0.5"><div class="content-inner">
-        <section role="main" class="intro">
+    <article role="document" aria-owns="site-extra" id="site-main" class="smc-content-wrapper smc-content-wrapper--main" data-blur-from="0.5">
+        <section role="main" class="text-block smc-content-block smc-content-block--intro">
             {{ portfolio.blurb_html|safe }}
         </section>
 
-        <aside role="complementary" class="contact">
+        <aside role="complementary" class="smc-content-block smc-content-block--contact">
             <h2>Contact</h2>
             <div id="hcard-Stuart-McCall" class="vcard">
                 <span class="fn">Stuart McCall</span>
@@ -108,20 +109,18 @@
                 </div>
             </div>
         </aside>
+    </article>
 
-        <div class="bottom"></div>
-    </div></article>
-
-    <article role="document" id="site-extra" class="site-extra" data-blur-from="0.7"><div class="content-inner">
-        <div class="info">
-            <section class="list-block professional-affiliation">
+    <article role="document" id="site-extra" class="smc-content-wrapper smc-content-wrapper--extra" data-blur-from="0.7">
+        <section class="smc-content-block smc-content-block--professional-affiliation">
+            <div class="smc-content-block-subsection">
                 <h2>Professional Affiliation</h2>
                 <ul>
                     <li><a href="http://www.asmp.org/findaphotographer/profile.php?id=6631">American Society of Media Photographers</a>. Member since 1987.</p></li>
                 </ul>
-            </section>
+            </div>
 
-            <section class="list-block awards">
+            <div class="smc-content-block-subsection">
                 <h2>Awards</h2>
                 <ul>
                     <li>2015 British Columbia Arts Council Award</li>
@@ -130,56 +129,45 @@
                     <li>1994 Lotus Awards &mdash; Advertising/Print</li>
                     <li>1989 Communications Arts Photography</li>
                 </ul>
-            </section>
+            </div>
+        </section>
 
-            <section class="list-block representation">
-                <h2>Representation</h2>
+        <section class="smc-content-block smc-content-block--representation">
+            <h2>Representation</h2>
 
+            <h3>Assignments</h3>
+            <ul>
+                <li><a href="http://www.theverbatimagency.com/">Verbatim Agency</a>, Worldwide</li>
+                <li><a href="http://gpaphoto.com/">Global Photo Associates</a>, New York</li>
+            </ul>
 
-                <div class="subsection assignments">
-                    <h3>Assignments</h3>
-                    <ul>
-                        <li><a href="http://www.theverbatimagency.com/">Verbatim Agency</a>, Worldwide</li>
-                        <li><a href="http://gpaphoto.com/">Global Photo Associates</a>, New York</li>
-                    </ul>
-                </div>
+            <h3>Stock Photography</h3>
+            <ul>
+                <li><a href="http://www.gettyimages.ca/Search/Search.aspx?assettype=image&amp;artist=Stuart+McCall&amp;Language=en-US">Getty Images</a>, Seattle &mdash; stock photography</li>
+                <li><a href="http://www.agefotostock.com/age/ingles/tpisem1b.asp?querystr=">agefotostock</a>, Barcelona</li>
+            </ul>
 
+            <h3>Fine Art</h3>
+            <ul>
+                <li><a href="http://www.stuartmccall.ca/">StuartMcCall.ca,</a> Fine Art portfolio</li>
+                <li><a href="http://www.artrentalandsales.com/catalogue.php?artistID=307">Vancouver Art Gallery</a>, Art Sales &amp; Rental</li>
+                <li><a href="http://www.newzones.com/dynamic/artist.asp?ArtistID=177">Newzones Contemporary Art</a>, Calgary, AB</li>
+                <li><a href="http://www.mrfinearts.com/artists/represented/McCall-Stuart/">Marcia Rafelman Fine Art</a>, Toronto, ON</li>
+            </ul>
+        </section>
 
-                <div class="subsection stock">
-                    <h3>Stock Photography</h3>
-                    <ul>
-                        <li><a href="http://www.gettyimages.ca/Search/Search.aspx?assettype=image&amp;artist=Stuart+McCall&amp;Language=en-US">Getty Images</a>, Seattle &mdash; stock photography</li>
-                        <li><a href="http://www.agefotostock.com/age/ingles/tpisem1b.asp?querystr=">agefotostock</a>, Barcelona</li>
-                    </ul>
-                </div>
-
-
-                <div class="subsection art">
-                    <h3>Fine Art</h3>
-                    <ul>
-                        <li><a href="http://www.stuartmccall.ca/">StuartMcCall.ca,</a> Fine Art portfolio</li>
-                        <li><a href="http://www.artrentalandsales.com/catalogue.php?artistID=307">Vancouver Art Gallery</a>, Art Sales &amp; Rental</li>
-                        <li><a href="http://www.newzones.com/dynamic/artist.asp?ArtistID=177">Newzones Contemporary Art</a>, Calgary, AB</li>
-                        <li><a href="http://www.mrfinearts.com/artists/represented/McCall-Stuart/">Marcia Rafelman Fine Art</a>, Toronto, ON</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section class="list-block clients">
-                <h2>Selected Clients</h2>
-                <p>American Bridge, Baytex Energy, BC Hydro, Bechtel Corp, Boston Globe, Finning International, Flatiron, Kiewit, London Times, McKinsey & Co, Mercer International, Natural Resources Canada, Plenary Group, Precision Drilling, Time Magazine, Transportation Investment Corp</p>
-            </section>
-
-            <div class="bottom"></div>
-        </div>
-    </div></article>
+        <section class="smc-content-block smc-content-block--clients">
+            <h2>Selected Clients</h2>
+            <p>American Bridge, Baytex Energy, BC Hydro, Bechtel Corp, Boston Globe, Finning International, Flatiron, Kiewit, London Times, McKinsey & Co, Mercer International, Natural Resources Canada, Plenary Group, Precision Drilling, Time Magazine, Transportation Investment Corp</p>
+        </section>
+    </article>
 {% endblock %}
 
 {% block js-resource %}
     {% cache 31556926 portfolio_galleries_abstracts portfolio.id portfolio.modified_date %}
         {% for gallery in all_galleries %}
             {% if gallery.abstract %}
-                <div class="abstract" id="abstract-{{ gallery.slug }}">
+                <div class="text-block text-block--abstract" id="abstract-{{ gallery.slug }}">
                     {{ gallery.abstract_html|safe }}
                 </div>
             {% endif %}

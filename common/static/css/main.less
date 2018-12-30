@@ -33,19 +33,20 @@ h1 {
 
 h2 {
     font-family: @title_font;
-    font-size: 1.7em;
-    line-height: 1.2em;
+    font-size: @title_font_size;
+    line-height: @title_line_height;
     margin: 0;
-    margin-bottom: 0.3em;
+    margin-bottom: @title_margin_bottom;
     font-weight: normal;
     color: @body_title_fg;
 }
 
 h3 {
-    font-family: @base_font;
-    font-size: 1.1em;
-    line-height: 1.2em;
+    font-family: @subtitle_font;
+    font-size: @subtitle_font_size;
+    line-height: @subtitle_line_height;
     margin: 0;
+    margin-bottom: @subtitle_margin_bottom;
     font-weight: bold;
     color: @body_title_fg;
 }
@@ -87,6 +88,7 @@ del {
 
 abbr,
 acronym {
+    font-style: normal;
 }
 
 blockquote {
@@ -115,79 +117,103 @@ a {
     display: none;
 }
 
-/*****
- * Layout and special styles
- */
+.text-block {
+    font-family: @text_font;
+    font-size: 1.15em;
+    line-height: 1.4em;
+    .justify_on_mobile();
 
-
-
-#wrapper {
-    width: 90%;
-    min-width: 240px;
-    padding: 0;
-    margin: 24px 5%;
-
-    @media screen and (max-width: @medium_screen) {
-        width: auto;
-        margin: 0;
+    h2 {
+        font-family: @text_title_font;
+        margin: 0 0 0.5em 0;
+        font-size: 1.7em;
+        line-height: 1.2em;
+        font-weight: normal;
+        color: @body_title_fg;
     }
 }
 
-#main {
-    background-color: @main_bg;
-    border: @main_border;
-
-    @media screen and (max-width: @medium_screen) {
-        border: none;
-    }
-}
-
-.header {
+ul.years-list {
     display: block;
-    position: relative;
-    padding: 1em @inner_margin_h;
-    background-color: @header_bg;
-    color: @header_fg;
+    margin-right: -10px;
+    padding-right: 10px;
+    padding-left: 8px;
+    text-align: left;
 
-    h1.sitetitle {
-        font-size: 3.8em;
-        line-height: 1em;
-        color: @header_title_fg;
-        text-align: center;
-        user-select: none;
-
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-        .main {
-            display: block;
-            white-space: nowrap;
-        }
-
-        .subtitle {
-            display: block;
-            font-size: 0.4em;
-            line-height: 1em;
-            color: @header_faint_fg;
-            margin-top: 0.2em;
-            white-space: nowrap;
-        }
-
-        a {
-            text-decoration: none;
-            outline: none;
-            color: @header_title_fg;
-            vertical-align: middle;
-        }
+    li {
+        display: inline-block;
+        width: 100%;
     }
 
-    img.sitetitle {
-        display: block;
-        max-width: 100%;
-        height: auto;
+    .year {
+        display: table-cell;
+        color: @body_faint_fg;
+        font-size: 0.85em;
+        cursor: default;
+        user-select: none;
+    }
+
+    .desc {
+        display: table-cell;
+        padding-left: 12px;
+
+        span {
+            margin-right: 0.4em;
+        }
+
+        strong {
+            font-style: italic;
+            font-weight: bold;
+        }
     }
 }
 
+.vcard {
+    .fn {
+        font-weight: normal;
+    }
 
+    .adr {
+        margin-bottom: 0.5em;
+    }
+
+    .email, .tel {
+        margin: 0.5em 0;
+    }
+}
+
+.back-to-top {
+    display: block;
+    text-align: center;
+
+    a {
+        text-decoration: none;
+        color: @page_action_fg;
+
+        &:hover, &:focus {
+            text-decoration: underline;
+            color: @page_action_hover_fg;
+        }
+    }
+}
+
+.blur {
+    position: relative;
+    opacity: 1;
+    top: 0;
+    transition: opacity 200ms ease-out;
+    transition: top 200ms ease-out;
+
+    &.offscreen {
+        top: 1em;
+        opacity: 0.6;
+    }
+
+    &:hover, &:focus {
+        opacity: 1;
+        top: 0;
+    }
+}
 
 .portfolio {
     padding: 0;
@@ -196,7 +222,7 @@ a {
 
     .filters {
         display: block;
-        padding: 8px 24px;
+        padding: 8px (@inner_margin_h - 6px);
         text-align: center;
         cursor: default;
         user-select: none;
@@ -222,6 +248,10 @@ a {
             cursor: pointer;
             text-transform: uppercase;
             color: @filter_fg;
+
+            &.filter-all {
+                padding: 5px 8px 7px 8px;
+            }
 
             .filter-pic {
                 display: block;
@@ -310,14 +340,6 @@ a {
             .filter-pic img {
                 opacity: 1;
             }
-        }
-    }
-
-    .gallery-content {
-        border-bottom: none;
-
-        .abstract {
-            margin-bottom: 1em;
         }
     }
 
@@ -447,7 +469,7 @@ body.showing-asset .portfolio {
         }
     }
 
-    .gallery-content {
+    .smc-content-wrapper--gallery-content {
         border-top: 1px dotted #ddd;
     }
 }
@@ -736,56 +758,111 @@ body.showing-asset .portfolio {
     }
 }
 
-.gallery-content, .site-main, .site-extra {
-    margin: 0;
-    padding: 0 @inner_margin_h;
+#wrapper {
+    width: 90%;
+    min-width: 240px;
+    padding: 0;
+    margin: 24px 5%;
+
+    @media screen and (max-width: @medium_screen) {
+        width: auto;
+        margin: 0;
+    }
+}
+
+#main {
+    background-color: @main_bg;
+    border: @main_border;
+
+    @media screen and (max-width: @medium_screen) {
+        border: none;
+    }
+}
+
+.header {
+    display: block;
+    position: relative;
+    padding: 1em @inner_margin_h;
+    background-color: @header_bg;
+    color: @header_fg;
+
+    h1.sitetitle {
+        font-size: 3.8em;
+        line-height: 1em;
+        color: @header_title_fg;
+        text-align: center;
+        user-select: none;
+
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+        .main {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .subtitle {
+            display: block;
+            font-size: 0.4em;
+            line-height: 1em;
+            color: @header_faint_fg;
+            margin-top: 0.2em;
+            white-space: nowrap;
+        }
+
+        a {
+            text-decoration: none;
+            outline: none;
+            color: @header_title_fg;
+            vertical-align: middle;
+        }
+    }
+
+    img.sitetitle {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.smc-content-wrapper {
+    margin: 0 auto;
+    padding: 1em @inner_margin_h;
     display: block;
     position: relative;
 
-    .content-inner {
-        max-width: 80em;
-        margin: 0 auto;
+    &.smc-content-wrapper--gallery-content {
+        display: none;
+        z-index: 2;
+
+        .text-block {
+            margin-bottom: 1em;
+        }
+    }
+
+    &.smc-content-wrapper--extra {
+        margin-bottom: 1em;
+        border-top: @site_extra_separator;
     }
 }
 
-.gallery-content {
-    display: none;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    border-bottom: @gallery_content_separator;
-    z-index: 2;
+.smc-content-block {
+    .smc-content-block-subsection {
+        padding: 1em 0;
+
+        &:first-child {
+            padding-top: 0;
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
 }
 
-.site-main {
-    padding-top: 1em;
-}
-
-.site-extra {
-    margin-top: 2em;
-    padding-top: 1em;
-    padding-bottom: 2em;
-    border-top: @site_extra_separator;
-}
-
-.abstract, .intro {
-    font-family: @text_font;
-    font-size: 1.15em;
-    line-height: 1.4em;
-    .justify_on_mobile();
-
+.smc-content-block--intro {
     h2 {
-        font-family: @text_title_font;
-        text-align: center;
-        margin: 0 0 0.5em 0;
-        font-size: 1.7em;
-        line-height: 1.2em;
-        font-weight: normal;
-        color: @body_title_fg;
+        display: none;
     }
-}
-
-.intro h2 {
-    display: none;
 }
 
 body.showing-gallery {
@@ -794,51 +871,13 @@ body.showing-gallery {
         padding-bottom: 1em;
     }
 
-    .site-main {
-        margin-top: 2em;
-        padding-top: 2em;
+    .smc-content-wrapper--main {
+        padding-top: 4em;
     }
 
-    .intro {
+    .smc-content-block--intro {
         h2 {
             display: block;
-        }
-    }
-}
-
-.projects {
-    margin: 2em 0;
-}
-
-.contact {
-    text-align: center;
-
-    .vcard {
-        .fn {
-            font-weight: normal;
-        }
-
-        .adr {
-            margin-bottom: 0.5em;
-        }
-
-        .email, .tel {
-            margin: 0.5em 0;
-        }
-    }
-}
-
-.back-to-top {
-    display: block;
-    text-align: center;
-
-    a {
-        text-decoration: none;
-        color: @page_action_fg;
-
-        &:hover, &:focus {
-            text-decoration: underline;
-            color: @page_action_hover_fg;
         }
     }
 }
@@ -942,114 +981,6 @@ body.showing-gallery {
     }
 }
 
-.list-block {
-    position: relative;
-    margin: 1em auto 2em auto;
-
-    h2, h3, ul {
-        padding-left: 8px;
-        padding-right: 8px;
-        text-align: center;
-    }
-}
-
-ul.years-list {
-    display: block;
-    margin-right: -10px;
-    padding-right: 10px;
-    text-align: left;
-
-    li {
-        display: inline-block;
-        width: 100%;
-    }
-
-    .year {
-        display: table-cell;
-        color: @body_faint_fg;
-        font-size: 0.85em;
-        cursor: default;
-        user-select: none;
-    }
-
-    .desc {
-        display: table-cell;
-        padding-left: 12px;
-
-        span {
-            margin-right: 0.4em;
-        }
-
-        strong {
-            font-style: italic;
-            font-weight: bold;
-        }
-    }
-
-}
-
-.list-block.galleries {
-    .gallery-info {
-        margin: 1em 0;
-        width: 33%;
-        float: left;
-    }
-
-    a {
-        display: block;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    @media screen and (max-width: @big_screen) {
-        /* it's important to shift to one column at this point so we are scattered over exhibitions */
-        /* otherwise, it looks like exhibitions refer to specific galleries */
-
-        width: auto;
-        min-width: 0;
-
-        .gallery-info {
-            width: auto;
-            float: none;
-        }
-    }
-}
-
-.list-block.presentations {
-    ul.years-list {
-        margin: 0 auto;
-        width: 50%;
-
-        @media screen and (max-width: @small_screen) {
-            width: auto;
-        }
-    }
-}
-
-.exhibitions {
-    margin-bottom: 1em;
-
-    h2 {
-        text-align: center;
-    }
-
-    ul.years-list {
-        max-height: none;
-        column-count: 3;
-        column-gap: 1em;
-
-        @media screen and (max-width: @big_screen) {
-            column-count: 2;
-        }
-
-        @media screen and (max-width: @small_screen) {
-            column-count: 1;
-        }
-    }
-}
-
 #footer {
     margin: 2em 0;
     padding: 0 @inner_margin_h;
@@ -1080,24 +1011,6 @@ ul.years-list {
     .expanded-contact {
         display: block;
         margin-top: 2em;
-    }
-}
-
-.blur {
-    position: relative;
-    opacity: 1;
-    top: 0;
-    transition: opacity 200ms ease-out;
-    transition: top 200ms ease-out;
-
-    &.offscreen {
-        top: 1em;
-        opacity: 0.6;
-    }
-
-    &:hover, &:focus {
-        opacity: 1;
-        top: 0;
     }
 }
 

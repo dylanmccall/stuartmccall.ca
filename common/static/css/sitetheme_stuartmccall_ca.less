@@ -11,3 +11,99 @@
 
 @text_font: 'PT Serif', serif;
 @text_title_font: 'PT Serif', serif;
+
+.smc-content-wrapper {
+    margin: 0 auto;
+    max-width: 80em;
+}
+
+.smc-content-block {
+    text-align: center;
+
+    &.text-block {
+        text-align: left;
+        .justify_on_mobile();
+    }
+
+    h2 {
+        text-align: center;
+    }
+}
+
+.smc-content-block--presentations {
+    ul.years-list {
+        margin: 0 auto;
+        width: 50%;
+
+        @media screen and (max-width: @small_screen) {
+            width: auto;
+        }
+    }
+}
+
+.smc-content-block--exhibitions {
+    ul.years-list {
+        max-height: none;
+        column-count: 3;
+        column-gap: 1em;
+
+        @media screen and (max-width: @big_screen) {
+            column-count: 2;
+        }
+
+        @media screen and (max-width: @small_screen) {
+            column-count: 1;
+        }
+    }
+}
+
+.smc-content-wrapper--main {
+    .smc-content-block {
+        position: relative;
+        margin: 1em 0;
+    }
+}
+
+.smc-content-wrapper--extra {
+    .smc-content-block {
+        position: relative;
+        margin: 1em 0 2em 0;
+
+        &:last-child {
+            margin-bottom: 1em;
+        }
+    }
+}
+
+.galleries-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .gallery-info {
+        flex-shrink: 0;
+        flex-basis: 33.333%;
+        margin: 1em 0;
+
+        h3, ul {
+            padding: 0 8px;
+        }
+    }
+
+    @media screen and (max-width: @big_screen) {
+        flex-direction: column;
+        flex-wrap: nowrap;
+
+        .gallery-info {
+            flex-basis: auto;
+        }
+    }
+
+    a {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
