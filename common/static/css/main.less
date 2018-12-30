@@ -1,12 +1,12 @@
 @keyframes thumbnail_pulse {
     0% {
-        border-color: @thumbnail_border_color;
+        border-color: @filmstrip_thumbnail_border_color;
     }
     70% {
-        border-color: @thumbnail_loading_border_color;
+        border-color: @filmstrip_thumbnail_loading_border_color;
     }
     100% {
-        border-color: @thumbnail_border_color;
+        border-color: @filmstrip_thumbnail_border_color;
     }
 }
 
@@ -476,12 +476,17 @@ body.showing-asset .portfolio {
 
 .filmstrip {
     position: relative;
-    height: 80px + 4px + 12px;
+    height: @filmstrip_thumbnail_size + (@filmstrip_thumbnail_border_size * 2) + (@filmstrip_vertical_padding * 2);
     overflow: hidden;
-    padding: 0 80px 0 24px;
+    padding: 0 @filmstrip_thumbnail_size 0 @filmstrip_overflow_size;
     user-select: none;
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    @media screen and (max-width: @medium_screen) {
+        height: @filmstrip_thumbnail_size_mobile + (@filmstrip_thumbnail_border_size_mobile * 2) + (@filmstrip_vertical_padding_mobile * 2);;
+        padding: 0 @filmstrip_thumbnail_size_mobile 0 @filmstrip_overflow_size_mobile;
+    }
 
     &.empty {
         display: none;
@@ -490,11 +495,17 @@ body.showing-asset .portfolio {
     .thumbnails {
         display: block;
         position: absolute;
-        top: 6px;
+        top: @filmstrip_vertical_padding;
         left: 0px;
         margin-left: (@inner_margin_h - 6px);
         z-index: 1;
         overflow: visible;
+
+        @media screen and (max-width: @medium_screen) {
+            top: 4px;
+            left: 0px;
+            margin-left: (@inner_margin_h - 1px);
+        }
 
         a.asset {
             display: block;
@@ -505,12 +516,19 @@ body.showing-asset .portfolio {
                 display: block;
                 position: relative;
                 z-index: 1;
-                width: 80px;
-                height: 80px;
-                margin: 0 4px;
-                border: 2px solid @thumbnail_border_color;
+                width: @filmstrip_thumbnail_size;
+                height: @filmstrip_thumbnail_size;
+                margin: 0 @filmstrip_thumbnail_spacing;
+                border: @filmstrip_thumbnail_border_size solid @filmstrip_thumbnail_border_color;
                 opacity: 0.85;
                 transition: opacity 200ms ease-out;
+
+                @media screen and (max-width: @medium_screen) {
+                    width: @filmstrip_thumbnail_size_mobile;
+                    height: @filmstrip_thumbnail_size_mobile;
+                    margin: 0 @filmstrip_thumbnail_spacing_mobile;
+                    border-width: @filmstrip_thumbnail_border_size_mobile;
+                }
             }
 
             .icon {
@@ -521,27 +539,45 @@ body.showing-asset .portfolio {
                 display: block;
                 position: absolute;
                 z-index: 2;
-                width: 80px;
-                height: 80px;
-                padding: 2px 2px+4px;
+                width: @filmstrip_thumbnail_size;
+                height: @filmstrip_thumbnail_size;
+                padding: @filmstrip_thumbnail_border_size (@filmstrip_thumbnail_border_size + @filmstrip_thumbnail_spacing);
                 background-repeat: no-repeat;
+
+                @media screen and (max-width: @medium_screen) {
+                    width: @filmstrip_thumbnail_size_mobile;
+                    height: @filmstrip_thumbnail_size_mobile;
+                    padding: @filmstrip_thumbnail_border_size_mobile;
+                }
             }
 
             &.picture .overlay {
                 background-image: url('/static/img/thumbnail-arrow-84.svg');
-                background-size: 84px 84px;
+                background-size: 100%;
                 background-position: center bottom;
-                bottom: -22px;
+                bottom: -@filmstrip_thumbnail_arrow_height;
                 opacity: 0;
                 transition: bottom 100ms ease-out;
+
+                @media screen and (max-width: @medium_screen) {
+                    background-image: url('/static/img/thumbnail-arrow-67.svg');
+                    background-size: 100%;
+                    bottom: -@filmstrip_thumbnail_arrow_height_mobile;
+                }
             }
 
             &.video .overlay {
                 background-image: url('/static/img/play-45.svg');
-                background-size: 45px 45px;
-                background-position: center 45%;
+                background-size: 42%;
+                background-position: center;
                 opacity: 0.6;
                 transition: opacity 100ms ease-out;
+
+                @media screen and (max-width: @medium_screen) {
+                    background-image: url('/static/img/play-45.svg');
+                    background-size: 50%;
+                    background-position: center;
+                }
             }
 
             .caption {
@@ -553,7 +589,7 @@ body.showing-asset .portfolio {
 
                 img {
                     opacity: 1;
-                    border-color: @thumbnail_active_border_color;
+                    border-color: @filmstrip_thumbnail_active_border_color;
                 }
 
                 &.video .overlay {
@@ -590,15 +626,23 @@ body.showing-asset .portfolio {
         cursor: pointer;
 
         &.left {
-            width: 24px;
+            width: @filmstrip_overflow_size;
             left: 0px;
             background: linear-gradient(90deg, fade(@portfolio_bg, 90%), fade(@portfolio_bg, 0%));
+
+            @media screen and (max-width: @medium_screen) {
+                width: @filmstrip_overflow_size_mobile;
+            }
         }
 
         &.right {
-            width: 80px;
+            width: @filmstrip_thumbnail_size;
             right: 0px;
             background: linear-gradient(90deg, fade(@portfolio_bg, 0%), fade(@portfolio_bg, 90%));
+
+            @media screen and (max-width: @medium_screen) {
+                width: @filmstrip_thumbnail_size_mobile;
+            }
         }
 
         .pager {
@@ -606,18 +650,29 @@ body.showing-asset .portfolio {
             position: absolute;
             right: @inner_margin_h - 8px;
             top: 24px;
-            width: 48px;
-            height: 48px;
+            width: @filmstrip_pager_size;
+            height: @filmstrip_pager_size;
             background-color: @pager_bg;
             color: @pager_fg;
             border-radius: 50%;
             text-decoration: none;
             transition: background-color 200ms ease-out;
 
+            @media screen and (max-width: @medium_screen) {
+                top: 22px;
+                right: 8px;
+                width: @filmstrip_pager_size_mobile;
+                height: @filmstrip_pager_size_mobile;
+            }
+
             .pager-inner {
                 display: block;
                 padding: 12px 6px 4px 6px;
                 text-align: center;
+
+                @media screen and (max-width: @medium_screen) {
+                    padding: 4px 2px 4px 0px;
+                }
             }
 
             .current {
@@ -625,6 +680,10 @@ body.showing-asset .portfolio {
                 line-height: 1em;
                 font-weight: bold;
                 color: @pager_fg;
+
+                @media screen and (max-width: @medium_screen) {
+                    font-weight: normal;
+                }
             }
 
             .total {
@@ -632,6 +691,10 @@ body.showing-asset .portfolio {
                 line-height: 1em;
                 color: @pager_faint_fg;
                 vertical-align: bottom;
+
+                @media screen and (max-width: @medium_screen) {
+                    display: none;
+                }
             }
 
             .arrow {
@@ -642,18 +705,25 @@ body.showing-asset .portfolio {
             }
 
             &.bignumber {
-                letter-spacing:-1px;
-            }
-            &.bignumber .pager-inner {
-                padding: 14px 6px 2px 6px;
-            }
-            &.bignumber .current {
-                font-size: 20px;
-                line-height: 1em;
-            }
-            &.bignumber .total {
-                font-size: 14px;
-                line-height: 1em;
+                letter-spacing: -1px;
+
+                .pager-inner {
+                    padding: 14px 6px 2px 6px;
+
+                    @media screen and (max-width: @medium_screen) {
+                        padding: 6px 5px 2px 2px;
+                    }
+                }
+
+                .current {
+                    font-size: 20px;
+                    line-height: 1em;
+                }
+
+                .total {
+                    font-size: 14px;
+                    line-height: 1em;
+                }
             }
         }
 
@@ -661,98 +731,6 @@ body.showing-asset .portfolio {
             .pager {
                 outline: none;
                 background-color: @pager_hover_bg;
-            }
-        }
-    }
-
-    @media screen and (max-width: @medium_screen) {
-        height: 65px + 2px + 8px;
-        padding: 0 48px 0 24px;
-
-        .thumbnails {
-            top: 4px;
-            left: 0px;
-            margin-left: (@inner_margin_h - 1px);
-
-            a.asset {
-                img {
-                    width: 65px;
-                    height: 65px;
-                    margin: 0;
-                    border: 1px solid @thumbnail_border_color;
-                }
-
-                .overlay {
-                    width: 65px;
-                    height: 65px;
-                    padding: 1px 1px;
-                }
-
-                &.picture .overlay {
-                    background-image: url('/static/img/thumbnail-arrow-67.svg');
-                    background-size: 67px 67px;
-                    bottom: -16px;
-                }
-
-                &.video .overlay {
-                    background-image: url('/static/img/play-45.svg');
-                    background-size: 35px 35px;
-                    background-position: center center;
-                }
-            }
-        }
-
-        .overflow {
-            &.left {
-            }
-
-            &.right {
-                width: 48px;
-                right: 0px;
-                background: linear-gradient(90deg, fade(@portfolio_bg, 0%), fade(@portfolio_bg, 90%));
-            }
-
-            .pager {
-                top: 22px;
-                right: 8px;
-                width: 32px;
-                height: 32px;
-
-                .pager-inner {
-                    padding: 4px 2px 4px 0px;
-                }
-
-                /*
-                .arrow {
-                    display: block;
-                    font-size: 24px;
-                    line-height: 1em;
-                    font-weight: normal;
-                    color: #000;
-                }
-                */
-
-                .current {
-                    font-size: 24px;
-                    line-height: 1em;
-                    font-weight: normal;
-                    color: @pager_fg;
-                }
-
-                .total {
-                    display: none;
-                }
-
-                &.bignumber {
-                    letter-spacing:-1px;
-                }
-                &.bignumber .pager-inner {
-                    padding: 6px 5px 2px 2px;
-                }
-                &.bignumber .current {
-                    font-size: 20px;
-                    line-height: 1em;
-                }
             }
         }
     }
