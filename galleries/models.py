@@ -29,6 +29,8 @@ class Portfolio(models.Model):
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=100, blank=True, null=True)
+    slug = models.SlugField(max_length=50)
     blurb = SimpleMDEField(blank=True, null=True)
     theme_id = models.CharField(max_length=50, choices=SITE_THEME_OPTIONS, verbose_name=_('theme'))
     created_date = models.DateTimeField(auto_now_add=True)

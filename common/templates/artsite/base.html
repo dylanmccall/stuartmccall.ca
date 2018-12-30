@@ -14,7 +14,7 @@
 
     <!-- Web design and development by (C) Dylan McCall <http://www.dylanmccall.com> -->
 
-    <title>Stuart McCall</title>
+    <title>{{ portfolio.title }}</title>
 
     <!-- <link rel="shortcut icon" href="" type="image/x-icon" /> -->
 
@@ -27,12 +27,22 @@
     {% block css_theme %}
     {% endblock %}
 
+    {% if request.user.is_staff %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/less" media="all" href="{% static 'css/admin-utils.less' %}" />
+        {% endcompress %}
+    {% endif %}
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     {% compress js %}
         <script type="text/javascript" src="{% static 'js/history.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
     {% endcompress %}
+
+    {% if request.user.is_staff %}
+        <script type="text/javascript" src="{% static 'js/admin-utils.js' %}"></script>
+    {% endif %}
 
     {% if not debug and not request.user.is_authenticated %}
         <script type="text/javascript">
@@ -52,8 +62,8 @@
 <body id="page-home" class="{% if request.user.is_staff %}as-admin{% endif %}">
 
 {% if request.user.is_staff %}
-<div class="admin-toolbar">
-    <div class="admin-toolbar-inner">
+<div class="smc-admin-toolbar">
+    <div class="smc-admin-toolbar-inner">
         <ul>
             <li>
                 <a class="nav-button normal-text" href="{% url 'admin:auth_user_change' request.user.pk %}">

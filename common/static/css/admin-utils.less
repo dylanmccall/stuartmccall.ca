@@ -1,0 +1,108 @@
+@import (less) "variables.less";
+
+body.as-admin {
+    .smc-admin-toolbar {
+        display: block;
+        background-color: @admin_toolbar_bg;
+        color: @admin_toolbar_fg;
+        border-bottom: solid 2px @admin_toolbar_border_color;
+
+        .smc-admin-toolbar-inner {
+            width: 90%;
+            min-width: 240px;
+            padding: 0 5%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin: 0 -5px;
+
+            > li {
+                display: block;
+                flex-grow: 0;
+                margin: 0 5px;
+            }
+
+            > li.nav-spacer {
+                flex-grow: 1;
+                margin: 0;
+            }
+
+            @media screen and (max-width: @small_screen) {
+                flex-direction: column;
+                margin: 5px 0;
+                justify-content: stretch;
+                text-align: left;
+
+                > li.nav-spacer {
+                    flex-grow: 0;
+                    margin: 1rem 0 0 0;
+                }
+            }
+        }
+
+        a.nav-button {
+            display: block;
+            padding: 8px;
+            color: inherit;
+            font-weight: bold;
+            text-decoration: none;
+            background: transparent;
+            transition: background-color 200ms ease;
+
+            &:hover, &:focus {
+                background: @admin_toolbar_action_hover_bg;
+                text-decoration: underline;
+            }
+
+            &.normal-text {
+                font-weight: normal;
+            }
+        }
+    }
+
+    .smc-admin-editable-content {
+        display: inline-block;
+        background-color: @admin_edit_bg;
+        color: @admin_edit_fg;
+        border: solid 2px @admin_edit_border_color;
+        width: auto;
+        font-size: 0.7rem;
+        vertical-align: super;
+        line-height: 1em;
+        margin-top: -4px;
+        padding: 1px 2px;
+
+        a {
+            color: @admin_edit_link_color;
+        }
+    }
+
+    .smc-content-block {
+        .smc-admin-editable-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            vertical-align: baseline;
+            margin-top: 0;
+        }
+    }
+
+    .smc-content-block, .smc-editable-region {
+        .smc-admin-editable-content {
+            opacity: 0.2;
+            transition: ease 200ms opacity;
+        }
+
+        &:hover, &:focus {
+            .smc-admin-editable-content {
+                opacity: 1.0;
+            }
+        }
+    }
+}

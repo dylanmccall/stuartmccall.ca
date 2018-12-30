@@ -19,6 +19,7 @@ setup(
         'django-extensions>=1.9.7',
         'django-orderable>=5.0.0',
         'django-simplemde>=0.1.0',
+        'django-tinycontent>=0.7.1',
         'Django>=1.11.15,<1.12',
         'Markdown>=2.6.9',
         'Pillow>=4.3.0',

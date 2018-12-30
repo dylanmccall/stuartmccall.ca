@@ -68,6 +68,9 @@ class PortfolioAdmin(admin.ModelAdmin):
         'site',
         'modified_date',
     )
+    prepopulated_fields = {
+        'slug': ('title',)
+    }
     readonly_fields = (
         'created_date',
         'modified_date',

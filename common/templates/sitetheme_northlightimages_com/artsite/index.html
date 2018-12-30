@@ -4,6 +4,7 @@
 {% load i18n %}
 {% load image_tools %}
 {% load staticfiles %}
+{% load tinycontent_tags %}
 
 {% block js_data %}
     {% spaceless %}
@@ -32,7 +33,7 @@
 
 {% block header %}
     <a href="/" class="action-return">
-        <img class="sitetitle" src="{% static 'img/northlight_logo.png' %}" width="348" height="97" alt="North Light - Images by Stuart McCall" />
+        <img class="sitetitle" src="{% static 'img/northlight_logo.png' %}" width="348" height="97" alt="{{ portfolio.title }}" />
     </a>
 {% endblock %}
 
@@ -94,67 +95,75 @@
         </section>
 
         <aside role="complementary" class="smc-content-block smc-content-block--contact">
-            <h2>Contact</h2>
-            <div id="hcard-Stuart-McCall" class="vcard">
-                <span class="fn">Stuart McCall</span>
-                <div class="org">North Light Images Ltd.</div>
-                <div class="adr">
-                    <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
+            {% tinycontent portfolio.slug 'northlightimages' 'contact' %}
+                <h2>Contact</h2>
+                <div id="hcard-Stuart-McCall" class="vcard">
+                    <span class="fn">Stuart McCall</span>
+                    <div class="org">North Light Images Ltd.</div>
+                    <div class="adr">
+                        <span class="locality">Vancouver</span>, <span class="region">BC</span>, <span class="country-name">Canada</span>
+                    </div>
+                    <div>
+                        <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
+                    </div>
+                    <div>
+                        <span class="tel">(1) 604-684-6760</span>
+                    </div>
                 </div>
-                <div>
-                    <a class="email" href="mailto:stuart@northlightimages.com">stuart@northlightimages.com</a>
-                </div>
-                <div>
-                    <span class="tel">(1) 604-684-6760</span>
-                </div>
-            </div>
+            {% endtinycontent %}
         </aside>
     </article>
 
     <article role="document" id="site-extra" class="smc-content-wrapper smc-content-wrapper--extra" data-blur-from="0.7">
         <section class="smc-content-block smc-content-block--professional-affiliation">
-            <h2>Professional Affiliation</h2>
-            <ul>
-                <li><a href="http://www.asmp.org/findaphotographer/profile.php?id=6631">American Society of Media Photographers</a>. Member since 1987.</p></li>
-            </ul>
+            {% tinycontent portfolio.slug 'northlightimages' 'professional-affiliation' %}
+                <h2>Professional Affiliation</h2>
+                <ul>
+                    <li><a href="http://www.asmp.org/findaphotographer/profile.php?id=6631">American Society of Media Photographers</a>. Member since 1987.</p></li>
+                </ul>
 
-            <h2>Awards</h2>
-            <ul>
-                <li>2015 British Columbia Arts Council Award</li>
-                <li>2006 IPA &mdash; Industrial</li>
-                <li>2005 IPA &mdash; Editorial</li>
-                <li>1994 Lotus Awards &mdash; Advertising/Print</li>
-                <li>1989 Communications Arts Photography</li>
-            </ul>
+                <h2>Awards</h2>
+                <ul>
+                    <li>2015 British Columbia Arts Council Award</li>
+                    <li>2006 IPA &mdash; Industrial</li>
+                    <li>2005 IPA &mdash; Editorial</li>
+                    <li>1994 Lotus Awards &mdash; Advertising/Print</li>
+                    <li>1989 Communications Arts Photography</li>
+                </ul>
+            {% endtinycontent %}
         </section>
 
         <section class="smc-content-block smc-content-block--representation">
-            <h2>Representation</h2>
+            {% tinycontent portfolio.slug 'northlightimages' 'representation' %}
+                <h2>Representation</h2>
 
-            <h3>Assignments</h3>
-            <ul>
-                <li><a href="http://www.theverbatimagency.com/">Verbatim Agency</a>, Worldwide</li>
-                <li><a href="http://gpaphoto.com/">Global Photo Associates</a>, New York</li>
-            </ul>
+                <h3>Assignments</h3>
+                <ul>
+                    <li><a href="http://www.theverbatimagency.com/">Verbatim Agency</a>, Worldwide</li>
+                    <li><a href="http://gpaphoto.com/">Global Photo Associates</a>, New York</li>
+                </ul>
 
-            <h3>Stock Photography</h3>
-            <ul>
-                <li><a href="http://www.gettyimages.ca/Search/Search.aspx?assettype=image&amp;artist=Stuart+McCall&amp;Language=en-US">Getty Images</a>, Seattle &mdash; stock photography</li>
-                <li><a href="http://www.agefotostock.com/age/ingles/tpisem1b.asp?querystr=">agefotostock</a>, Barcelona</li>
-            </ul>
+                <h3>Stock Photography</h3>
+                <ul>
+                    <li><a href="http://www.gettyimages.ca/Search/Search.aspx?assettype=image&amp;artist=Stuart+McCall&amp;Language=en-US">Getty Images</a>, Seattle &mdash; stock photography</li>
+                    <li><a href="http://www.agefotostock.com/age/ingles/tpisem1b.asp?querystr=">agefotostock</a>, Barcelona</li>
+                </ul>
 
-            <h3>Fine Art</h3>
-            <ul>
-                <li><a href="http://www.stuartmccall.ca/">StuartMcCall.ca,</a> Fine Art portfolio</li>
-                <li><a href="http://www.artrentalandsales.com/catalogue.php?artistID=307">Vancouver Art Gallery</a>, Art Sales &amp; Rental</li>
-                <li><a href="http://www.newzones.com/dynamic/artist.asp?ArtistID=177">Newzones Contemporary Art</a>, Calgary, AB</li>
-                <li><a href="http://www.mrfinearts.com/artists/represented/McCall-Stuart/">Marcia Rafelman Fine Art</a>, Toronto, ON</li>
-            </ul>
+                <h3>Fine Art</h3>
+                <ul>
+                    <li><a href="http://www.stuartmccall.ca/">StuartMcCall.ca,</a> Fine Art portfolio</li>
+                    <li><a href="http://www.artrentalandsales.com/catalogue.php?artistID=307">Vancouver Art Gallery</a>, Art Sales &amp; Rental</li>
+                    <li><a href="http://www.newzones.com/dynamic/artist.asp?ArtistID=177">Newzones Contemporary Art</a>, Calgary, AB</li>
+                    <li><a href="http://www.mrfinearts.com/artists/represented/McCall-Stuart/">Marcia Rafelman Fine Art</a>, Toronto, ON</li>
+                </ul>
+            {% endtinycontent %}
         </section>
 
         <section class="smc-content-block smc-content-block--clients">
-            <h2>Selected Clients</h2>
-            <p>American Bridge, Baytex Energy, BC Hydro, Bechtel Corp, Boston Globe, Finning International, Flatiron, Kiewit, London Times, McKinsey & Co, Mercer International, Natural Resources Canada, Plenary Group, Precision Drilling, Time Magazine, Transportation Investment Corp</p>
+            {% tinycontent portfolio.slug 'northlightimages' 'professional-clients' %}
+                <h2>Selected Clients</h2>
+                <p>American Bridge, Baytex Energy, BC Hydro, Bechtel Corp, Boston Globe, Finning International, Flatiron, Kiewit, London Times, McKinsey & Co, Mercer International, Natural Resources Canada, Plenary Group, Precision Drilling, Time Magazine, Transportation Investment Corp</p>
+            {% endtinycontent %}
         </section>
     </article>
 {% endblock %}
@@ -172,5 +181,9 @@
 {% endblock %}
 
 {% block footer %}
-<span class="copyright">All images and content &#169; <a href="mailto:stuart@northlightimages.com">Stuart McCall / North Light Images Ltd.</a> All Rights Reserved</span>
+    <div class="smc-editable-region">
+        {% tinycontent portfolio.slug 'northlightimages' 'footer' %}
+            <span class="copyright">All images and content &#169; <a href="mailto:stuart@northlightimages.com">Stuart McCall / North Light Images Ltd.</a> All Rights Reserved</span>
+        {% endtinycontent %}
+    </div>
 {% endblock %}

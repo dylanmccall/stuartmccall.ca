@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'orderable',
     'sorl.thumbnail',
+    'tinycontent',
     'simplemde',
     'dbbackup',
 ]
@@ -75,7 +76,7 @@ COMPRESS_JS_FILTERS = [
     'compressor.filters.jsmin.JSMinFilter',
 ]
 
-COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage' 
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 
 COMPRESS_PRECOMPILERS = (
     ('text/less', 'lessc {infile} {outfile}'),

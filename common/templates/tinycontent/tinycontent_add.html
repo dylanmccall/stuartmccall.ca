@@ -1,0 +1,7 @@
+{% load i18n %}
+{% if perms.tinycontent.add_tinycontent %}
+<div class="smc-admin-editable-content smc-admin-editable-content--add">
+    {% url 'admin:tinycontent_tinycontent_add' as add_url %} {% with name_url=name|urlencode %}
+    {% blocktrans %}<a href="{{add_url}}?name={{ name_url }}" title="Add content here">Replace</a>{% endblocktrans %}{%endwith %}
+</div>
+{% endif %}
