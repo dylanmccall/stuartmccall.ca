@@ -21,6 +21,8 @@ FROM_EMAIL = "stuartmccall.ca <noreply@example.com>"
 
 SITE_ID = 1
 
+# SMC_GOOGLE_ANALYTICS_ID = 'UA-12345-1'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
