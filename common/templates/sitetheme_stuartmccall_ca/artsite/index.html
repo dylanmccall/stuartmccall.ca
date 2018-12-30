@@ -34,7 +34,9 @@
 {% block header %}
 <h1 class="sitetitle"><a href="/" class="action-return">
     <span class="main">{{ portfolio.title }}</span>
-    <span class="subtitle">{{ portfolio.subtitle }}</span>
+    {% if portfolio.subtitle %}
+        <span class="subtitle">{{ portfolio.subtitle }}</span>
+    {% endif %}
 </a></h1>
 {% endblock %}
 
