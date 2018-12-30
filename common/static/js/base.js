@@ -1015,11 +1015,11 @@ var toggleAsset = function(asset) {
 
 var selectNextAsset = function(direction) {
     direction = direction || 1;
-    if (selectedFilter) {
-        var nextAsset = selectedFilter.getNextAsset(direction);
+    if (visibleFilter) {
+        var nextAsset = visibleFilter.getNextAsset(direction);
         selectAsset(nextAsset);
         if (!nextAsset) {
-            selectFilter(selectedFilter, {showAsset: false});
+            selectFilter(visibleFilter, {showAsset: false});
         }
         scrollToMedia(false);
     }
@@ -1177,10 +1177,10 @@ $(document).ready(function () {
     });
 
     $(document).on('keydown', function(event) {
-        if (event.which == 37 && selectedFilter !== undefined) {
+        if (event.which == 37) {
             // left arrow
             selectNextAsset(-1);
-        } else if (event.which == 39 && selectedFilter !== undefined) {
+        } else if (event.which == 39) {
             // right arrow
             selectNextAsset(1);
         } else if (event.which == 27) {
