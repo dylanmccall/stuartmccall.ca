@@ -16,7 +16,9 @@
 
     <title>{{ portfolio.title }}</title>
 
-    <!-- <link rel="shortcut icon" href="" type="image/x-icon" /> -->
+    {% block favicon %}
+        <!-- <link rel="shortcut icon" href="" type="image/x-icon" /> -->
+    {% endblock %}
 
     {% block js_data %}
         <script type="text/javascript">

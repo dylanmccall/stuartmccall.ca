@@ -6,6 +6,10 @@
 {% load staticfiles %}
 {% load tinycontent_tags %}
 
+{% block favicon %}
+    <link rel="shortcut icon" href="{% static 'img/northlight_favicon.ico' %}" type="image/x-icon" />
+{% endblock %}
+
 {% block js_data %}
     {% spaceless %}
         <script type="text/javascript">
