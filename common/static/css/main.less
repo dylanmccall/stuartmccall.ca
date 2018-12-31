@@ -354,10 +354,10 @@ ul.years-list {
 
     .viewer {
         position: relative;
-        padding: 2rem @inner_margin_h 1rem @inner_margin_h;
+        padding: 2rem @inner_margin_h;
 
         @media screen and (max-width: @medium_screen) {
-            padding: 2rem 0 1rem 0;
+            padding: 2rem 0;
         }
 
         .viewer-content-wrapper {
@@ -408,14 +408,10 @@ ul.years-list {
         }
 
         .caption {
-            margin: 15px auto 0 auto;
+            margin: 1rem auto -0.5rem auto;
             max-width: @max_image_size;
             color: @gallery_caption_fg;
             text-align: center;
-
-            &:empty {
-                display: none;
-            }
 
             @media screen and (max-width: @medium_screen) {
                 padding: 0 @inner_margin_h;
@@ -510,7 +506,7 @@ body.showing-asset .portfolio {
         overflow: visible;
 
         @media screen and (max-width: @medium_screen) {
-            top: 4px;
+            top: @filmstrip_vertical_padding_mobile;
             left: 0px;
             margin-left: (@inner_margin_h - 1px);
         }
