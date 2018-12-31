@@ -354,10 +354,10 @@ ul.years-list {
 
     .viewer {
         position: relative;
-        padding: 20px @inner_margin_h;
+        padding: 2rem @inner_margin_h 1rem @inner_margin_h;
 
         @media screen and (max-width: @medium_screen) {
-            padding: 20px @inner_margin_h;
+            padding: 2rem 0 1rem 0;
         }
 
         .viewer-content-wrapper {
@@ -412,6 +412,14 @@ ul.years-list {
             max-width: @max_image_size;
             color: @gallery_caption_fg;
             text-align: center;
+
+            &:empty {
+                display: none;
+            }
+
+            @media screen and (max-width: @medium_screen) {
+                padding: 0 @inner_margin_h;
+            }
 
             p.caption-main {
                 margin: 0;
@@ -804,7 +812,7 @@ body.showing-asset .portfolio {
 
 .smc-content-wrapper {
     margin: 0 auto;
-    padding: 1em @inner_margin_h;
+    padding: 1rem @inner_margin_h;
     display: block;
     position: relative;
 
