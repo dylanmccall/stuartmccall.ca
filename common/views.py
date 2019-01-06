@@ -20,7 +20,7 @@ except ImportError:
     from urllib.parse import urlparse, parse_qs
 
 
-RENDER_VERSION = '2017-05-05.1'
+RENDER_VERSION = '2018-01-06.1'
 
 
 class JsonResponseMixin(object):
@@ -64,6 +64,7 @@ class PortfolioView(TemplateView):
         context = super(PortfolioView, self).get_context_data(**kwargs)
 
         all_galleries = list(portfolio.get_all_galleries())
+        all_portfoliomedia = list(portfolio.get_all_portfoliomedia())
 
         gallery_slug = kwargs.get('gallery_slug')
 
@@ -72,17 +73,25 @@ class PortfolioView(TemplateView):
         else:
             selected_gallery = None
 
-        key = make_template_fragment_key('portfolio_js_str', [portfolio.pk, portfolio.modified_date, RENDER_VERSION])
-        portfolio_js_str = cache.get_or_set(
+        key = make_template_fragment_key('galleries_js_str', [portfolio.pk, portfolio.modified_date, RENDER_VERSION])
+        galleries_js_str = cache.get_or_set(
             key,
-            lambda: self._get_portfolio_js_str(all_galleries),
+            lambda: self._build_galleries_js_str(all_galleries),
+            None
+        )
+
+        key = make_template_fragment_key('portfoliomedia_js_str', [portfolio.pk, portfolio.modified_date, RENDER_VERSION])
+        portfoliomedia_js_str = cache.get_or_set(
+            key,
+            lambda: self._build_portfoliomedia_js_str(all_portfoliomedia),
             None
         )
 
         context['portfolio'] = portfolio
         context['all_galleries'] = all_galleries
         context['selected_gallery'] = selected_gallery
-        context['portfolio_js_str'] = portfolio_js_str
+        context['galleries_js_str'] = galleries_js_str
+        context['portfoliomedia_js_str'] = portfoliomedia_js_str
 
         return context
 
@@ -95,48 +104,71 @@ class PortfolioView(TemplateView):
         else:
             return super(PortfolioView, self).get_template_names()
 
-    def _get_portfolio_js_str(self, galleries_list):
-        galleries_js_dict = self._get_portfolio_js_dict(galleries_list)
+    def _build_galleries_js_str(self, gallery_list):
+        galleries_js_dict = self._build_galleries_js_dict(gallery_list)
         return json.dumps(galleries_js_dict)
 
-    def _get_portfolio_js_dict(self, galleries_list):
+    def _build_galleries_js_dict(self, gallery_list):
         result = OrderedDict()
 
-        for gallery in galleries_list:
+        for gallery in gallery_list:
             key = make_template_fragment_key('gallery_js_dict', [gallery.pk, gallery.modified_date, RENDER_VERSION])
             result[gallery.slug] = cache.get_or_set(
                 key,
-                lambda: self._get_gallery_js_dict(gallery),
+                lambda: self._build_galleries_js_dict_item(gallery),
                 None
             )
 
         return result
 
-    def _get_gallery_js_dict(self, gallery):
-        media_list = []
-
-        for media in gallery.get_all_media():
-            if media.media_type == 'image':
-                media_obj = self._media_obj_image(media)
-            elif media.media_type == 'external-video':
-                media_obj = self._media_obj_external_video(media)
-            else:
-                media_obj = None
-
-            if media_obj:
-                media_list.append(media_obj)
-
+    def _build_galleries_js_dict_item(self, gallery):
         return {
             'synopsis': gallery.synopsis,
-            'abstractId': 'abstract-{slug}'.format(slug=gallery.slug),
-            'media': media_list
+            'abstractId': 'abstract-{slug}'.format(slug=gallery.slug)
         }
 
-    def _media_obj_image(self, media):
-        result = {
+    def _build_portfoliomedia_js_str(self, portfoliomedia_list):
+        portfoliomedia_js_dict = self._build_portfoliomedia_js_dict(portfoliomedia_list)
+        return json.dumps(portfoliomedia_js_dict)
+
+    def _build_portfoliomedia_js_dict(self, portfoliomedia_list):
+        result = list()
+
+        for portfoliomedia in portfoliomedia_list:
+            key = make_template_fragment_key('portfoliomedia_js_dict', [portfoliomedia.pk, portfoliomedia.modified_date, RENDER_VERSION])
+            result.append(cache.get_or_set(
+                key,
+                lambda: self._build_portfoliomedia_js_dict_item(portfoliomedia),
+                None
+            ))
+
+        return result
+
+    def _build_portfoliomedia_js_dict_item(self, portfoliomedia):
+        media_obj = self._build_media_obj(portfoliomedia.media)
+
+        return {
+            'gallery': portfoliomedia.gallery.slug,
+            **media_obj
+        }
+
+    def _build_media_obj(self, media):
+        if media.media_type == 'image':
+            media_obj_inner = self._build_media_obj_image(media)
+        elif media.media_type == 'external-video':
+            media_obj_inner = self._build_media_obj_external_video(media)
+        else:
+            media_obj_inner = dict()
+
+        return {
             'caption': media.caption,
             'extraHtml': _format_extra_dimensions(media.extra),
+            **media_obj_inner
         }
+
+
+    def _build_media_obj_image(self, media):
+        result = dict()
 
         result['type'] = 'picture'
 
@@ -151,11 +183,8 @@ class PortfolioView(TemplateView):
 
         return result
 
-    def _media_obj_external_video(self, media):
-        result = {
-            'caption': media.caption,
-            'extraHtml': _format_extra_dimensions(media.extra),
-        }
+    def _build_media_obj_external_video(self, media):
+        result = dict()
 
         if media.featured_thumbnail:
             result['thumb'] = get_image_style(media.featured_thumbnail, 'thumb')
@@ -163,11 +192,11 @@ class PortfolioView(TemplateView):
         if media.link:
             url = urlparse(media.link)
 
-            if url.hostname == 'youtube.com':
+            if url.hostname in ('youtube.com', 'www.youtube.com'):
                 params = parse_qs(url.query)
                 video_type = 'video-youtube'
                 video_id = params['v']
-            elif url.hostname == 'youtu.be':
+            elif url.hostname in ('youtu.be', 'www.youtu.be'):
                 video_type = 'video-youtube'
                 video_id = url.path.lstrip('/')
             else:

@@ -37,8 +37,12 @@ class Portfolio(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
 
     # Reverse reference: portfoliogallery_set (0-n)
+    # Reverse reference: portfoliomedia_set (0-n)
 
     objects = PortfolioManager()
+
+    def __str__(self):
+        return self.title
 
     def get_absolute_url(self):
         return reverse('index')
@@ -53,6 +57,13 @@ class Portfolio(models.Model):
     def get_all_galleries(self):
         for portfoliogallery in self.portfoliogallery_set.select_related('gallery'):
             yield portfoliogallery.gallery
+
+    def get_all_portfoliomedia(self):
+        yield from self.portfoliomedia_set.select_related('media')
+
+    def get_all_media(self):
+        for portfoliomedia in self.get_all_portfoliomedia():
+            yield portfoliomedia.media
 
     @cached_property
     def theme(self):
@@ -79,7 +90,7 @@ class Gallery(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
 
     # Reverse reference: portfoliogallery_set (0-n)
-    # Reverse reference: gallerymedia_set (0-n)
+    # Reverse reference: portfoliomedia_set (0-n)
 
     def __str__(self):
         return self.name
@@ -105,12 +116,8 @@ class Gallery(models.Model):
 
     @cached_property
     def featured_media(self):
-        gallerymedia = self.gallerymedia_set.select_related('media').first()
-        return gallerymedia.media if gallerymedia else None
-
-    def get_all_media(self):
-        for gallerymedia in self.gallerymedia_set.select_related('media'):
-            yield gallerymedia.media
+        portfoliomedia = self.portfoliomedia_set.select_related('media').first()
+        return portfoliomedia.media if portfoliomedia else None
 
 
 class Media(models.Model):
@@ -135,7 +142,7 @@ class Media(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
-    # Reverse reference: gallerymedia_set (0-n)
+    # Reverse reference: portfoliomedia_set (0-n)
 
     def __str__(self):
         return "{} - {}".format(self.get_media_type_display(), self.admin_title)
@@ -191,16 +198,21 @@ class PortfolioGallery(Orderable):
     sort_order = models.IntegerField(_("Sort"), blank=True, db_index=True)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
 
-class GalleryMedia(Orderable):
+class PortfolioMedia(Orderable):
     class Meta(Orderable.Meta):
-        verbose_name = _("gallery media")
-        verbose_name_plural = _("gallery media")
+        verbose_name = _("portfolio media")
+        verbose_name_plural = _("portfolio media")
 
     sort_order = models.IntegerField(_("Sort"), blank=True, db_index=True)
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
 
 # Crudely bump modified_date for related portfolios to break their cache
@@ -209,15 +221,17 @@ class GalleryMedia(Orderable):
 def _gallery_bubble_change(sender, instance, **kwargs):
     for portfoliogallery in instance.portfoliogallery_set.iterator():
         portfoliogallery.save()
+    for portfoliomedia in instance.portfoliomedia_set.iterator():
+        portfoliomedia.save()
 
 @receiver(pre_save, sender=Media)
 def _media_bubble_change(sender, instance, **kwargs):
-    for gallerymedia in instance.gallerymedia_set.iterator():
-        gallerymedia.save()
+    for portfoliomedia in instance.portfoliomedia_set.iterator():
+        portfoliomedia.save()
 
-@receiver(pre_save, sender=GalleryMedia)
-def _gallerymedia_bubble_change(sender, instance, **kwargs):
-    instance.gallery.save()
+@receiver(pre_save, sender=PortfolioMedia)
+def _portfoliomedia_bubble_change(sender, instance, **kwargs):
+    instance.portfolio.save()
 
 @receiver(pre_save, sender=PortfolioGallery)
 def _portfoliogallery_bubble_change(sender, instance, **kwargs):

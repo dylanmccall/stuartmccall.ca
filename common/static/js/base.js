@@ -10,7 +10,6 @@ $ = jQuery;
 var galleries = {};
 var filters = {};
 var assets = [];
-var assetsByName = {};
 
 var defaultFilter = undefined;
 
@@ -568,7 +567,7 @@ function Filmstrip(container) {
     };
 
     var _firstLoad = true;
-    var loadAssets = function(assets, size) {
+    var fetchAssets = function(assets, size) {
         $.each(thumbnails, function(index, thumbnail) {
             $(thumbnail).detach();
         });
@@ -656,7 +655,7 @@ function Filmstrip(container) {
     };
 
     var onFilterSelectedCb = function(filter, lastFilter, data) {
-        loadAssets(visibleAssets, 80);
+        fetchAssets(visibleAssets, 80);
         var changed = (filter != lastFilter);
         var animate = ! (changed || _firstLoad);
         showPage(0, animate);
@@ -1072,27 +1071,24 @@ var filterForPath = function(url) {
 };
 
 
-var loadAsset = function(assetName, assetData, galleryName) {
-    var asset = new Asset(assetName, assetData, galleryName);
-    assets.push(asset);
-    assetsByName[assetName] = asset;
-};
-
-
 var loadGallery = function(galleryName, galleryData) {
     galleries[galleryName] = galleryData
-    galleryAssets = galleryData['media'];
     if (galleryData['abstractId'] !== undefined) {
         var abstractElem = $('#'+galleryData['abstractId']);
         if (abstractElem.length > 0) {
             galleryData['abstractElem'] = abstractElem.detach();
         }
     }
-    $.each(galleryAssets, function(assetName, assetData) {
-        assetData = $.extend({}, DEFAULT_ASSET_DATA, assetData);
-        loadAsset(assetName, assetData, galleryName);
-    });
 };
+
+
+var loadMedia = function(mediaIndex, mediaData) {
+    mediaData = $.extend({}, DEFAULT_ASSET_DATA, mediaData);
+    galleryName = mediaData['gallery'];
+    var asset = new Asset(mediaIndex, mediaData, galleryName);
+    assets.push(asset);
+}
+
 
 var scrollToMedia = function(force) {
     var focusTop = 0;
@@ -1122,6 +1118,7 @@ var scrollToMedia = function(force) {
 
 $(document).ready(function () {
     $.each(SMC_GALLERIES, loadGallery);
+    $.each(SMC_MEDIA, loadMedia);
 
     var portfolioBox = $('.portfolio');
     var portfolio = new Portfolio(portfolioBox);

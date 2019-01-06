@@ -13,7 +13,8 @@
 {% block js_data %}
     {% spaceless %}
         <script type="text/javascript">
-            var SMC_GALLERIES = {{ portfolio_js_str|safe }};
+            var SMC_GALLERIES = {{ galleries_js_str|safe }};
+            var SMC_MEDIA = {{ portfoliomedia_js_str|safe }};
             var SMC_AUTOSCROLL = false;
         </script>
     {% endspaceless %}
