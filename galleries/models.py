@@ -9,8 +9,6 @@ from django.template.defaultfilters import slugify
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from adminsortable.models import SortableMixin
-from adminsortable.fields import SortableForeignKey
 from simplemde.fields import SimpleMDEField
 
 from common.utils import markdownify, generate_image_styles
@@ -75,15 +73,15 @@ class Portfolio(models.Model):
         return self.gallery_set.select_related('media').first()
 
 
-class Gallery(SortableMixin, models.Model):
+class Gallery(models.Model):
     class Meta:
         verbose_name = _("gallery")
         verbose_name_plural = _("galleries")
         unique_together = (('portfolio', 'slug'),)
         ordering = ['sort_order']
 
-    portfolio = SortableForeignKey(Portfolio, on_delete=models.CASCADE, blank=True, null=True)
-    sort_order = models.IntegerField(_("Sort"), default=0, editable=False, db_index=True)
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, blank=True, null=True)
+    sort_order = models.IntegerField(_("Sort"), default=0, db_index=True)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=50)
     synopsis = models.CharField(blank=True, null=True, max_length=200)
@@ -197,14 +195,14 @@ class Media(models.Model):
             generate_image_styles(self.featured_thumbnail, ['thumb'])
 
 
-class PortfolioMedia(SortableMixin, models.Model):
+class PortfolioMedia(models.Model):
     class Meta:
         verbose_name = _("portfolio media")
         verbose_name_plural = _("portfolio media")
         ordering = ['sort_order']
 
-    portfolio = SortableForeignKey(Portfolio, on_delete=models.CASCADE)
-    sort_order = models.IntegerField(_("Sort"), default=0, editable=False, db_index=True)
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    sort_order = models.IntegerField(_("Sort"), default=0, db_index=True)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)

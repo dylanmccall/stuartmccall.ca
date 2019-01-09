@@ -5,8 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.forms import BaseInlineFormSet
 
-from adminsortable.admin import SortableAdmin, NonSortableParentAdmin, SortableStackedInline, SortableTabularInline
-
 from common.templatetags.image_tools import image_style
 
 from galleries import models
@@ -14,12 +12,13 @@ from galleries import models
 import os
 
 
-class PortfolioMediaInline(SortableTabularInline):
+class PortfolioMediaInline(admin.TabularInline):
     model = models.PortfolioMedia
     verbose_name = _("media")
     verbose_name_plural = _("contents")
     extra = 0
     fields = (
+        'sort_order',
         'media_preview',
         'portfolio',
         'media',
@@ -55,13 +54,14 @@ class PortfolioMediaInline(SortableTabularInline):
             return None
 
 
-class GalleryInline(SortableStackedInline):
+class GalleryInline(admin.StackedInline):
     model = models.Gallery
     verbose_name = _("gallery")
     verbose_name_plural = _("galleries")
     extra = 0
     show_change_link = True
     fields = (
+        'sort_order',
         'name',
         'thumbnail',
     )
@@ -79,7 +79,7 @@ class GalleryInline(SortableStackedInline):
 
 
 @admin.register(models.Portfolio)
-class PortfolioAdmin(NonSortableParentAdmin):
+class PortfolioAdmin(admin.ModelAdmin):
     list_display = ('title', 'site', 'modified_date',)
     list_filter = (
         'site',

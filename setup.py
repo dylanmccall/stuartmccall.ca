@@ -13,7 +13,6 @@ setup(
         'wheel>=0.31.1'
     ],
     install_requires=[
-        'django-admin-sortable>=2.1.9',
         'django-compressor-autoprefixer>=0.1.0',
         'django-compressor>=2.2',
         'django-dbbackup>=3.2.0',
