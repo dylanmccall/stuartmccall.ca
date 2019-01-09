@@ -5,10 +5,12 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.template.defaultfilters import slugify
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from orderable.models import Orderable
+from adminsortable.models import SortableMixin
+from adminsortable.fields import SortableForeignKey
 from simplemde.fields import SimpleMDEField
 
 from common.utils import markdownify, generate_image_styles
@@ -36,7 +38,7 @@ class Portfolio(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
-    # Reverse reference: portfoliogallery_set (0-n)
+    # Reverse reference: gallery_set (0-n)
     # Reverse reference: portfoliomedia_set (0-n)
 
     objects = PortfolioManager()
@@ -55,8 +57,7 @@ class Portfolio(models.Model):
             return self.blurb
 
     def get_all_galleries(self):
-        for portfoliogallery in self.portfoliogallery_set.select_related('gallery'):
-            yield portfoliogallery.gallery
+        yield from self.gallery_set.all()
 
     def get_all_portfoliomedia(self):
         yield from self.portfoliomedia_set.select_related('media')
@@ -71,16 +72,18 @@ class Portfolio(models.Model):
 
     @cached_property
     def featured_gallery(self):
-        portfoliogallery = self.portfoliogallery_set.select_related('media').first()
-        if portfoliogallery:
-            portfoliogallery.gallery
+        return self.gallery_set.select_related('media').first()
 
 
-class Gallery(models.Model):
+class Gallery(SortableMixin, models.Model):
     class Meta:
         verbose_name = _("gallery")
         verbose_name_plural = _("galleries")
+        unique_together = (('portfolio', 'slug'),)
+        ordering = ['sort_order']
 
+    portfolio = SortableForeignKey(Portfolio, on_delete=models.CASCADE, blank=True, null=True)
+    sort_order = models.IntegerField(_("Sort"), default=0, editable=False, db_index=True)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=50)
     synopsis = models.CharField(blank=True, null=True, max_length=200)
@@ -89,11 +92,15 @@ class Gallery(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
-    # Reverse reference: portfoliogallery_set (0-n)
     # Reverse reference: portfoliomedia_set (0-n)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('gallery', kwargs={'gallery_slug': self.slug})
@@ -190,25 +197,14 @@ class Media(models.Model):
             generate_image_styles(self.featured_thumbnail, ['thumb'])
 
 
-class PortfolioGallery(Orderable):
-    class Meta(Orderable.Meta):
-        verbose_name = _("portfolio gallery")
-        verbose_name_plural = _("portfolio galleries")
-
-    sort_order = models.IntegerField(_("Sort"), blank=True, db_index=True)
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
-    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-
-
-class PortfolioMedia(Orderable):
-    class Meta(Orderable.Meta):
+class PortfolioMedia(SortableMixin, models.Model):
+    class Meta:
         verbose_name = _("portfolio media")
         verbose_name_plural = _("portfolio media")
+        ordering = ['sort_order']
 
-    sort_order = models.IntegerField(_("Sort"), blank=True, db_index=True)
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    portfolio = SortableForeignKey(Portfolio, on_delete=models.CASCADE)
+    sort_order = models.IntegerField(_("Sort"), default=0, editable=False, db_index=True)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -219,10 +215,7 @@ class PortfolioMedia(Orderable):
 
 @receiver(pre_save, sender=Gallery)
 def _gallery_bubble_change(sender, instance, **kwargs):
-    for portfoliogallery in instance.portfoliogallery_set.iterator():
-        portfoliogallery.save()
-    for portfoliomedia in instance.portfoliomedia_set.iterator():
-        portfoliomedia.save()
+    instance.portfolio.save()
 
 @receiver(pre_save, sender=Media)
 def _media_bubble_change(sender, instance, **kwargs):
@@ -231,10 +224,6 @@ def _media_bubble_change(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=PortfolioMedia)
 def _portfoliomedia_bubble_change(sender, instance, **kwargs):
-    instance.portfolio.save()
-
-@receiver(pre_save, sender=PortfolioGallery)
-def _portfoliogallery_bubble_change(sender, instance, **kwargs):
     instance.portfolio.save()
 
 @receiver(post_save, sender=Media)

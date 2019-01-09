@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_extensions',
-    'orderable',
+    'adminsortable',
     'sorl.thumbnail',
     'tinycontent',
     'simplemde',
@@ -105,6 +105,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.static',
                 'common.context_processors.smc_settings'
             ]
         },

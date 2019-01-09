@@ -36,10 +36,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-    ]
-
-
-    operations = [
         migrations.RunPython(
             migrate_portfolio_gallery_to_portfolio_media,
             migrations.RunPython.noop

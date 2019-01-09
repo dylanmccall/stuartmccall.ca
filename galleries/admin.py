@@ -3,7 +3,9 @@ from django.core.urlresolvers import resolve
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
-from orderable.admin import OrderableAdmin, OrderableTabularInline
+from django.forms import BaseInlineFormSet
+
+from adminsortable.admin import SortableAdmin, NonSortableParentAdmin, SortableStackedInline, SortableTabularInline
 
 from common.templatetags.image_tools import image_style
 
@@ -12,17 +14,16 @@ from galleries import models
 import os
 
 
-class PortfolioMediaInline(OrderableTabularInline):
+class PortfolioMediaInline(SortableTabularInline):
     model = models.PortfolioMedia
     verbose_name = _("media")
     verbose_name_plural = _("contents")
     extra = 0
     fields = (
-        'sort_order',
         'media_preview',
         'portfolio',
         'media',
-        'gallery'
+        'gallery',
     )
     readonly_fields = (
         'media_preview',
@@ -41,7 +42,7 @@ class PortfolioMediaInline(OrderableTabularInline):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent_object = self.get_parent_object_from_request(request)
         if db_field.name == 'gallery' and parent_object:
-            kwargs["queryset"] = models.Gallery.objects.filter(portfoliogallery__portfolio=parent_object)
+            kwargs["queryset"] = models.Gallery.objects.filter(portfolio=parent_object)
         elif db_field.name == 'gallery':
             kwargs["queryset"] = models.Gallery.objects.none()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
@@ -54,31 +55,31 @@ class PortfolioMediaInline(OrderableTabularInline):
             return None
 
 
-class PortfolioGalleryInline(OrderableTabularInline):
-    model = models.PortfolioGallery
+class GalleryInline(SortableStackedInline):
+    model = models.Gallery
     verbose_name = _("gallery")
     verbose_name_plural = _("galleries")
     extra = 0
+    show_change_link = True
     fields = (
-        'sort_order',
-        'gallery_preview',
-        'portfolio',
-        'gallery',
+        'name',
+        'thumbnail',
+    )
+    add_fields = (
+        'name',
+        'slug',
+        'thumbnail',
+        'synopsis',
+        'abstract',
     )
     readonly_fields = (
-        'gallery_preview',
+        'created_date',
+        'modified_date',
     )
-
-    def gallery_preview(self, obj):
-        if obj.gallery:
-            return _image_preview(obj.gallery.featured_thumbnail)
-        else:
-            return None
-    gallery_preview.short_description = _("Preview")
 
 
 @admin.register(models.Portfolio)
-class PortfolioAdmin(admin.ModelAdmin):
+class PortfolioAdmin(NonSortableParentAdmin):
     list_display = ('title', 'site', 'modified_date',)
     list_filter = (
         'site',
@@ -92,7 +93,7 @@ class PortfolioAdmin(admin.ModelAdmin):
         'modified_date',
     )
     inlines = [
-        PortfolioGalleryInline,
+        GalleryInline,
         PortfolioMediaInline,
     ]
 
@@ -102,7 +103,7 @@ class GalleryAdmin(admin.ModelAdmin):
     list_display = ('gallery_preview', 'name', 'modified_date',)
     list_display_links = ('gallery_preview', 'name',)
     list_filter = (
-        'portfoliogallery__portfolio',
+        'portfolio',
         'modified_date',
     )
     search_fields = ['slug', 'name']
@@ -114,9 +115,10 @@ class GalleryAdmin(admin.ModelAdmin):
         'slug',
         'synopsis',
         'abstract',
-        'thumbnail'
+        'thumbnail',
     )
     readonly_fields = (
+        'portfolio',
         'created_date',
         'modified_date',
     )

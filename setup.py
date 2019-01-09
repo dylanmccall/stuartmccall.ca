@@ -13,14 +13,14 @@ setup(
         'wheel>=0.31.1'
     ],
     install_requires=[
+        'django-admin-sortable>=2.1.9',
         'django-compressor-autoprefixer>=0.1.0',
         'django-compressor>=2.2',
         'django-dbbackup>=3.2.0',
         'django-extensions>=1.9.7',
-        'django-orderable>=5.0.0',
         'django-simplemde>=0.1.0',
         'django-tinycontent>=0.7.1',
-        'Django>=1.11.16,<1.12',
+        'Django>=1.11.18,<1.12',
         'Markdown>=2.6.9',
         'Pillow>=4.3.0',
         'python-memcached>=1.58',
