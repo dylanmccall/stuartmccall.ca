@@ -62,7 +62,8 @@ class GalleryInline(admin.StackedInline):
     show_change_link = True
     fieldsets = (
         (None, {
-            'fields': ('sort_order', 'name', 'thumbnail',)
+            'classes': ('smc-tabular-rows',),
+            'fields': (('sort_order', 'name', 'thumbnail',),)
         }),
         ("Details", {
             'classes': ('collapse smc-expand-on-create',),
