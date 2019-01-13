@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django_extensions',
-    'adminsortable',
     'sorl.thumbnail',
     'tinycontent',
     'simplemde',
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'common',
     'galleries',
+    'sort_order_field'
 ]
 
 MIDDLEWARE = [

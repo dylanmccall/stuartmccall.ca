@@ -14,6 +14,8 @@ from simplemde.fields import SimpleMDEField
 from common.utils import markdownify, generate_image_styles
 from common.site_themes import SITE_THEME_OPTIONS, SITE_THEMES
 
+from sort_order_field.fields import SortOrderField
+
 import os
 
 
@@ -81,7 +83,7 @@ class Gallery(models.Model):
         ordering = ['sort_order']
 
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, blank=True, null=True)
-    sort_order = models.IntegerField(_("Sort"), default=0, db_index=True)
+    sort_order = SortOrderField(_("Sort"))
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=50)
     synopsis = models.CharField(blank=True, null=True, max_length=200)
@@ -202,7 +204,7 @@ class PortfolioMedia(models.Model):
         ordering = ['sort_order']
 
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
-    sort_order = models.IntegerField(_("Sort"), default=0, db_index=True)
+    sort_order = SortOrderField(_("Sort"))
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)

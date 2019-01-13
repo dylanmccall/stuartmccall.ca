@@ -22,13 +22,9 @@
         padding-top: 5px !important;
     }
 
-    td.field-sort_order {
-        width: 50px !important;
-    }
-
     td.field-media_preview,
     td.field-gallery_preview {
-        width: 40px !important;
+        min-width: 40px;
 
         img {
             display: block;
@@ -39,11 +35,21 @@
     }
 
     tr.dynamic-portfoliogallery_set,
-    tr.dynamic-gallerymedia_set {
+    tr.dynamic-portfoliomedia_set {
         td {
             vertical-align: middle;
         }
     }
+
+    .vForeignKeyRawIdAdminField {
+        opacity: 0.6;
+        width: 3em;
+
+        &:focus {
+            opacity: 1;
+        }
+    }
+}
 
 .inline-related fieldset.module.collapse {
     margin-bottom: 10px;
