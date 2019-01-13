@@ -18,16 +18,38 @@
         flex-direction: row;
 
         .field-box {
+            flex-grow: 1;
+            flex-shrink: 1;
             float: none;
+            display: flex;
+            flex-direction: row;
             width: auto;
             padding-right: 20px;
             margin-right: 0;
-            flex-grow: 1;
-            flex-shrink: 1;
-        }
+            align-items: flex-start;
 
-        label {
-            width: auto;
+            label {
+                width: auto;
+                flex-shrink: 0;
+            }
+
+            &.field-sort_order {
+                flex-shrink: 0;
+            }
+
+            &.field-name {
+                input {
+                    width: 15em;
+                }
+            }
+
+            &.field-thumbnail {
+                justify-content: flex-end;
+
+                p.file-upload {
+                    margin: 0;
+                }
+            }
         }
     }
 }
