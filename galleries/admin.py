@@ -81,6 +81,16 @@ class PortfolioAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',)
     }
+    fields = (
+        'site',
+        'title',
+        'subtitle',
+        'slug',
+        'blurb',
+        'theme_id',
+        'created_date',
+        'modified_date',
+    )
     readonly_fields = (
         'created_date',
         'modified_date',
@@ -106,9 +116,12 @@ class GalleryAdmin(admin.ModelAdmin):
     fields = (
         'name',
         'slug',
+        'portfolio',
         'synopsis',
         'abstract',
         'thumbnail',
+        'created_date',
+        'modified_date',
     )
     readonly_fields = (
         'portfolio',
