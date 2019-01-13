@@ -44,6 +44,35 @@
             vertical-align: middle;
         }
     }
+
+.inline-related fieldset.module.collapse {
+    margin-bottom: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+
+    &.collapsed {
+        margin-bottom: 0;
+        box-shadow: none;
+    }
+
+    &.collapsed h2 {
+        background: none;
+        color: #666;
+    }
+
+    h2 {
+        background: none;
+        color: #666;
+
+        .collapse-toggle {
+            color: #447e9b;
+        }
+    }
+
+    .form-row {
+        &:last-child {
+            border-bottom: none;
+        }
+    }
 }
 
 .form-row .editor-toolbar {

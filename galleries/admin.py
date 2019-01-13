@@ -60,21 +60,14 @@ class GalleryInline(admin.StackedInline):
     verbose_name_plural = _("galleries")
     extra = 0
     show_change_link = True
-    fields = (
-        'sort_order',
-        'name',
-        'thumbnail',
-    )
-    add_fields = (
-        'name',
-        'slug',
-        'thumbnail',
-        'synopsis',
-        'abstract',
-    )
-    readonly_fields = (
-        'created_date',
-        'modified_date',
+    fieldsets = (
+        (None, {
+            'fields': ('sort_order', 'name', 'thumbnail',)
+        }),
+        ("Details", {
+            'classes': ('collapse smc-expand-on-create',),
+            'fields': ('slug', 'synopsis', 'abstract',)
+        }),
     )
 
 
