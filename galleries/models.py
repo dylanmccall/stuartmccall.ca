@@ -29,7 +29,7 @@ class Portfolio(models.Model):
         verbose_name = _("portfolio")
         verbose_name_plural = _("portfolios")
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
+    site = models.ForeignKey(Site, blank=True, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     slug = models.SlugField(max_length=50, blank=True, null=True)
@@ -87,7 +87,7 @@ class Gallery(models.Model):
         unique_together = (('portfolio', 'slug'),)
         ordering = ['sort_order']
 
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, blank=True, null=True)
+    portfolio = models.ForeignKey(Portfolio, blank=True, null=True, on_delete=models.CASCADE)
     sort_order = SortOrderField(_("Sort"))
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=50, blank=True, null=True)
@@ -105,6 +105,10 @@ class Gallery(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+        for portfoliomedia in self.portfoliomedia_set.iterator():
+            if portfoliomedia.portfolio != self.portfolio:
+                portfoliomedia.portfolio = self.portfolio
+                portfoliomedia.save()
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -208,7 +212,7 @@ class PortfolioMedia(models.Model):
         verbose_name_plural = _("portfolio media")
         ordering = ['sort_order']
 
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    portfolio = models.ForeignKey(Portfolio, blank=True, null=True, on_delete=models.CASCADE)
     sort_order = SortOrderField(_("Sort"))
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)

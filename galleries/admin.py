@@ -20,8 +20,8 @@ class PortfolioMediaInline(admin.TabularInline):
     fields = (
         'sort_order',
         'media_preview',
-        'portfolio',
         'media',
+        'portfolio',
         'gallery',
     )
     readonly_fields = (
@@ -40,10 +40,63 @@ class PortfolioMediaInline(admin.TabularInline):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent_object = self.get_parent_object_from_request(request)
-        if db_field.name == 'gallery' and parent_object:
-            kwargs["queryset"] = models.Gallery.objects.filter(portfolio=parent_object)
-        elif db_field.name == 'gallery':
-            kwargs["queryset"] = models.Gallery.objects.none()
+        if self.parent_model == models.Portfolio:
+            if db_field.name == 'gallery' and parent_object:
+                kwargs["queryset"] = models.Gallery.objects.filter(portfolio=parent_object)
+            elif db_field.name == 'gallery':
+                kwargs["queryset"] = models.Gallery.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_parent_object_from_request(self, request):
+        resolved = resolve(request.path_info)
+        if resolved.args:
+            return self.parent_model.objects.get(pk=resolved.args[0])
+        else:
+            return None
+
+
+class PortfolioMediaInlineForGallery(admin.TabularInline):
+    model = models.PortfolioMedia
+    verbose_name = _("media")
+    verbose_name_plural = _("contents")
+    extra = 0
+    fields = (
+        'sort_order',
+        'media_preview',
+        'media',
+        'portfolio',
+        'gallery',
+    )
+    readonly_fields = (
+        'sort_order',
+        'media_preview',
+        'portfolio',
+        'gallery',
+    )
+    raw_id_fields = (
+        'media',
+    )
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def media_preview(self, obj):
+        if obj.media:
+            return _image_preview(obj.media.featured_thumbnail)
+        else:
+            return None
+    media_preview.short_description = _("Preview")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        parent_object = self.get_parent_object_from_request(request)
+        if self.parent_model == models.Portfolio:
+            if db_field.name == 'gallery' and parent_object:
+                kwargs["queryset"] = models.Gallery.objects.filter(portfolio=parent_object)
+            elif db_field.name == 'gallery':
+                kwargs["queryset"] = models.Gallery.objects.none()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_parent_object_from_request(self, request):
@@ -128,6 +181,9 @@ class GalleryAdmin(admin.ModelAdmin):
         'created_date',
         'modified_date',
     )
+    inlines = [
+        PortfolioMediaInlineForGallery,
+    ]
 
     def gallery_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)
