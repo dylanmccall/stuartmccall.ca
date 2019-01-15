@@ -67,7 +67,7 @@ class GalleryInline(admin.StackedInline):
         }),
         ("Details", {
             'classes': ('collapse smc-expand-on-create',),
-            'fields': ('slug', 'synopsis', 'abstract',)
+            'fields': ('synopsis', 'abstract',)
         }),
     )
 

@@ -32,7 +32,7 @@ class Portfolio(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
-    slug = models.SlugField(max_length=50)
+    slug = models.SlugField(max_length=50, blank=True, null=True)
     blurb = SimpleMDEField(blank=True, null=True)
     theme_id = models.CharField(max_length=50, choices=SITE_THEME_OPTIONS, verbose_name=_('theme'))
     created_date = models.DateTimeField(auto_now_add=True)
@@ -45,6 +45,11 @@ class Portfolio(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('index')
@@ -85,7 +90,7 @@ class Gallery(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, blank=True, null=True)
     sort_order = SortOrderField(_("Sort"))
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=50)
+    slug = models.SlugField(max_length=50, blank=True, null=True)
     synopsis = models.CharField(blank=True, null=True, max_length=200)
     abstract = SimpleMDEField(blank=True, null=True)
     thumbnail = models.ImageField(blank=True, upload_to='thumbnail')
