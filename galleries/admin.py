@@ -125,7 +125,6 @@ class GalleryAdmin(admin.ModelAdmin):
         'modified_date',
     )
     readonly_fields = (
-        'portfolio',
         'created_date',
         'modified_date',
     )
