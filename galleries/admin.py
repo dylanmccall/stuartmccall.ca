@@ -157,7 +157,7 @@ class PortfolioAdmin(admin.ModelAdmin):
 
 @admin.register(models.Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ('gallery_preview', 'name', 'modified_date',)
+    list_display = ('gallery_preview', 'name', 'portfolio', 'modified_date',)
     list_display_links = ('gallery_preview', 'name',)
     list_filter = (
         'portfolio',
