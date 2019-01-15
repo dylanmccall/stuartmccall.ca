@@ -42,7 +42,10 @@ def get_image_style(image, style_str):
     if style_kwargs is None:
         raise ValueError("Provided image style does not exist")
 
-    return _compress_image(image, **style_kwargs)
+    if image:
+        return _compress_image(image, **style_kwargs)
+    else:
+        return None
 
 def generate_image_styles(image, styles=None):
     if styles is None:
