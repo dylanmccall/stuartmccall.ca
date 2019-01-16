@@ -79,6 +79,43 @@
     }
 }
 
+.portfolio .filters {
+    @media screen and (max-width: @small_screen) {
+        /* Stack filters vertically on mobile */
+
+        .filters-inner {
+            margin: 0;
+        }
+
+        .filter {
+            display: block;
+            width: auto;
+            text-align: left;
+            margin: 0 4px;
+
+            .filter-pic {
+                float: left;
+                padding-bottom: 0;
+
+                img {
+                    width: 40px;
+                    margin: 0;
+                }
+            }
+
+            .filter-label {
+                margin: 0;
+                height: 40px;
+                padding: 0 8px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                line-height: 40px;
+            }
+        }
+    }
+}
+
 .galleries-grid {
     display: flex;
     flex-direction: row;
