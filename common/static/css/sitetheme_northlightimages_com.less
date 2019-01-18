@@ -45,18 +45,28 @@
 
         .filter {
             width: auto;
-            margin: 2px 2px;
+            margin: 2px 4px;
+
+            &:first-child {
+                margin-left: 3px;
+            }
 
             .filter-label {
                 margin: 0;
                 text-transform: uppercase;
                 font-weight: normal;
             }
-        }
 
-        .filter.filter-all {
-            /* Special padding for the Droid Sans font's black circle character */
-            padding: 5px 8px 7px 8px;
+            &.filter-all {
+                /* Special padding for the Droid Sans font's black circle character */
+                padding: 7px 8px 5px 8px;
+            }
+
+            @media screen and (max-width: @small_screen) {
+                font-size: 0.95em;
+                margin: 2px 2px;
+                padding: 6px 4px;
+            }
         }
     }
 

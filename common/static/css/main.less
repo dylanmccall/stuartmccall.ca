@@ -117,6 +117,30 @@ a {
     display: none;
 }
 
+.smc-show-on-mobile-unless-showing-gallery {
+    display: none;
+
+    @media screen and (max-width: @small_screen) {
+        display: none;
+
+        body.showing-gallery & {
+            display: block;
+        }
+    }
+}
+
+.smc-hide-on-mobile-if-showing-gallery {
+    display: block;
+
+    @media screen and (max-width: @small_screen) {
+        display: block;
+
+        body.showing-gallery & {
+            display: none;
+        }
+    }
+}
+
 .text-block {
     font-family: @text_font;
     font-size: 1.15em;
@@ -273,7 +297,7 @@ ul.years-list {
         }
 
         .nav-min {
-            display: none;
+            display: block;
             margin: 4px auto;
             text-align: center;
             font-family: @filter_font;
@@ -406,22 +430,6 @@ body.showing-gallery .portfolio {
 
             .filter-pic {
                 display: none;
-            }
-        }
-    }
-
-    @media screen and (max-width: @small_screen) {
-        .filters {
-            .filters-inner {
-                display: block;
-            }
-
-            .filter {
-                display: none;
-            }
-
-            .nav-min {
-                display: block;
             }
         }
     }

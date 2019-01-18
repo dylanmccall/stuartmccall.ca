@@ -45,25 +45,31 @@
     <div class="portfolio">
         <nav role="navigation" aria-controls="filmstrip gallery-content" class="filters gallery-filters">
             <div class="filters-inner">
-                <select class="nav-menu nav-min">
-                    <option value="" selected="selected">Select</option>
-                    {% cache 31556926 portfolio_galleries_select portfolio.id portfolio.modified_date %}
-                        {% for gallery in all_galleries %}
-                            <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
-                        {% endfor %}
-                    {% endcache %}
-                </select>
+                <div class="smc-show-on-mobile-unless-showing-gallery">
+                    <select class="nav-menu nav-min">
+                        <option value="" selected="selected">Select</option>
+                        {% cache 31556926 portfolio_galleries_select portfolio.id portfolio.modified_date %}
+                            {% for gallery in all_galleries %}
+                                <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
+                            {% endfor %}
+                        {% endcache %}
+                    </select>
+                </div>
 
-                {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
-                    {% for gallery in all_galleries %}
-                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}" data-filter-auto-open>
-                            <div aria-hidden="true" class="filter-pic">
-                                <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
-                            </div>
-                            <span class="filter-label">{{ gallery.name }}</span>
-                        </a>
-                    {% endfor %}
-                {% endcache %}
+                <div class="smc-hide-on-mobile-if-showing-gallery">
+                    {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
+                        {% spaceless %}
+                            {% for gallery in all_galleries %}
+                                <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}" data-filter-auto-open>
+                                    <div aria-hidden="true" class="filter-pic">
+                                        <img {{ gallery.featured_thumbnail|image_style:'thumb' }} alt="" />
+                                    </div>
+                                    <span class="filter-label">{{ gallery.name }}</span>
+                                </a>
+                            {% endfor %}
+                        {% endspaceless %}
+                    {% endcache %}
+                </div>
 
                 <div class="bottom"></div>
             </div>

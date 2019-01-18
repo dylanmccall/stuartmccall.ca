@@ -46,23 +46,16 @@
     <div class="portfolio">
         <nav role="navigation" aria-controls="filmstrip gallery-content" class="filters gallery-filters">
             <div class="filters-inner">
-                <select class="nav-menu nav-min">
-                    <option value="" selected="selected">Select</option>
-                    {% cache 31556926 portfolio_galleries_select portfolio.id portfolio.modified_date %}
-                        {% for gallery in all_galleries %}
-                            <option value="{{ gallery.slug }}">{{ gallery.name }}</option>
-                        {% endfor %}
-                    {% endcache %}
-                </select>
-
                 {% cache 31556926 portfolio_galleries_filters portfolio.id portfolio.modified_date %}
-                    <a class="filter filter-all" href="{{ portfolio.get_absolute_url }}" data-filter-default title="All images">●</a>
+                    {% spaceless %}
+                        <a class="filter filter-all" href="{{ portfolio.get_absolute_url }}" data-filter-default title="All images">●</a>
 
-                    {% for gallery in all_galleries %}
-                        <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
-                            <span class="filter-label">{{ gallery.name }}</span>
-                        </a>
-                    {% endfor %}
+                        {% for gallery in all_galleries %}
+                            <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
+                                <span class="filter-label">{{ gallery.name }}</span>
+                            </a>
+                        {% endfor %}
+                    {% endspaceless %}
                 {% endcache %}
 
                 <div class="bottom"></div>

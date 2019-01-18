@@ -20,7 +20,7 @@ except ImportError:
     from urllib.parse import urlparse, parse_qs
 
 
-RENDER_VERSION = '2018-01-06.1'
+RENDER_VERSION = '2019-01-18.1'
 
 
 class JsonResponseMixin(object):
