@@ -224,26 +224,38 @@ class PortfolioMedia(models.Model):
 
 @receiver(pre_save, sender=Gallery)
 def _gallery_bubble_change(sender, instance, **kwargs):
-    old = Gallery.objects.get(pk=instance.pk)
-    if instance.portfolio != old.portfolio and old.portfolio:
-        old.portfolio.save()
+    try:
+        old = Gallery.objects.get(pk=instance.pk)
+    except Gallery.DoesNotExist:
+        old = None
+    else:
+        if instance.portfolio != old.portfolio and old.portfolio:
+            old.portfolio.save()
     if instance.portfolio:
         instance.portfolio.save()
 
 @receiver(pre_save, sender=Media)
 def _media_bubble_change(sender, instance, **kwargs):
-    old = Media.objects.get(pk=instance.pk)
     all_portfoliomedia_set = set()
-    all_portfoliomedia_set.update(old.portfoliomedia_set.iterator())
+    try:
+        old = Media.objects.get(pk=instance.pk)
+    except Media.DoesNotExist:
+        old = None
+    else:
+        all_portfoliomedia_set.update(old.portfoliomedia_set.iterator())
     all_portfoliomedia_set.update(instance.portfoliomedia_set.iterator())
     for portfoliomedia in all_portfoliomedia_set:
         portfoliomedia.save()
 
 @receiver(pre_save, sender=PortfolioMedia)
 def _portfoliomedia_bubble_change(sender, instance, **kwargs):
-    old = PortfolioMedia.objects.get(pk=instance.pk)
-    if instance.portfolio != old.portfolio and old.portfolio:
-        old.portfolio.save()
+    try:
+        old = PortfolioMedia.objects.get(pk=instance.pk)
+    except PortfolioMedia.DoesNotExist:
+        old = None
+    else:
+        if instance.portfolio != old.portfolio and old.portfolio:
+            old.portfolio.save()
     if instance.portfolio:
         instance.portfolio.save()
 
