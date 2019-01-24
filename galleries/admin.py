@@ -90,6 +90,22 @@ class PortfolioMediaInlineForGallery(admin.TabularInline):
             return None
     media_preview.short_description = _("Preview")
 
+
+class PortfolioMediaInlineForMedia(admin.TabularInline):
+    model = models.PortfolioMedia
+    verbose_name = _("gallery")
+    verbose_name_plural = _("galleries")
+    extra = 0
+    fields = (
+        'sort_order',
+        'portfolio',
+        'gallery',
+    )
+    readonly_fields = (
+        'sort_order',
+        'portfolio',
+    )
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent_object = self.get_parent_object_from_request(request)
         if self.parent_model == models.Portfolio:
@@ -219,6 +235,9 @@ class MediaAdmin(admin.ModelAdmin):
         'created_date',
         'modified_date',
     )
+    inlines = [
+        PortfolioMediaInlineForMedia,
+    ]
 
     def media_preview(self, obj):
         return _image_preview(obj.featured_thumbnail)

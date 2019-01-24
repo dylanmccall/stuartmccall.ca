@@ -100,7 +100,13 @@ class Gallery(models.Model):
     # Reverse reference: portfoliomedia_set (0-n)
 
     def __str__(self):
-        return self.name
+        if self.portfolio:
+            return "{name} ({portfolio})".format(
+                name=self.name,
+                portfolio=self.portfolio
+            )
+        else:
+            return self.name
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -218,6 +224,11 @@ class PortfolioMedia(models.Model):
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.gallery and not self.portfolio:
+            self.portfolio = self.gallery.portfolio
+        super().save(*args, **kwargs)
 
 
 # Crudely bump modified_date for related portfolios to break their cache
