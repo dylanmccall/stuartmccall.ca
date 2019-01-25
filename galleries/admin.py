@@ -1,9 +1,9 @@
+from django import forms
 from django.contrib import admin
 from django.core.urlresolvers import resolve
+from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-
-from django.forms import BaseInlineFormSet
 
 from common.templatetags.image_tools import image_style
 
@@ -61,27 +61,26 @@ class PortfolioMediaInlineForGallery(admin.TabularInline):
     verbose_name_plural = _("contents")
     extra = 0
     fields = (
-        'sort_order',
         'media_preview',
         'media',
-        'portfolio',
+        'portfolio_link',
         'gallery',
     )
     readonly_fields = (
-        'sort_order',
         'media_preview',
-        'portfolio',
+        'portfolio_link',
         'gallery',
     )
     raw_id_fields = (
         'media',
     )
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+    def portfolio_link(self, obj):
+        if obj.pk and obj.portfolio:
+            return _object_link(obj.portfolio)
+        else:
+            return ''
+    portfolio_link.short_description = _("Portfolio")
 
     def media_preview(self, obj):
         if obj.media:
@@ -97,14 +96,19 @@ class PortfolioMediaInlineForMedia(admin.TabularInline):
     verbose_name_plural = _("galleries")
     extra = 0
     fields = (
-        'sort_order',
-        'portfolio',
         'gallery',
+        'portfolio_link',
     )
     readonly_fields = (
-        'sort_order',
-        'portfolio',
+        'portfolio_link',
     )
+
+    def portfolio_link(self, obj):
+        if obj.pk and obj.portfolio:
+            return _object_link(obj.portfolio)
+        else:
+            return ''
+    portfolio_link.short_description = _("Portfolio")
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent_object = self.get_parent_object_from_request(request)
@@ -123,22 +127,35 @@ class PortfolioMediaInlineForMedia(admin.TabularInline):
             return None
 
 
-class GalleryInline(admin.StackedInline):
+class GalleryInline(admin.TabularInline):
     model = models.Gallery
     verbose_name = _("gallery")
     verbose_name_plural = _("galleries")
     extra = 0
     show_change_link = True
-    fieldsets = (
-        (None, {
-            'classes': ('smc-tabular-rows',),
-            'fields': (('sort_order', 'name', 'thumbnail',),)
-        }),
-        ("Details", {
-            'classes': ('collapse smc-expand-on-create',),
-            'fields': ('synopsis', 'abstract',)
-        }),
-    )
+    fields = ('sort_order', 'name', 'details_link',)
+    readonly_fields = ('details_link',)
+
+    # fieldsets = (
+    #     (None, {
+    #         'classes': ('smc-tabular-rows',),
+    #         'fields': (('sort_order', 'name', 'thumbnail',),)
+    #     }),
+    #     ("Details", {
+    #         'classes': ('collapse',),
+    #         'fields': ('synopsis', 'abstract',)
+    #     }),
+    # )
+
+    def details_link(self, obj):
+        if obj.pk:
+            return _object_link(obj, label=_("Gallery details"))
+        else:
+            return ''
+    details_link.short_description = _("Change")
+
+    def has_delete_permission(self, request, obj):
+        return False
 
 
 @admin.register(models.Portfolio)
@@ -259,3 +276,17 @@ def _image_preview(image, size=80):
         )
     else:
         return None
+
+def _object_link(obj, label=None):
+    url = reverse(
+        'admin:{app}_{model}_change'.format(
+            app=obj._meta.app_label,
+            model=obj._meta.model_name
+        ),
+        args=[obj.id]
+    )
+    return format_html(
+        '<strong><a class="changelink" href="{url}">{label}</a></strong>',
+        url=url,
+        label=label or str(obj)
+    )

@@ -84,7 +84,6 @@ class Gallery(models.Model):
     class Meta:
         verbose_name = _("gallery")
         verbose_name_plural = _("galleries")
-        unique_together = (('portfolio', 'slug'),)
         ordering = ['sort_order']
 
     portfolio = models.ForeignKey(Portfolio, blank=True, null=True, on_delete=models.CASCADE)
