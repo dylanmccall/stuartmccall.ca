@@ -61,6 +61,7 @@ class PortfolioMediaInlineForGallery(admin.TabularInline):
     verbose_name_plural = _("contents")
     extra = 0
     fields = (
+        'sort_order',
         'media_preview',
         'media',
         'portfolio_link',
@@ -96,6 +97,7 @@ class PortfolioMediaInlineForMedia(admin.TabularInline):
     verbose_name_plural = _("galleries")
     extra = 0
     fields = (
+        'sort_order',
         'gallery',
         'portfolio_link',
     )
