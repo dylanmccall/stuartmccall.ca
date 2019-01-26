@@ -1,4 +1,3 @@
-from django import forms
 from django.contrib import admin
 from django.core.urlresolvers import resolve
 from django.core.urlresolvers import reverse
