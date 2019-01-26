@@ -19,16 +19,13 @@ setup(
         'django-extensions>=1.9.7',
         'django-simplemde>=0.1.0',
         'django-tinycontent>=0.7.1',
-        'django-sort-order-field==0.1',
+        'django-sort-order-field>=1.0',
         'Django>=1.11.18,<1.12',
         'Markdown>=2.6.9',
         'Pillow>=4.3.0',
         'python-memcached>=1.58',
         'pytz==2018.5',
         'sorl-thumbnail>=12.4.1'
-    ],
-    dependency_links=[
-        'git+ssh://git@github.com/dylanmccall/django-sort-order-field.git#egg=django-sort-order-field-0.1'
     ],
     tests_require=[
         'nose2>=0.8.0'
