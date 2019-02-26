@@ -51,7 +51,7 @@
                         <a class="filter filter-all" href="{{ portfolio.get_absolute_url }}" data-filter-default title="All images">●</a>
 
                         {% for gallery in all_galleries %}
-                            <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}">
+                            <a role="button" class="filter filter-gallery" href="{{ gallery.get_absolute_url }}" data-filter-auto-open>
                                 <span class="filter-label">{{ gallery.name }}</span>
                             </a>
                         {% endfor %}
