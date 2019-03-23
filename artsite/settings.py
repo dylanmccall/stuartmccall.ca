@@ -47,12 +47,13 @@ INSTALLED_APPS = [
     'tinycontent',
     'simplemde',
     'dbbackup',
+    'sort_order_field',
 ]
 
 INSTALLED_APPS += [
-    'common',
-    'galleries',
-    'sort_order_field'
+    'common.apps.CommonConfig',
+    'galleries.apps.GalleriesConfig',
+    'visitor_tracking.apps.VisitorTrackingConfig',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.static',
-                'common.context_processors.smc_settings'
             ]
         },
     },
