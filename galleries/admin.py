@@ -169,15 +169,25 @@ class PortfolioAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',)
     }
-    fields = (
-        'site',
-        'title',
-        'subtitle',
-        'slug',
-        'blurb',
-        'theme_id',
-        'created_date',
-        'modified_date',
+    fieldsets = (
+        (None, {
+            'fields': (
+                'site',
+                'title',
+                'subtitle',
+                'slug',
+                'blurb',
+                'theme_id',
+                'created_date',
+                'modified_date',
+            )
+        }),
+        (_("Metadata"), {
+            'classes': ('collapse',),
+            'fields': (
+                'meta_description',
+            )
+        }),
     )
     readonly_fields = (
         'created_date',
