@@ -1,13 +1,10 @@
 {% extends "artsite/base.html" %}
 {% load cache %}
-{% load canonical_url %}
 {% load compress %}
 {% load i18n %}
 {% load image_tools %}
 {% load staticfiles %}
 {% load tinycontent_tags %}
-
-{% block canonical_url %}{% canonical_url portfolio.get_absolute_url %}{% endblock %}
 
 {% block favicon %}
     <link rel="shortcut icon" href="{% static 'img/northlight_favicon.ico' %}" type="image/x-icon" />
@@ -66,7 +63,20 @@
         </nav>
 
         <nav role="navigation" aria-controls="viewer" id="filmstrip" class="filmstrip empty">
-            <div aria-label="Images" class="thumbnails"></div>
+            <div aria-label="Images" class="thumbnails">
+                {% if selected_gallery %}
+                    {% cache 31556926 selected_gallery_thumbnails selected_gallery.id selected_gallery.modifed_date %}
+                        {% for portfoliomedia in selected_gallery.portfoliomedia_set.all %}
+                            {% with media=portfoliomedia.media %}
+                                <a class="asset {{ media.media_type }}" role="img button" href="{{ media.image|image_src:'full'|default:media.link }}">
+                                    <div class="overlay"></div>
+                                    <img {{ media.featured_thumbnail|image_style:'thumb' }} />
+                                </a>
+                            {% endwith %}
+                        {% endfor %}
+                    {% endcache %}
+                {% endif %}
+            </div>
 
             <div role="button" aria-hidden="true" aria-label="Next page" class="overflow right">
                 <a class="pager" href="#" title="Next page"><span class="pager-inner">
@@ -167,18 +177,6 @@
             {% endtinycontent %}
         </section>
     </article>
-{% endblock %}
-
-{% block js-resource %}
-    {% cache 31556926 portfolio_galleries_abstracts portfolio.id portfolio.modified_date %}
-        {% for gallery in all_galleries %}
-            {% if gallery.abstract %}
-                <div class="text-block text-block--abstract" id="abstract-{{ gallery.slug }}">
-                    {{ gallery.abstract_html|safe }}
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endcache %}
 {% endblock %}
 
 {% block footer %}

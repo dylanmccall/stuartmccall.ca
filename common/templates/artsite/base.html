@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load canonical_url %}
 {% load compress %}
 {% load i18n %}
 {% load staticfiles %}
@@ -10,7 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="keywords" content="{{ portfolio.meta_keywords | default:'' | escape }}" />
     <meta name="description" content="{{ portfolio.meta_description | default:'' | escape }}" />
-    <link rel="canonical" href="{% block canonical_url %}{% endblock %}" />
+    <link rel="canonical" href="{% block canonical_url %}{% spaceless %}
+    {% if selected_gallery %}
+        {% canonical_url selected_gallery.get_absolute_url %}
+    {% else %}
+        {% canonical_url portfolio.get_absolute_url %}
+    {% endif %}
+{% endspaceless %}{% endblock %}" />
 
     <!-- Web design and development (C) Dylan McCall <https://dylanmc.ca//-> -->
 

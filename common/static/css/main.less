@@ -352,7 +352,7 @@ ul.years-list {
             width: 100%;
         }
 
-        .asset-content.asset-picture {
+        .asset-content.asset-image {
             user-select: none;
 
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -385,7 +385,7 @@ ul.years-list {
             }
         }
 
-        .asset-content.asset-video-youtube {
+        .asset-content.asset-external-video {
             .player {
                 display: block;
                 margin: 0 auto;
@@ -467,13 +467,14 @@ body.showing-asset .portfolio {
     }
 
     .thumbnails {
-        display: block;
+        display: flex;
         position: absolute;
         top: @filmstrip_vertical_padding;
         left: 0px;
         margin-left: (@inner_margin_h - 6px);
         z-index: 1;
         overflow: visible;
+        flex-direction: row;
 
         @media screen and (max-width: @medium_screen) {
             top: @filmstrip_vertical_padding_mobile;
@@ -525,7 +526,7 @@ body.showing-asset .portfolio {
                 }
             }
 
-            &.picture .overlay {
+            &.image .overlay {
                 background-image: url('/static/img/thumbnail-arrow-84.svg');
                 background-size: 100%;
                 background-position: center bottom;
@@ -572,7 +573,7 @@ body.showing-asset .portfolio {
             }
 
             &.current {
-                &.picture .overlay {
+                &.image .overlay {
                     opacity: 1;
                     bottom: 0;
                 }
@@ -582,7 +583,7 @@ body.showing-asset .portfolio {
                 }
             }
 
-            &.picture.loading {
+            &.image.loading {
                 img {
                     opacity: 0.7;
                     animation: thumbnail_pulse 2s infinite;

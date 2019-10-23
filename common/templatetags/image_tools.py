@@ -29,3 +29,13 @@ def image_style(image, style_str):
         return format_html_join(' ', '{}="{}"', attrs.items())
     else:
         return ''
+
+@register.filter
+def image_src(image, style_str):
+    image_dict = get_image_style(image, style_str)
+
+    if image_dict:
+        image_default = image_dict.get('default', {})
+        return image_default.get('src')
+    else:
+        return None

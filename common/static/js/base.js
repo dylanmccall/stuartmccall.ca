@@ -17,7 +17,7 @@ var SITE_TITLE = document.title;
 var SITE_BASE = '/';
 
 var DEFAULT_ASSET_DATA = {
-    type: 'picture',
+    type: 'image',
     full: {},
     thumb: {}
 };
@@ -62,6 +62,9 @@ function Asset(name, data, galleryName) {
     this.data = $.extend({'categories' : defaultCategories}, data);
     this.galleryName = galleryName;
 
+    this.mediaType = this.data['media-type'];
+    this.link = this.data['link'];
+
     this.full = this.data['full'] || {};
     this.fullSizes = this.full['sizes'] || [];
     this.fullDefault = this.full['default'] || {};
@@ -73,20 +76,14 @@ function Asset(name, data, galleryName) {
     this.width = this.fullDefault.width;
     this.height = this.fullDefault.height;
 
-    var THUMBNAIL_CLASSES = {
-        'picture' : 'picture',
-        'video-youtube' : 'video'
-    };
-
     var thumbnailForSize = function(size) {
         var thumbnailName = asset.data.thumbnail || asset.name;
-        var thumbnailClass = THUMBNAIL_CLASSES[data.type];
 
         var thumbnail = $('<a>').attr({
             'role' : 'img button',
             'class' : 'asset',
-            'href' : asset.fullDefault.src
-        }).addClass(thumbnailClass).data('asset', asset);
+            'href' : asset.fullDefault.src || asset.link
+        }).addClass(asset.mediaType).data('asset', asset);
 
         $('<div>').attr({
             'class' : 'overlay'
@@ -102,7 +99,7 @@ function Asset(name, data, galleryName) {
             'src' : asset.thumbDefault.src,
             'width' : asset.thumbDefault.width,
             'height' : asset.thumbDefault.height,
-            'alt' : '',
+            'alt' : thumbnailName,
             'srcset': srcset.join(', '),
             'aria-hidden' : 'true'
         }).appendTo(thumbnail);
@@ -129,9 +126,9 @@ function Asset(name, data, galleryName) {
     this.refreshView = function(existingView) {
         if (existingView !== undefined && existingView.fitsAsset(this)) {
             return existingView;
-        } else if (this.data['type'] === 'picture') {
-            return new PictureAssetView();
-        } else if (this.data['type'] === 'video-youtube') {
+        } else if (this.mediaType === 'image') {
+            return new ImageAssetView();
+        } else if (this.mediaType === 'external-video') {
             return new VideoAssetView();
         }
     };
@@ -180,13 +177,13 @@ function AssetView() {
 }
 
 
-function PictureAssetView() {
-    var pictureAssetView = this;
+function ImageAssetView() {
+    var imageAssetView = this;
 
-    this.contentBox.addClass('asset-picture');
+    this.contentBox.addClass('asset-image');
 
     this.fitsAsset = function(asset) {
-        return asset.data['type'] === 'picture';
+        return asset.mediaType === 'image';
     };
 
     this.createContent = function(asset) {
@@ -196,7 +193,7 @@ function PictureAssetView() {
             .appendTo(this.contentBox);
 
         updateImgWithAsset(content, asset)
-        loadingAsset(asset, true, pictureAssetView);
+        loadingAsset(asset, true, imageAssetView);
 
         return content;
     };
@@ -230,16 +227,16 @@ function PictureAssetView() {
     var onImgLoaded = function(event) {
         asset = $(this).data('asset');
         $(this).removeClass('loading');
-        if (asset) loadedAsset(asset, pictureAssetView);
+        if (asset) loadedAsset(asset, imageAssetView);
     };
 }
-PictureAssetView.prototype = new AssetView();
+ImageAssetView.prototype = new AssetView();
 
 
 function VideoAssetView() {
     var videoAssetView = this;
 
-    this.contentBox.addClass('asset-video-youtube');
+    this.contentBox.addClass('asset-external-video');
 
     var player = undefined;
     var playerReady = false;
@@ -248,7 +245,7 @@ function VideoAssetView() {
     var currentAsset = undefined;
 
     this.fitsAsset = function(asset) {
-        return asset.data['type'] === 'video-youtube';
+        return asset.mediaType === 'external-video';
     };
 
     this.createContent = function(asset) {
@@ -543,22 +540,8 @@ function Filmstrip(container) {
         newThumbnails = newThumbnails || false;
         initial = initial || false;
 
-        function layoutForSize(size) {
-            $.each(thumbnails, function(index, thumbnail) {
-                $(thumbnail).css({
-                    'position' : 'absolute',
-                    'left' : index * size
-                });
-            });
-        }
-
         if (thumbnails.length > 0) {
             container.removeClass('empty');
-            var newSize = $(thumbnails[0]).width();
-            if (newThumbnails || newSize != thumbnailSize) {
-                thumbnailSize = newSize;
-                layoutForSize(newSize);
-            }
         } else {
             container.addClass('empty');
         }
@@ -573,8 +556,10 @@ function Filmstrip(container) {
         });
         thumbnails = [];
 
+        thumbnailsBox.empty();
+
         $.each(assets, function(index, asset) {
-            var thumbnail = asset.thumbnail; // TODO: Generate a thumbnail inteligently
+            var thumbnail = asset.thumbnail;
             thumbnailsBox.append(thumbnail);
             thumbnails.push(thumbnail);
             asset._filmstripThumbnail = thumbnail;

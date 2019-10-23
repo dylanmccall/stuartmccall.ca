@@ -76,14 +76,14 @@ class PortfolioView(TemplateView):
         key = make_template_fragment_key('galleries_js_str', [portfolio.pk, portfolio.modified_date, RENDER_VERSION])
         galleries_js_str = cache.get_or_set(
             key,
-            lambda: self._build_galleries_js_str(all_galleries),
+            lambda: json.dumps(self._build_galleries_js_dict(all_galleries)),
             None
         )
 
         key = make_template_fragment_key('portfoliomedia_js_str', [portfolio.pk, portfolio.modified_date, RENDER_VERSION])
         portfoliomedia_js_str = cache.get_or_set(
             key,
-            lambda: self._build_portfoliomedia_js_str(all_portfoliomedia),
+            lambda: json.dumps(self._build_portfoliomedia_js_dict(all_portfoliomedia)),
             None
         )
 
@@ -104,10 +104,6 @@ class PortfolioView(TemplateView):
         else:
             return super(PortfolioView, self).get_template_names()
 
-    def _build_galleries_js_str(self, gallery_list):
-        galleries_js_dict = self._build_galleries_js_dict(gallery_list)
-        return json.dumps(galleries_js_dict)
-
     def _build_galleries_js_dict(self, gallery_list):
         result = OrderedDict()
 
@@ -126,10 +122,6 @@ class PortfolioView(TemplateView):
             'synopsis': gallery.synopsis,
             'abstractId': 'abstract-{slug}'.format(slug=gallery.slug)
         }
-
-    def _build_portfoliomedia_js_str(self, portfoliomedia_list):
-        portfoliomedia_js_dict = self._build_portfoliomedia_js_dict(portfoliomedia_list)
-        return json.dumps(portfoliomedia_js_dict)
 
     def _build_portfoliomedia_js_dict(self, portfoliomedia_list):
         result = list()
@@ -163,14 +155,12 @@ class PortfolioView(TemplateView):
         return {
             'caption': media.caption,
             'extraHtml': _format_extra_dimensions(media.extra),
+            'media-type': media.media_type,
             **media_obj_inner
         }
 
-
     def _build_media_obj_image(self, media):
         result = dict()
-
-        result['type'] = 'picture'
 
         if media.image:
             if media.image_ratio >= 2.0:
@@ -192,6 +182,8 @@ class PortfolioView(TemplateView):
         if media.link:
             url = urlparse(media.link)
 
+            result['link'] = media.link
+
             if url.hostname in ('youtube.com', 'www.youtube.com'):
                 params = parse_qs(url.query)
                 video_type = 'video-youtube'
@@ -200,10 +192,11 @@ class PortfolioView(TemplateView):
                 video_type = 'video-youtube'
                 video_id = url.path.lstrip('/')
             else:
+                video_type = 'video-unknown'
                 video_id = None
 
             if video_id:
-                result['type'] = video_type
+                result['video-type'] = video_type
                 result['full'] = {
                     'default': {
                         'videoId': video_id,
