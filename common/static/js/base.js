@@ -542,6 +542,10 @@ function Filmstrip(container) {
 
         if (thumbnails.length > 0) {
             container.removeClass('empty');
+            var newSize = $(thumbnails[0]).width();
+            if (newThumbnails || newSize != thumbnailSize) {
+                thumbnailSize = newSize;
+            }
         } else {
             container.addClass('empty');
         }
