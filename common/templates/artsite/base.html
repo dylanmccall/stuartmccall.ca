@@ -59,7 +59,7 @@
     {% endif %}
 </head>
 
-<body id="page-home" class="{% if request.user.is_staff %}as-admin{% endif %}">
+<body id="page-home" class="{% if request.user.is_staff %}as-admin{% endif %} {% if selected_gallery %}showing-gallery{% endif %}">
 
 {% if request.user.is_staff %}
 <div class="smc-admin-toolbar">

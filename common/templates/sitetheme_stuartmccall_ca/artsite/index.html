@@ -85,7 +85,7 @@
             <aside role="complementary" class="synopsis" style="display:none;"></aside>
         {% endif %}
 
-        <nav role="navigation" aria-controls="viewer" id="filmstrip" class="filmstrip empty">
+        <nav role="navigation" aria-controls="viewer" id="filmstrip" class="filmstrip {% if not selected_gallery %}empty{% endif %}">
             <div aria-label="Images" class="thumbnails">
                 {% if selected_gallery %}
                     {% cache 31556926 selected_gallery_thumbnails selected_gallery.id selected_gallery.modifed_date %}

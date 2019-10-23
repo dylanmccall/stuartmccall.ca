@@ -7,6 +7,7 @@ setup(
     author_email="dylan@dylanmccall.com",
     url="http://www.stuartmccall.ca",
     packages=find_packages(),
+    include_package_data=True,
     scripts=['manage.py'],
     python_requires='>=3.4',
     setup_requires=[
