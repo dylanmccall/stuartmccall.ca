@@ -1,1 +1,4 @@
 {% extends "artsite/base.html" %}
+{% load canonical_url %}
+
+{% block canonical_url %}{% canonical_url portfolio.get_absolute_url %}{% endblock %}

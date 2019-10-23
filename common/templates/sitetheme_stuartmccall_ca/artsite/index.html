@@ -1,10 +1,13 @@
 {% extends "artsite/base.html" %}
 {% load cache %}
+{% load canonical_url %}
 {% load compress %}
 {% load i18n %}
 {% load image_tools %}
 {% load staticfiles %}
 {% load tinycontent_tags %}
+
+{% block canonical_url %}{% canonical_url portfolio.get_absolute_url %}{% endblock %}
 
 {% block js_data %}
     {% spaceless %}

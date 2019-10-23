@@ -185,6 +185,7 @@ class PortfolioAdmin(admin.ModelAdmin):
         (_("Metadata"), {
             'classes': ('collapse',),
             'fields': (
+                'meta_keywords',
                 'meta_description',
             )
         }),

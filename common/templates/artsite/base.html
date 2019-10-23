@@ -6,13 +6,13 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <meta name="ROBOTS" content="ALL" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="photography, vancouver, canada, art, fine art, photos, images, artwork, artist, creative, industrial, landscape, industry, graphic, encroachment, industrial landscapes, discontinuous spectrums, industrial monochromes," />
-    <meta name="description" content="{{ portfolio.meta_description | default:'' | escape }}" />
     <meta name="robots" content="all" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="{{ portfolio.meta_keywords | default:'' | escape }}" />
+    <meta name="description" content="{{ portfolio.meta_description | default:'' | escape }}" />
+    <link rel="canonical" href="{% block canonical_url %}{% endblock %}" />
 
-    <!-- Web design and development by (C) Dylan McCall <http://www.dylanmccall.com> -->
+    <!-- Web design and development (C) Dylan McCall <https://dylanmc.ca//-> -->
 
     <title>{{ portfolio.title }}</title>
 
@@ -98,7 +98,7 @@
 
     <footer id="footer">
         {% block footer %}
-            <span class="copyright">Web design and devleopment &#169; <a href="https://dylanmc.ca//-">Dylan McCall</a></span>
+            <span class="copyright">Web design and development &#169; <a href="https://dylanmc.ca//-">Dylan McCall</a></span>
         {% endblock %}
     </footer>
 

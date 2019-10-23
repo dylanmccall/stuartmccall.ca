@@ -33,7 +33,8 @@ class Portfolio(models.Model):
     slug = models.SlugField(max_length=50, blank=True, null=True)
     blurb = SimpleMDEField(blank=True, null=True)
     theme_id = models.CharField(max_length=50, choices=SITE_THEME_OPTIONS, verbose_name=_('theme'))
-    meta_description = models.CharField(max_length=200, blank=True, null=True)
+    meta_description = models.CharField(max_length=500, blank=True, null=True)
+    meta_keywords = models.CharField(max_length=500, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
