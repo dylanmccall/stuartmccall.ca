@@ -139,6 +139,13 @@
     <article role="document" aria-owns="site-extra" id="site-main" class="smc-content-wrapper smc-content-wrapper--main" data-blur-from="0.5">
         <section role="main" class="text-block smc-content-block smc-content-block--intro">
             {{ portfolio.blurb_html|safe }}
+            {% if perms.galleries.change_portfolio %}
+                <div class="smc-admin-editable-content smc-admin-editable-content--edit">
+                    <a class="nav-button" href="{% url 'admin:galleries_portfolio_change' portfolio.pk %}" title="Edit this portfolio">
+                        {% trans "Edit" %}
+                    </a>
+                </div>
+            {% endif %}
         </section>
 
         <aside role="complementary" aria-hidden="true" class="smc-content-block smc-content-block--projects">
