@@ -1,8 +1,8 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
-from django.core.urlresolvers import reverse
 from django.http import JsonResponse, Http404, HttpResponseRedirect
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import ListView, TemplateView
 

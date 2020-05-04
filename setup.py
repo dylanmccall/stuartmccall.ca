@@ -15,18 +15,18 @@ setup(
     ],
     install_requires=[
         'django-compressor-autoprefixer>=0.1.0',
-        'django-compressor>=2.2',
-        'django-dbbackup>=3.2.0',
-        'django-extensions>=1.9.7',
-        'django-simplemde>=0.1.0',
-        'django-tinycontent>=0.7.1',
+        'django-compressor>=2.4',
+        'django-dbbackup>=3.3.0',
+        'django-extensions>=2.2.9',
+        'django-simplemde>=0.1.3',
+        'django-tinycontent>=0.8.0',
         'django-sort-order-field>=1.0',
-        'Django>=1.11.25,<1.12',
-        'Markdown>=2.6.9',
-        'Pillow>=4.3.0',
-        'python-memcached>=1.58',
-        'pytz==2018.5',
-        'sorl-thumbnail>=12.4.1'
+        'Django>=2.2,<2.3',
+        'Markdown>=3.2.1',
+        'Pillow>=7.1.2',
+        'python-memcached>=1.59',
+        'pytz==2020.1',
+        'sorl-thumbnail>=12.6.3'
     ],
     tests_require=[
         'nose2>=0.8.0'
