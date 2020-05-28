@@ -38,7 +38,7 @@ class PortfolioMediaInline(admin.TabularInline):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent_object = self.get_parent_object_from_request(request)
-        if self.parent_model == models.Portfolio:
+        if self.parent_model is models.Portfolio:
             if db_field.name == 'gallery' and parent_object:
                 kwargs["queryset"] = models.Gallery.objects.filter(portfolio=parent_object)
             elif db_field.name == 'gallery':
@@ -47,8 +47,9 @@ class PortfolioMediaInline(admin.TabularInline):
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
-        if resolved.args:
-            return self.parent_model.objects.get(pk=resolved.args[0])
+        object_id = resolved.kwargs.get('object_id')
+        if object_id:
+            return self.parent_model.objects.get(pk=object_id)
         else:
             return None
 
@@ -112,7 +113,7 @@ class PortfolioMediaInlineForMedia(admin.TabularInline):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent_object = self.get_parent_object_from_request(request)
-        if self.parent_model == models.Portfolio:
+        if self.parent_model is models.Portfolio:
             if db_field.name == 'gallery' and parent_object:
                 kwargs["queryset"] = models.Gallery.objects.filter(portfolio=parent_object)
             elif db_field.name == 'gallery':
@@ -121,8 +122,9 @@ class PortfolioMediaInlineForMedia(admin.TabularInline):
 
     def get_parent_object_from_request(self, request):
         resolved = resolve(request.path_info)
-        if resolved.args:
-            return self.parent_model.objects.get(pk=resolved.args[0])
+        object_id = resolved.kwargs.get('object_id')
+        if object_id:
+            return self.parent_model.objects.get(pk=object_id)
         else:
             return None
 
