@@ -24,4 +24,4 @@ Run the application using WSGI, or use the Django test server:
 
 ## Authors
 
-Dylan McCall <dylan@dylanmccall.com>
+Dylan McCall <dylan@dylanmccall.ca>
