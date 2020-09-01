@@ -4,7 +4,7 @@ setup(
     name="web-stuartmccall-ca",
     version="1.0",
     author="Dylan McCall",
-    author_email="dylan@dylanmccall.com",
+    author_email="dylan@dylanmccall.ca",
     url="http://www.stuartmccall.ca",
     packages=find_packages(),
     include_package_data=True,
