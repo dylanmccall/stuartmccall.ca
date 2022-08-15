@@ -25,7 +25,7 @@ setup(
         'Markdown>=3.2.1',
         'Pillow>=7.1.2,<8.4.0',
         'python-memcached>=1.59',
-        'pytz==2021.1',
+        'pytz==2022.2.1',
         'sorl-thumbnail>=12.6.3'
     ],
     tests_require=[
