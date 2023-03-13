@@ -123,13 +123,21 @@
 
     .gallery-info {
         flex-shrink: 0;
-        flex-basis: 33.333%;
+        flex-basis: auto;
         margin: 0.75rem 0;
 
         h3, ul {
             margin: 0;
             padding: 0 8px;
         }
+    }
+
+    &.galleries-grid-2 .gallery-info {
+        flex-basis: 50%;
+    }
+
+    &.galleries-grid-3 .gallery-info {
+        flex-basis: 33.333%;
     }
 
     @media screen and (max-width: @big_screen) {
