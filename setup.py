@@ -23,7 +23,7 @@ setup(
         'django-sort-order-field>=1.2',
         'Django>=2.2,<2.3',
         'Markdown>=3.2.1',
-        'Pillow>=7.1.2,<8.4.0',
+        'Pillow>=7.1.2,<9.6.0',
         'python-memcached>=1.59',
         'pytz==2022.7.1',
         'sorl-thumbnail>=12.6.3'
