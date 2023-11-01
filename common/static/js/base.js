@@ -23,13 +23,6 @@ var DEFAULT_ASSET_DATA = {
 };
 
 
-var trackEvent = function(name, data) {
-    if (window.gtag) {
-        window.gtag('event', name, data);
-    }
-};
-
-
 var onHistoryChange = function() {
     // Check window.history.location for compatibility with devote/HTML5-History-API
     var location = window.history.location || window.location;
@@ -957,7 +950,6 @@ var selectFilter = function(filter, data) {
 
     if (lastFilter !== undefined && lastFilter != visibleFilter) {
         var filterName = (visibleFilter) ? visibleFilter.name : '/';
-        trackEvent('portfolio', {'filter': filterName});
     }
 };
 
@@ -974,10 +966,6 @@ var selectAsset = function(asset, data) {
     $.each(assetSelectedCbs, function(index, cb) {
         cb(asset, lastAsset, data);
     });
-
-    if (asset) {
-        trackEvent('portfolio', {'asset': asset.name});
-    }
 };
 
 
