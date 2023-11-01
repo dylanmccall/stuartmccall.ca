@@ -23,9 +23,10 @@ var DEFAULT_ASSET_DATA = {
 };
 
 
-var trackEvent = function(data) {
-    window._gaq = window._gaq || [];
-    window._gaq.push(data);
+var trackEvent = function(name, data) {
+    if (window.gtag) {
+        window.gtag('event', name, data);
+    }
 };
 
 
@@ -956,7 +957,7 @@ var selectFilter = function(filter, data) {
 
     if (lastFilter !== undefined && lastFilter != visibleFilter) {
         var filterName = (visibleFilter) ? visibleFilter.name : '/';
-        trackEvent(['_trackEvent', 'Portfolio', 'Filter', filterName]);
+        trackEvent('portfolio', {'filter': filterName});
     }
 };
 
@@ -975,9 +976,7 @@ var selectAsset = function(asset, data) {
     });
 
     if (asset) {
-        trackEvent(['_trackEvent', 'Portfolio', 'Selected', asset.name]);
-    } else {
-        trackEvent(['_trackEvent', 'Portfolio', 'Deselected']);
+        trackEvent('portfolio', {'asset': asset.name});
     }
 };
 
