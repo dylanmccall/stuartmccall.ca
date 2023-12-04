@@ -21,7 +21,7 @@ setup(
         'django-simplemde>=0.1.3',
         'django-tinycontent>=0.8.0',
         'django-sort-order-field>=1.2',
-        'Django>=2.2,<2.3',
+        'Django>=2.2,<5.1',
         'Markdown>=3.2.1',
         'Pillow>=7.1.2,<8.4.0',
         'python-memcached>=1.59',
